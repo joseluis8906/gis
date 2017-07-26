@@ -6,6 +6,16 @@ const DbPath = Path.resolve(`${models}/Db.sqlite`);
 
 const Db = new Sequelize(`sqlite://${DbPath}`);
 
+const User = Db.define('User', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  UserName: {type: Sequelize.STRING, unique: true},
+  Password: Sequelize.STRING,
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
 const Person = Db.define('Person', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   Email: {type: Sequelize.STRING, unique: true},
