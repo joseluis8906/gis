@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS "Person" (
+  "Id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "Email" TEXT UNIQUE,
+  "FirstName" TEXT,
+  "LastName" TEXT
+);
+
+CREATE TABLE IF NOT EXISTS "Post" (
+  "PersonId" INTEGER PRIMARY KEY REFERENCES "Person"("Id"),
+  "Title" TEXT,
+  "Content" TEXT
+);
+
