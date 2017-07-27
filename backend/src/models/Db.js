@@ -1,10 +1,9 @@
 import Path from 'path';
 import Sequelize from 'sequelize';
 
-const models = Path.join(__dirname);
-const DbPath = Path.resolve(`${models}/Db.sqlite`);
+var db = Path.resolve(__dirname, '../../db/Db.sqlite');
 
-const Db = new Sequelize(`sqlite://${DbPath}`);
+const Db = new Sequelize(`sqlite://${db}`);
 
 const User = Db.define('User', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},

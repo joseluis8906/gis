@@ -4,8 +4,8 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import favicon from 'serve-favicon';
 import graphqlHTTP from 'express-graphql'
-import Schema from '../models/Schema';
-import Db from '../models/Db'
+import Schema from './models/Schema';
+import Db from './models/Db'
 import Jwt from 'jsonwebtoken';
 import Bcrypt from 'bcrypt';
 
@@ -48,7 +48,7 @@ app.use('/private/graphql', graphqlHTTP({
   graphiql: true
 }));
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
 app.use('/static', express.static(path.join(__dirname, '../public')));
@@ -133,4 +133,6 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
   console.log('Express runing at http://127.0.0.1:3000');
 });
+
+export default app;
 
