@@ -27,7 +27,7 @@
       <v-toolbar-title>{{ title }}</v-toolbar-title>
     </v-toolbar>
     <main>
-      <v-container fluid mb-4>
+      <v-container fluid mb-5>
         <nuxt />
       </v-container>
     </main>
