@@ -3,20 +3,24 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 import favicon from 'serve-favicon';
-import graphqlHTTP from 'express-graphql'
+import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
 import Schema from './models/Schema';
 import Db from './models/Db'
 import Jwt from 'jsonwebtoken';
 import Bcrypt from 'bcrypt';
+import cors from 'cors';
 
 
 const app = express();
+
 var router = express.Router();
+
 app.use('/private', router);
 
-var Upload = multer();
+//var Upload = multer();
 
 app.set('superSecret', 'K3J9 8LMN 02F3 B3LW');
+
 router.use((req, res, next) => {
   // check header or url parameters or post parameters for token
   var token = req.headers['x-access-token'] ||
@@ -42,19 +46,19 @@ router.use((req, res, next) => {
   }
 });
 
-app.use('/private/graphql', graphqlHTTP({
-  schema: Schema,
-  pretty: true,
-  graphiql: true
-}));
-
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
+
 
 app.use('/static', express.static(path.join(__dirname, '../public')));
 app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
+
+app.use('/graphql', cors(), graphqlExpress({ schema: Schema }));
+app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
+
 
 //generate password
 app.get('/generatepassword/:Password', (req, res) => {
@@ -130,9 +134,8 @@ app.use((err, req, res, next) => {
   res.status(500).send("Internal server erro");
 });
 
+
 app.listen(3000, () => {
   console.log('Express runing at http://127.0.0.1:3000');
 });
-
-export default app;
 

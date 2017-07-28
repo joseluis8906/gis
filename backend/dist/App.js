@@ -1,9 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
@@ -24,9 +20,7 @@ var _serveFavicon = require('serve-favicon');
 
 var _serveFavicon2 = _interopRequireDefault(_serveFavicon);
 
-var _expressGraphql = require('express-graphql');
-
-var _expressGraphql2 = _interopRequireDefault(_expressGraphql);
+var _graphqlServerExpress = require('graphql-server-express');
 
 var _Schema = require('./models/Schema');
 
@@ -44,22 +38,32 @@ var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
+var _cors = require('cors');
+
+var _cors2 = _interopRequireDefault(_cors);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
-var router = _express2.default.Router();
+/*
+var router = express.Router();
+
 app.use('/private', router);
 
-var Upload = (0, _multer2.default)();
+//var Upload = multer();
 
 app.set('superSecret', 'K3J9 8LMN 02F3 B3LW');
-router.use(function (req, res, next) {
+
+router.use((req, res, next) => {
   // check header or url parameters or post parameters for token
-  var token = req.headers['x-access-token'] || req.params.token || req.query ? req.query.token : null || req.body ? req.body.token : null;
+  var token = req.headers['x-access-token'] ||
+              req.params.token ||
+              req.query ? req.query.token : null ||
+              req.body ? req.body.token : null;
   // decode token
   if (token) {
     // verifies secret and checks exp
-    _jsonwebtoken2.default.verify(token, app.get('superSecret'), function (err, decoded) {
+    Jwt.verify(token, app.get('superSecret'), (err, decoded) => {
       if (err) {
         return res.json({ Result: false, Err: 'Falló el token de autenticación' });
       } else {
@@ -68,93 +72,102 @@ router.use(function (req, res, next) {
         next();
       }
     });
-  } else {
+  }else {
     // if there is no token
     // return an error
-    return res.status(403).json({ Result: 0, Err: 'No se encontró un token de autenticación válido' });
+    return res.status(403).json({Result: 0, Err: 'No se encontró un token de autenticación válido'});
   }
 });
 
-app.use('/private/graphql', (0, _expressGraphql2.default)({
-  schema: _Schema2.default,
-  pretty: true,
-  graphiql: true
-}));
-
-app.set('views', _path2.default.join(__dirname, '../views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
-app.use('/static', _express2.default.static(_path2.default.join(__dirname, '../public')));
-app.use((0, _serveFavicon2.default)(_path2.default.join(__dirname, '../public', 'favicon.ico')));
-app.use(_bodyParser2.default.json());
-app.use(_bodyParser2.default.urlencoded({ extended: true }));
 
+app.use('/static', express.static(path.join(__dirname, '../public')));
+app.use(favicon(path.join(__dirname, '../public', 'favicon.ico')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+*/
+
+app.use('/graphql', _bodyParser2.default.json(), (0, _graphqlServerExpress.graphqlExpress)({ schema: _Schema2.default }));
+app.use('/graphiql', (0, _graphqlServerExpress.graphiqlExpress)({ endpointURL: '/graphql' }));
+
+/*
 //generate password
-app.get('/generatepassword/:Password', function (req, res) {
-  _bcrypt2.default.genSalt(10, function (Err, Salt) {
-    _bcrypt2.default.hash(req.params.Password, Salt, function (Err, Hash) {
-      res.json({ Password: Hash });
+app.get('/generatepassword/:Password', (req, res) => {
+  Bcrypt.genSalt(10, (Err, Salt) => {
+    Bcrypt.hash(req.params.Password, Salt, (Err, Hash) => {
+      res.json({Password: Hash});
     });
   });
 });
 
 //login get
-app.get('/login/:UserName/:Password', function (req, res, next) {
-  var Data = req.params;
-
-  _Db2.default.models.User.findOne({ where: { UserName: Data.UserName } }).then(function (R) {
-    _bcrypt2.default.compare(Data.Password, R.Password, function (Err, Res) {
-      if (Res) {
-        _jsonwebtoken2.default.sign({ User: Data.UserName }, req.app.get('superSecret'), { expiresIn: "365d" /*expires in 365 dias*/ }, function (Err, Token) {
-          if (!Err) {
-            res.json({ Result: 1, Token: Token });
-          } else {
-            res.json({ Result: 0, Err: 'Error generando token: ' + Err });
-          }
-        });
-      } else {
+app.get('/login/:UserName/:Password', (req, res, next) => {
+  var Data = (req.params);
+  
+  Db.models.User.findOne({where: {UserName: Data.UserName}}).then( R => {
+    Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
+      if(Res) {
+        Jwt.sign({ User: Data.UserName },
+          req.app.get('superSecret'),
+          {expiresIn: "365d" /*expires in 365 dias},
+          (Err, Token) => {
+            if(!Err) {
+              res.json({ Result: 1, Token: Token});
+            }else{
+              res.json({ Result: 0, Err: `Error generando token: ${Err}`});
+            }
+          });
+      }else{
         res.json({ Result: 0, Err: "Password Erronea" });
       }
     });
-  }).catch(function (Err) {
-    res.json({ Result: 0, Err: 'Error consultando ususario: ' + Err });
+    
+  }).catch(Err => {
+    res.json({ Result: 0, Err: `Error consultando ususario: ${Err}` });
   });
+  
 });
 
 //login post
-app.post('/login/', function (req, res, next) {
-  var Data = req.body;
-
-  _Db2.default.models.User.findOne({ where: { UserName: Data.UserName } }).then(function (R) {
-    _bcrypt2.default.compare(Data.Password, R.Password, function (Err, Res) {
-      if (Res) {
-        _jsonwebtoken2.default.sign({ User: Data.UserName }, req.app.get('superSecret'), { expiresIn: "365d" /*expires in 365 dias*/ }, function (Err, Token) {
-          if (!Err) {
-            res.json({ Result: 1, Token: Token });
-          } else {
-            res.json({ Result: 0, Err: 'Error generando token: ' + Err });
-          }
-        });
-      } else {
+app.post('/login/', (req, res, next) => {
+  var Data = (req.body);
+  
+  Db.models.User.findOne({where: {UserName: Data.UserName}}).then( R => {
+    Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
+      if(Res) {
+        Jwt.sign({ User: Data.UserName },
+          req.app.get('superSecret'),
+          {expiresIn: "365d" /*expires in 365 dias},
+          (Err, Token) => {
+            if(!Err) {
+              res.json({ Result: 1, Token: Token});
+            }else{
+              res.json({ Result: 0, Err: `Error generando token: ${Err}`});
+            }
+          });
+      }else{
         res.json({ Result: 0, Err: "Password Erronea" });
       }
     });
-  }).catch(function (Err) {
-    res.json({ Result: 0, Err: 'Error consultando ususario: ' + Err });
+    
+  }).catch(Err => {
+    res.json({ Result: 0, Err: `Error consultando ususario: ${Err}` });
   });
+  
 });
 
-app.get('/', function (req, res) {
-  res.render('index', { title: 'Express', message: 'Hello Express!' });
+app.get('/', (req, res) => {
+  res.render('index', {title: 'Express', message: 'Hello Express!'});
 });
 
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Internal server erro");
 });
+*/
 
 app.listen(3000, function () {
   console.log('Express runing at http://127.0.0.1:3000');
 });
-
-exports.default = app;

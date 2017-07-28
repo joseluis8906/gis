@@ -22,10 +22,10 @@ module.exports = {
   ** Build configuration
   */
   build: {
-    vendor: ['vuetify']
+    vendor: ['vuetify', 'isomorphic-fetch', 'apollo-client', 'graphql-tag', 'vue-apollo']
   },
-  plugins: ['~plugins/vuetify.js'],
+  plugins: ['~plugins/vuetify.js', {src: '~plugins/apolloClient', injectAs: 'apolloProvider'}],
   css: [
     { src: '~assets/style/app.styl', lang: 'styl' }
-  ],
+  ]
 }
