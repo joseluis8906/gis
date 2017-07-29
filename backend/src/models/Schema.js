@@ -34,7 +34,13 @@ var Person = new GraphQLObjectType({
         resolve(Person) {
           return Person.LastName;
         }
-      }
+      },
+      Posts: {
+        type: new GraphQLList(Post),
+        resolve(Person) {
+          return Person.getPosts();
+        }
+      }      
     };
   }
 });
