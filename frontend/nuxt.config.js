@@ -22,10 +22,24 @@ module.exports = {
   ** Build configuration
   */
   build: {
-    vendor: ['vuetify', 'isomorphic-fetch', 'apollo-client', 'graphql-tag', 'vue-apollo']
+    vendor: [
+      'vuetify',
+      'isomorphic-fetch',
+      'apollo-client',
+      'graphql-tag',
+      'vue-apollo',
+      'vue-chartjs',
+      'chart.js'
+    ]
   },
-  plugins: ['~plugins/vuetify.js', {src: '~plugins/apolloClient', injectAs: 'apolloProvider'}],
+  plugins: [
+    '~plugins/vuetify.js',
+    {src: '~plugins/apolloClient', injectAs: 'apolloProvider'},
+    '~plugins/awesomeSwiper'
+  ],
   css: [
-    { src: '~assets/style/app.styl', lang: 'styl' }
+    { src: '~assets/style/app.styl', lang: 'styl' },
+    'swiper/dist/css/swiper.css'
+    
   ]
 }

@@ -1,22 +1,73 @@
-<template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <div class="text-xs-center">
-        <img src="/v.png" alt="Vuetify.js" class="mb-5" />
-      </div>
-      <v-card>
-        <v-card-text>
-          <p>Welcome to the Webpack SSR template.</p>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications. For more information on Vuetify, check out the <a href="https://vuetifyjs.com" target="_blank">documentation</a>. If you have questions, please join the official <a href="https://gitter.im/vuetifyjs/Lobby" target="_blank" title="chat">gitter</a>. Find a bug? Report it on the github <a href="https://github.com/vuetifyjs/vuetify/issues" target="_blank" title="contribute">issue board</a>.</p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn primary flat router nuxt to="/inspire">Continue</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+<template lang="pug">
+doctype html
+div(class="hello")
+  g-carousel
+  g-icon-grid
+  g-section1
+  g-section3
+  g-section4
+  g-section2
+  g-section5
+  g-testimonios
+  g-contact
+
 </template>
+
+<script>
+
+import GCarousel from '~components/GCarousel.vue'
+import GIconGrid from '~components/GIconGrid.vue'
+import GSection1 from '~components/GSection1.vue'
+import GSection2 from '~components/GSection2.vue'
+import GSection3 from '~components/GSection3.vue'
+import GSection4 from '~components/GSection4.vue'
+import GSection5 from '~components/GSection5.vue'
+import GTestimonios from '~components/GTestimonios.vue'
+import GContact from '~components/GContact.vue'
+
+
+export default {
+  data () {
+    return {
+    }
+  },
+  layout: 'page',
+  components: {
+    GCarousel,
+    GIconGrid,
+    GSection1,
+    GSection2,
+    GSection3,
+    GSection4,
+    GSection5,
+    GTestimonios,
+    GContact
+  },
+  head () {
+    return {
+      meta: [{name: "viewport", content: "width=device-width, initial-scale=1, maximun-scale=1, user-scalable=no, minimal-ui"}]
+    }
+  }
+}
+
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="stylus" scoped>
+
+h1, h2 
+  font-weight normal;
+
+ul 
+  list-style-type none
+  padding 0
+
+
+li 
+  display inline-block
+  margin 0 10px
+
+a 
+  color #42b983
+
+</style>

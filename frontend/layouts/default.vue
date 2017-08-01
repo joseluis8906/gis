@@ -42,7 +42,8 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
         { icon: 'home', text: 'Index', to: '/'},
         { icon: 'lightbulb_outline', text: 'Inspire', to: '/inspire' },
         { icon: 'touch_app', text: 'Example', to: '/example' },
-        { icon: 'backup', text: 'test', to: '/testgraphql' }
+        { icon: 'backup', text: 'test', to: '/testgraphql' },
+        { icon: 'lock', text: 'Login', to: '/login'}
       ],
       title: 'Frontend'
     })
