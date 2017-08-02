@@ -4,9 +4,9 @@
   "description": "Nuxt.js + Vuetify.js project",
   "author": "Jose Luis Cáceres Escudero <joseluis8906@opmbx.org>",
   "scripts": {
-    "dev": "HOST=localhost PORT=8088 nuxt",
+    "dev": "PORT=8088 nuxt",
     "build": "nuxt build",
-    "serve": "HOST=localhost PORT=8088 nuxt start",
+    "serve": "PORT=8088 nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {
