@@ -1,61 +1,61 @@
 <template lang="pug">
 doctype html
 v-app(light)
+  a(name="inicio" style="display: hidden")
   v-navigation-drawer(temporary :floating="true" v-model="drawer" overflow enable-resize-watcher light class="hidden-md-and-up" style="z-index: 10001")
     v-list(dense)
-      v-list-tile(nuxt link to="#inicio" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon home
         v-list-tile-content
           v-list-tile-title Inicio
-      v-list-tile(nuxt link to="#identidad" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/#identidad" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon gavel
         v-list-tile-content
           v-list-tile-title Misión
-      v-list-tile(nuxt link to="#nosotros" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/#nosotros" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon flight_takeoff
         v-list-tile-content
           v-list-tile-title Nosotros
-      v-list-tile(nuxt link to="#sobre" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/#sobre" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon accessibility
         v-list-tile-content
           v-list-tile-title Historia
-      v-list-tile(nuxt link to="#productos" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/#productos" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon shopping_cart
         v-list-tile-content
           v-list-tile-title Servicios
-      v-list-tile(nuxt link to="#contacto" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/#contacto" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon speaker_notes
         v-list-tile-content
           v-list-tile-title Contacto
   v-toolbar(dense dark xs12)
-    a(name="inicio" style="display: hidden")
     v-icon(dark class="hidden-sm-and-down") desktop_mac
     v-icon(dark class="hidden-md-and-up") phone_iphone
     v-spacer
-    v-btn(outline dark small nuxt link to="/login") Login
+    v-btn(outline dark small nuxt link to="/") Login
   v-toolbar(prominent v-bind:class="{ 'g-navbar-fixed': navFixed }")
     img(src="~assets/logo.gis.extended.png", class="img_icon")
     v-spacer
     v-toolbar-side-icon(class="hidden-md-and-up" @click.native.stop="drawer = !drawer")
     v-toolbar-items(class="hidden-sm-and-down")
       a(href="#inicio")
-        v-btn(flat) Inicio
+        v-btn(flat class='especial') Inicio
       a(href="#identidad")
-        v-btn(flat) Identidad
+        v-btn(flat class='especial') Identidad
       a(href="#nosotros")
-        v-btn(flat) Nosotros
+        v-btn(flat class='especial') Nosotros
       a(href="#sobre")
-        v-btn(flat) Historia
+        v-btn(flat class='especial') Historia
       a(href="#productos")
-        v-btn(flat) Servicios
+        v-btn(flat class='especial') Servicios
       a(href="#contacto")
-        v-btn(flat) Contacto
+        v-btn(flat class='especial') Contacto
   main
     nuxt
   v-footer(fluid style="height:auto")
@@ -150,6 +150,12 @@ a
   opacity 1
   animation-name example
   animation-duration 1s
+  
+button.especial
+  width 100%
+  height 100%
+  margin 0
+  padding 0
 
 </style>
 

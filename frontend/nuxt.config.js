@@ -10,7 +10,7 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/png', href: '/logo.gis.favicon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Work+Sans:200'},
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Archivo+Black'},
@@ -36,10 +36,12 @@ module.exports = {
   },
   plugins: [
     '~plugins/vuetify.js',
+    '~plugins/vue-awesome-swiper.js',
     {src: '~plugins/vue-chartjs.js', ssr: false},
     {src: '~plugins/apollo-client.js', injectAs: 'apolloProvider'}
   ],
   css: [
+    'swiper/dist/css/swiper.css',
     { src: '~assets/style/app.styl', lang: 'styl' }
   ]
 }

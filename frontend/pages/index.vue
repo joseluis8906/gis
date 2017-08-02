@@ -8,7 +8,7 @@ div(class="hello")
   g-section4
   g-section2
   g-section5
-  //-g-testimonios
+  g-testimonios
   g-contact
 
 </template>
