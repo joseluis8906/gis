@@ -3,52 +3,59 @@ doctype html
 v-app(light)
   v-navigation-drawer(temporary :floating="true" v-model="drawer" overflow enable-resize-watcher light class="hidden-md-and-up" style="z-index: 10001")
     v-list(dense)
-      v-list-tile
+      v-list-tile(nuxt link to="#inicio" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon home
         v-list-tile-content
           v-list-tile-title Inicio
-      v-list-tile
+      v-list-tile(nuxt link to="#identidad" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon gavel
         v-list-tile-content
           v-list-tile-title Misión
-      v-list-tile
+      v-list-tile(nuxt link to="#nosotros" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon flight_takeoff
         v-list-tile-content
-          v-list-tile-title Visión
-      v-list-tile
+          v-list-tile-title Nosotros
+      v-list-tile(nuxt link to="#sobre" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon accessibility
         v-list-tile-content
           v-list-tile-title Historia
-      v-list-tile
+      v-list-tile(nuxt link to="#productos" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon shopping_cart
         v-list-tile-content
           v-list-tile-title Servicios
-      v-list-tile
+      v-list-tile(nuxt link to="#contacto" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon speaker_notes
         v-list-tile-content
           v-list-tile-title Contacto
   v-toolbar(dense dark xs12)
+    a(name="inicio" style="display: hidden")
     v-icon(dark class="hidden-sm-and-down") desktop_mac
     v-icon(dark class="hidden-md-and-up") phone_iphone
     v-spacer
     v-btn(outline dark small nuxt link to="/login") Login
   v-toolbar(prominent v-bind:class="{ 'g-navbar-fixed': navFixed }")
-    img(src="~assets/logo.gis.extended.svg", class="img_icon")
+    img(src="~assets/logo.gis.extended.png", class="img_icon")
     v-spacer
     v-toolbar-side-icon(class="hidden-md-and-up" @click.native.stop="drawer = !drawer")
     v-toolbar-items(class="hidden-sm-and-down")
-      v-btn(flat) Inicio
-      v-btn(flat) Misión
-      v-btn(flat) Visión
-      v-btn(flat) Historia
-      v-btn(flat) Servicios
-      v-btn(flat) Contacto
+      a(href="#inicio")
+        v-btn(flat) Inicio
+      a(href="#identidad")
+        v-btn(flat) Identidad
+      a(href="#nosotros")
+        v-btn(flat) Nosotros
+      a(href="#sobre")
+        v-btn(flat) Historia
+      a(href="#productos")
+        v-btn(flat) Servicios
+      a(href="#contacto")
+        v-btn(flat) Contacto
   main
     nuxt
   v-footer(fluid style="height:auto")
@@ -109,6 +116,11 @@ export default {
 </script>
 
 <style lang="stylus">
+a
+  margin none
+  padding none
+  text-decoration none
+
 .img_icon 
   height 80%
 

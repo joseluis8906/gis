@@ -26,7 +26,10 @@ v-container(fluid pt-0 pb-0)
       div(class="pt-5 pb-5 pl-5 pr-5")
         div(class="text-xs-center g-container-img-icon-grid")
           img(src="~assets/ascendant-bars-graphic.svg" height="64px")
-        h6(class="text-xs-center blue-grey--text text--darken-4 g-section2-title") Crecimiento Profesional 
+        h6(class="text-xs-center blue-grey--text text--darken-4 g-section2-title") 
+          |Crecimiento
+          br
+          |Profesional 
         p(class="text-xs-center body-1 grey--text text--darken-1") Además de un excelente ambiente de trabajo 
           |ofrecemos a nuestros empleados salarios competitivos
 

@@ -8,7 +8,7 @@ div(class="hello")
   g-section4
   g-section2
   g-section5
-  g-testimonios
+  //-g-testimonios
   g-contact
 
 </template>
@@ -45,7 +45,8 @@ export default {
   },
   head () {
     return {
-      meta: [{name: "viewport", content: "width=device-width, initial-scale=1, maximun-scale=1, user-scalable=no, minimal-ui"}]
+      meta: [{name: "viewport", content: "width=device-width, initial-scale=1, maximun-scale=1, user-scalable=no, minimal-ui"}],
+      title: "Gis"
     }
   }
 }

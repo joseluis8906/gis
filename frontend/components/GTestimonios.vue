@@ -1,12 +1,12 @@
 <template lang="pug">
 doctype html
-v-container(fluid pt-0 pb-0)
+v-container(fluid pt-0 pb-0 pr-0 pl-0)
   v-layout(row wrap pt-3 pb-5 pl-3 pr-3 class="g-testimonios-layout" justify-center)
     v-flex(xs12)
       div(class="pt-5 pb-5")
         h3(class="text-xs-center g-testimonios-title") Testimonios
-        swiper(:options="swiperOption")
-          swiper-slide(v-for="(item, i) in items" v-bind:key="i")
+        div(class="swiper")
+          div(class="swiper-slide" v-for="(item, i) in items" v-bind:key="i")
             v-layout(row wrap)
               v-flex(xs12 md4 offset-md4)
                 div(class="img-people text-xs-center md6")

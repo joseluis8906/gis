@@ -1,6 +1,6 @@
 <template lang="pug">
 doctype html
-v-container(fluid pt-0 pb-0)
+v-container(fluid pt-0 pb-0 pl-0 pr-0)
   v-layout(row pt-5 pb-5 wrap special)
     v-flex(xs12 md2)
       div(class="text-xs-center g-container-img-icon-grid")

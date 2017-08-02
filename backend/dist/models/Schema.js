@@ -40,6 +40,12 @@ var Person = new _graphql.GraphQLObjectType({
         resolve: function resolve(Person) {
           return Person.LastName;
         }
+      },
+      Posts: {
+        type: new _graphql.GraphQLList(Post),
+        resolve: function resolve(Person) {
+          return Person.getPosts();
+        }
       }
     };
   }

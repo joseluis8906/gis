@@ -4,9 +4,9 @@
   "description": "Nuxt.js + Vuetify.js project",
   "author": "Jose Luis Cáceres Escudero <joseluis8906@opmbx.org>",
   "scripts": {
-    "dev": "HOST=localhost PORT=3001 nuxt",
+    "dev": "HOST=localhost PORT=8088 nuxt",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "serve": "HOST=localhost PORT=8088 nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {
@@ -16,7 +16,6 @@
     "isomorphic-fetch": "^2.2.1",
     "nuxt": "0.10.7",
     "vue-apollo": "^2.1.0-beta.19",
-    "vue-awesome-swiper": "^2.5.4",
     "vue-chartjs": "^2.7.2",
     "vue-server-renderer": "latest",
     "vuetify": "^0.13.0"

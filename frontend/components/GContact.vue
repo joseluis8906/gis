@@ -1,7 +1,8 @@
 <template lang="pug">
 doctype html
 v-container(fluid class="g-contact-layout")
-  v-layout(row wrap pt-5 pb-5)
+  a(name="contacto" style="display: hidden")
+  v-layout(row wrap pt-5 pb-5)    
     v-flex(xs12 md6 offset-md3)
       h3(class="text-xs-center g-contact-title grey--text text--lighten-4") Contáctenos 
     v-flex(xs5 offset-xs1 text-xs-center md2 offset-md4 text-md-right)

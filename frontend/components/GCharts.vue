@@ -2,27 +2,24 @@
 doctype html
 v-layout(row wrap pt-3)
   v-flex(xs12 md2)
-  v-flex(xs12 md2 v-for="(item,i) in items" v-bind:key="i")
+  v-flex(xs12 md2 v-for="(item, i) in PieData" v-bind:key="i")
     div(class="text-xs-center g-container-img-icon-grid")
       div(class="")
         div(class="small")
-          pie-chart(:chart-data="item.datacollection" :options="{ tooltips: { enabled: false } }")
+          v-pie(v-if="showPie" :data="item.datacollection" :options="options")
         h3(class="text-xs-center g-charts-percent") {{ item.datacollection.title }}%
         p(class="text-xs-center g-charts-percent") {{ item.datacollection.body }}
   v-flex(xs12 md2)
 </template>
 
 <script>
-import PieChart from '~components/PieChart.js'
 const deepOrange = '#e64a19'
 const transparent = 'grey'
 export default {
-  components: {
-    PieChart
-  },
   data () {
     return {
-      items: [
+      showPie: false,
+      PieData: [
         {
           datacollection: {}
         },
@@ -35,22 +32,25 @@ export default {
         {
           datacollection: {}
         }
-      ]
+      ],
+      options: { tooltips: { enabled: false } }
     }
   },
   mounted () {
-    this.fillData()
+    this.showPie = true
+    this.fillData();
   },
   methods: {
     fillData () {
       var datas = [
-        {porcentaje: 41, body: 'Expansión De Mercado'},
-        {porcentaje: 56, body: 'Crecimiento De Empleo'},
-        {porcentaje: 66, body: 'Volumen De Inversion'},
-        {porcentaje: 90, body: 'Aumento Salarial'}
+        {porcentaje: 47, body: 'Expansión De Mercado'},
+        {porcentaje: 33, body: 'Crecimiento De Empleo'},
+        {porcentaje: 71, body: 'Volumen De Inversion'},
+        {porcentaje: 60, body: 'Aumento Salarial'}
       ]
-      for (let i = 0; i < this.items.length; i++) {
-        this.items[i].datacollection = {
+      
+      for (let i = 0; i < this.PieData.length; i++) {
+        this.PieData[i].datacollection = {
           labels: [],
           datasets: [
             {
@@ -76,5 +76,6 @@ export default {
   
 .g-charts-percent
   font-weight bold
+  color black
 
 </style>

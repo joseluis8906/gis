@@ -1,6 +1,7 @@
 <template lang="pug">
 doctype html
 v-container(fluid pt-5 pb-5 class="g-container text-xs-center")
+  a(name="nosotros" style="display: hidden")
   v-layout(row wrap)
     v-flex(xs10 offset-xs1 lg8 offset-lg2)
       h3(class="text-xs-center g-title") Nuestros Profesionales
