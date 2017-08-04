@@ -58,10 +58,10 @@ export default {
       {title: 'Dióxido de Carbono', content: 'Se utiliza como agente extintor eliminando el oxígeno encontrado en ese espacio, e impidiendo que se genere una combustión. En la industria alimentaria, se utiliza en bebidas carbonatadas para darles efervescencia. También se puede utilizar como ácido inocuo o poco contaminante. La acidez puede ayudar a cuajar lácteos de una forma más rápida y por tanto barata, sin añadir ningún sabor, y en la industria se puede utilizar para neutralizar residuos alcalinos sin añadir otro ácido más contaminante como el sulfúrico.', style: {'background-image': "url('/producto.5.png')"}},
 
 
-      {title: 'Helio', content: 'Industrialmente se usa en criogenia (siendo su principal uso, lo que representa alrededor de un 28 % de la producción mundial), en la refrigeración de imanes superconductores. Entre estos usos, la aplicación más importante es en los escáneres de resonancia magnética. También se utiliza como protección para la soldadura por arco y otros procesos, como el crecimiento de cristales de silicio, los cuales representan el 20 % de su uso para el primer caso y el 26 % para el segundo', style: {'background-image': "url('/producto.6.png')"}},
+      {title: 'Helio', content: 'Industrialmente se usa en criogenia (siendo su principal uso, lo que representa alrededor de un 28 % de la producción mundial), en la refrigeración de imanes superconductores. Entre estos usos, la aplicación más importante es en los escáneres de resonancia magnética. También se utiliza como protección para la soldadura por arco y otros procesos, como el crecimiento de cristales de silicio, los cuales representan el 20 % de su uso para el primer caso y el 26 % para el segundo.', style: {'background-image': "url('/producto.6.png')"}},
     
 
-      {title: 'Nitrogeno', content: 'La aplicación comercial más importante del nitrógeno diatómico es la obtención de amoníaco por el proceso de Haber. El amoníaco se emplea con posterioridad en la fabricación de fertilizantes y ácido nítrico. Las sales del ácido nítrico incluyen importantes compuestos como el nitrato de potasio (nitro o salitre empleado en la fabricación de pólvora) y el nitrato de amonio fertilizante. Los compuestos orgánicos de nitrógeno como la nitroglicerina y el trinitrotolueno son a menudo explosivos. La hidracina y sus derivados se usan como combustible en cohetes', style: {'background-image': "url('/producto.7.png')"}},
+      {title: 'Nitrogeno', content: 'La aplicación comercial más importante del nitrógeno diatómico es la obtención de amoníaco por el proceso de Haber. El amoníaco se emplea con posterioridad en la fabricación de fertilizantes y ácido nítrico. Las sales del ácido nítrico incluyen importantes compuestos como el nitrato de potasio (nitro o salitre empleado en la fabricación de pólvora) y el nitrato de amonio fertilizante. Los compuestos orgánicos de nitrógeno como la nitroglicerina y el trinitrotolueno son a menudo explosivos. La hidracina y sus derivados se usan como combustible en cohetes.', style: {'background-image': "url('/producto.7.png')"}},
 
 
       {title: 'Aire Seco', content: 'La aplicación comercial más importante del aire seco es en la acción de elevadores y destornilladores neumáticos, tornos dentales, armas de aire comprimido, equipos de mineria, arranques de motores, autos de aire comprimido y atracciones.', style: {'background-image': "url('/producto.8.png')"}},
@@ -97,7 +97,8 @@ deepOrange = #e64a19
   font-family "Archivo Black", sans-serif 
 
 .g-container
-  background-color beige
+  background-color #ebebed
+  border-top 2px solid #d2d2d5
   border-bottom 2px solid #d2d2d5
 
 .g-section-title
