@@ -16,6 +16,8 @@ const _98001e7e = () => import('/home/joseluis/Developments/gis/frontend/pages/e
 
 const _3398c5b8 = () => import('/home/joseluis/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
 
+const _63246dda = () => import('/home/joseluis/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
+
 const _60d9ca00 = () => import('/home/joseluis/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
 
 
@@ -74,6 +76,11 @@ export default new Router({
 			path: "/about",
 			component: _3398c5b8,
 			name: "about"
+		},
+		{
+			path: "/ente",
+			component: _63246dda,
+			name: "ente"
 		},
 		{
 			path: "/login",

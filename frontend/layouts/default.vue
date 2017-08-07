@@ -39,8 +39,8 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
         fixed: true
       },
       items: [
-        { icon: 'home', text: 'Index', to: '/'},
-        { icon: 'lightbulb_outline', text: 'Inspire', to: '/inspire' },
+        { icon: 'subtitles', text: 'Ente', to: '/ente'},
+        { icon: 'battery_alert', text: 'Inspire', to: '/inspire' },
         { icon: 'touch_app', text: 'Example', to: '/example' },
         { icon: 'backup', text: 'test', to: '/testgraphql' },
         { icon: 'lock', text: 'Login', to: '/login'}
@@ -52,18 +52,9 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
 
 <style lang="stylus">
 @import '../node_modules/vuetify/src/stylus/settings/_colors'
+
+/*primary: $teal.lighten-3*/
  
-$theme := {
-  primary: $teal.lighten-3
-  accent: $red.accent-2
-  secondary: $grey.lighten-1
-  info: $blue.lighten-1
-  warning: $amber.darken-2
-  error: $red.accent-4
-  success: $green.lighten-2
-}
- 
-@import '../node_modules/vuetify/src/stylus/main'
 
 #sandbox
   border 1px solid rgba(0, 0, 0, .1)

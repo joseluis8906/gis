@@ -4,7 +4,7 @@ v-app(light)
   a(name="inicio" style="display: hidden")
   v-navigation-drawer(temporary :floating="true" v-model="drawer" overflow enable-resize-watcher light class="hidden-md-and-up" style="z-index: 10001")
     v-list(dense)
-      v-list-tile(nuxt link href="/" @click.native.stop="drawer = !drawer")
+      v-list-tile(nuxt link href="/#inicio" @click.native.stop="drawer = !drawer")
         v-list-tile-action
           v-icon home
         v-list-tile-content
@@ -38,7 +38,7 @@ v-app(light)
     v-icon(dark class="hidden-sm-and-down") desktop_mac
     v-icon(dark class="hidden-md-and-up") phone_iphone
     v-spacer
-    v-btn(outline dark small nuxt link to="/") Login
+    v-btn(outline dark small nuxt link to="/login") Login
   v-toolbar(prominent v-bind:class="{ 'g-navbar-fixed': navFixed }")
     img(src="~assets/logo.gis.extended.png", class="img_icon")
     v-spacer

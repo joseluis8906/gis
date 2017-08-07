@@ -12,7 +12,7 @@ v-layout(align-center justify-center)
         v-layout(row wrap)
           v-flex(xs12 md6)
             span Scheme
-              v-text-field(label="Query" v-model="q" multi-line dark)
+              v-text-field( label="Query" v-model="q" multi-line dark )
           
           v-flex(xs12 md6)
             span Drawer
@@ -21,7 +21,11 @@ v-layout(align-center justify-center)
           
           v-flex(xs12 md6)
             span Footer
-            v-switch(label="Fixed" primary v-model="s1" value="false" true-value="false" false-value="true")
+            v-switch( label="Fixed" 
+                      primary v-model="s1" 
+                      value="false" 
+                      true-value="false" 
+                      false-value="true" )
             
       v-card-actions
         v-spacer
