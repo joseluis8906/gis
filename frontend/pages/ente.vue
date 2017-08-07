@@ -30,9 +30,8 @@ v-layout( align-center justify-center )
                       dark )
       v-card-actions
         v-spacer
-        v-btn( dark ) Cancel
-        v-btn( dark primary @click.native="recargar" ) Submit
-        
+        v-btn( dark ) Cancelar
+        v-btn( dark primary @click.native="recargar" ) Guardar
 </template>
 
 <script>

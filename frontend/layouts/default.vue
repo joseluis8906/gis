@@ -40,10 +40,11 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
       },
       items: [
         { icon: 'subtitles', text: 'Ente', to: '/ente'},
-        { icon: 'battery_alert', text: 'Inspire', to: '/inspire' },
-        { icon: 'touch_app', text: 'Example', to: '/example' },
-        { icon: 'backup', text: 'test', to: '/testgraphql' },
-        { icon: 'lock', text: 'Login', to: '/login'}
+        { icon: 'battery_alert', text: 'Envase', to: '/envase' },
+        { icon: 'settings', text: 'Produccion', to: '/produccion' },
+        { icon: 'touch_app', text: 'Remisión', to: '/remision' },
+        { icon: 'backup', text: 'Kardex', to: '/kardex' },
+        { icon: 'lock', text: 'Salir', to: '/logout'}
       ],
       title: 'Frontend'
     })

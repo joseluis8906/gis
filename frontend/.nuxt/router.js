@@ -10,15 +10,21 @@ const _05eb77e9 = () => import('/home/joseluis/Developments/gis/frontend/pages/i
 
 const _6257d06e = () => import('/home/joseluis/Developments/gis/frontend/pages/testgraphql.vue' /* webpackChunkName: "pages/testgraphql" */)
 
+const _13c6343a = () => import('/home/joseluis/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
+
 const _8dcdcb9e = () => import('/home/joseluis/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
 
 const _98001e7e = () => import('/home/joseluis/Developments/gis/frontend/pages/example.vue' /* webpackChunkName: "pages/example" */)
 
-const _3398c5b8 = () => import('/home/joseluis/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
-
 const _63246dda = () => import('/home/joseluis/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
 
+const _3398c5b8 = () => import('/home/joseluis/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
+
+const _5af8185f = () => import('/home/joseluis/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
+
 const _60d9ca00 = () => import('/home/joseluis/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
+
+const _1a5f5e06 = () => import('/home/joseluis/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
 
 
 
@@ -63,6 +69,11 @@ export default new Router({
 			name: "testgraphql"
 		},
 		{
+			path: "/produccion",
+			component: _13c6343a,
+			name: "produccion"
+		},
+		{
 			path: "/inspire",
 			component: _8dcdcb9e,
 			name: "inspire"
@@ -73,19 +84,29 @@ export default new Router({
 			name: "example"
 		},
 		{
-			path: "/about",
-			component: _3398c5b8,
-			name: "about"
-		},
-		{
 			path: "/ente",
 			component: _63246dda,
 			name: "ente"
 		},
 		{
+			path: "/about",
+			component: _3398c5b8,
+			name: "about"
+		},
+		{
+			path: "/envase",
+			component: _5af8185f,
+			name: "envase"
+		},
+		{
 			path: "/login",
 			component: _60d9ca00,
 			name: "login"
+		},
+		{
+			path: "/remision",
+			component: _1a5f5e06,
+			name: "remision"
 		}
   ]
 })

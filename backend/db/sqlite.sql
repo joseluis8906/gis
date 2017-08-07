@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS "Envase" (
   "NormaTecnicaFabricacion" TEXT,
   "Proveedor" TEXT,
   "FechaCompra" DATE,
-  "Garantia" TEXT,
+  "Garantia" DATE,
   "FechaFabricacion" DATE,
-  "PruebaHidrostatica" TEXT,
+  "PruebaHidrostatica" DATE,
   "EquipoAlquilado" TEXT,
   "FechaAlquiler" DATE,
   "Observaciones" TEXT
