@@ -40,10 +40,103 @@ const Post = Db.define('Post', {
 Person.hasMany(Post);
 Post.belongsTo(Person);
 
+
+//############# gis ################
+
+//Ente
+const Ente = Db.define('Ente', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  TipoDocumento: Sequelize.STRING,
+  NumeroDocumento: Sequelize.STRING,
+  Nombre: Sequelize.STRING,
+  Direccion: Sequelize.STRING,
+  Telefono: Sequelize.STRING,
+  Relacion: Sequelize.STRING
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
+//Envase
+const Envase = Db.define('Envase', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Estado: Sequelize.STRING,
+  Propietario: {type: Sequelize.INTEGER, references: {model: Ente, key: 'Id'}},
+  Material: Sequelize.STRING,
+  Capacidad: Sequelize.DECIMAL,
+  Numero: {type: Sequelize.STRING, unique:true},
+  NumeroInterno: {type: Sequelize.STRING, unique: true},
+  ClaseProducto: Sequelize.STRING,
+  Presion: Sequelize.DECIMAL,
+  AlturaConValvula: Sequelize.DECIMAL,
+  PesoConValvula: Sequelize.DECIMAL,
+  Valvula: Sequelize.STRING,
+  TipoValvula: Sequelize.STRING,
+  AcabadoColor: Sequelize.STRING,
+  NormaTecnicaFabricacion: Sequelize.STRING,
+  Proveedor: Sequelize.STRING,
+  FechaCompra: Sequelize.DATEONLY,
+  Garantia: Sequelize.DATEONLY,
+  FechaFabricacion: Sequelize.DATEONLY,
+  PruebaHidrostatica: Sequelize.DATEONLY,
+  EquipoAlquilado: Sequelize.STRING,
+  FechaAlquiler: Sequelize.DATEONLY,
+  Observaciones: Sequelize.STRING
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
+//produccion
+const Produccion = Db.define('Produccion', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Fecha: Sequelize.DATE,
+  Lote: Sequelize.STRING,
+  FechaFabricacion: Sequelize.DATE,
+  FechaVencimiento: Sequelize.DATE,
+  Cantidad: Sequelize.DECIMAL,
+  Producto: Sequelize.STRING,
+  Envase: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
+  PurezaFinal: Sequelize.DECIMAL,
+  PresionFinal: Sequelize.DECIMAL
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
+//remision
+const Remision = Db.define('Produccion', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Fecha: Sequelize.DATE,
+  Numero: Sequelize.INTEGER,
+  Sale: Sequelize.STRING,
+  Entra: Sequelize.STRING,
+  Cliente: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
+  Envase: Sequelize.INTEGER
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
+//open connection
 Db.authenticate().then(() => {
   console.log('Db conection success');
+  Db.query("PRAGMA foreign_keys=ON").spread( (Result, Metadata) => {
+    Db.query("PRAGMA foreign_keys").spread( (Result, Metadata) => {
+      console.log(Result);
+    });
+  });
 }).catch(Err => {
   console.log('Db conection failed');
 });
+
 
 export default Db;

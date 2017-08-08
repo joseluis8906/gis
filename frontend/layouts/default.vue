@@ -42,11 +42,11 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
         { icon: 'subtitles', text: 'Ente', to: '/ente'},
         { icon: 'battery_alert', text: 'Envase', to: '/envase' },
         { icon: 'settings', text: 'Produccion', to: '/produccion' },
-        { icon: 'touch_app', text: 'Remisión', to: '/remision' },
-        { icon: 'backup', text: 'Kardex', to: '/kardex' },
-        { icon: 'lock', text: 'Salir', to: '/logout'}
+        { icon: 'compare_arrows', text: 'Remisión', to: '/remision' },
+        { icon: 'assignment', text: 'Kardex', to: '/kardex' },
+        { icon: 'exit_to_app', text: 'Salir', to: '/'}
       ],
-      title: 'Frontend'
+      title: 'Administración GIS'
     })
   }
 </script>
@@ -54,8 +54,18 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
 <style lang="stylus">
 @import '../node_modules/vuetify/src/stylus/settings/_colors'
 
+$theme := {
+  primary: $teal.lighten-3
+  accent: $blue.accent-2
+  secondary: $grey.darken-3
+  info: $blue.base
+  warning: $amber.base
+  error: $red.base
+  success: $green.base
+}
 /*primary: $teal.lighten-3*/
  
+@import '~vuetify/src/stylus/main'
 
 #sandbox
   border 1px solid rgba(0, 0, 0, .1)

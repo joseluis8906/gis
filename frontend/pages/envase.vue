@@ -79,7 +79,7 @@ v-layout( align-center justify-center )
                             prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="FechaCompra" no-title scrollable actions )
+              v-date-picker( v-model="FechaCompra" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
@@ -100,7 +100,7 @@ v-layout( align-center justify-center )
                             prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="Garantia" no-title scrollable actions )
+              v-date-picker( v-model="Garantia" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
@@ -121,7 +121,7 @@ v-layout( align-center justify-center )
                             prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="FechaFabricacion" no-title scrollable actions )
+              v-date-picker( v-model="FechaFabricacion" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
@@ -142,7 +142,7 @@ v-layout( align-center justify-center )
                             prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="PruebaHidrostatica" no-title scrollable actions )
+              v-date-picker( v-model="PruebaHidrostatica" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
@@ -170,7 +170,7 @@ v-layout( align-center justify-center )
                             prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="FechaAlquiler" no-title scrollable actions )
+              v-date-picker( v-model="FechaAlquiler" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
@@ -194,6 +194,7 @@ export default {
     Propietario: '',
     Material: '',
     Capacidad: '',
+    ClaseProducto: '',
     Numero: '',
     NumeroInterno: '',
     Presion: '',
@@ -236,6 +237,12 @@ export default {
       {text: 'Si'},
       {text: 'No'}
     ],
+    
+    menu1: false,
+    menu2: false,
+    menu3: false,
+    menu4: false,
+    menu5: false,
     loading: 0,
     q: 0
   }),

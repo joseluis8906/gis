@@ -13,7 +13,6 @@ v-layout( align-center justify-center )
             p Remisión
             
           v-flex( xs12 )
-            
             v-menu( lazy
                     :close-on-content-click="false"
                     v-model="menu1"
@@ -29,7 +28,7 @@ v-layout( align-center justify-center )
                             prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="Fecha" no-title scrollable actions )
+              v-date-picker( v-model="Fecha" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel

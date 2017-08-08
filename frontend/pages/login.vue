@@ -7,7 +7,7 @@
           div(class="text-xs-center")
             img(src="~assets/logo.gis.png" alt="Vuetify.js")
             
-          h6(class="pt-4") Inicie Sessión
+          h6(class="pt-4 grey--text text--lighten-4") Inicie Sessión
           p(class="pb-4") Con su cuenta GIS
           
           v-text-field(label="Nombre de Usuario" id="UserName" class="pb-3")

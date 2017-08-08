@@ -8,23 +8,25 @@ Vue.use(Router)
 
 const _05eb77e9 = () => import('/home/joseluis/Developments/gis/frontend/pages/index.vue' /* webpackChunkName: "pages/index" */)
 
+const _63246dda = () => import('/home/joseluis/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
+
 const _6257d06e = () => import('/home/joseluis/Developments/gis/frontend/pages/testgraphql.vue' /* webpackChunkName: "pages/testgraphql" */)
 
 const _13c6343a = () => import('/home/joseluis/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
 
-const _8dcdcb9e = () => import('/home/joseluis/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
-
-const _98001e7e = () => import('/home/joseluis/Developments/gis/frontend/pages/example.vue' /* webpackChunkName: "pages/example" */)
-
-const _63246dda = () => import('/home/joseluis/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
-
-const _3398c5b8 = () => import('/home/joseluis/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
+const _758d0034 = () => import('/home/joseluis/Developments/gis/frontend/pages/kardex.vue' /* webpackChunkName: "pages/kardex" */)
 
 const _5af8185f = () => import('/home/joseluis/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
 
-const _60d9ca00 = () => import('/home/joseluis/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
+const _3398c5b8 = () => import('/home/joseluis/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
 
 const _1a5f5e06 = () => import('/home/joseluis/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
+
+const _98001e7e = () => import('/home/joseluis/Developments/gis/frontend/pages/example.vue' /* webpackChunkName: "pages/example" */)
+
+const _8dcdcb9e = () => import('/home/joseluis/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
+
+const _60d9ca00 = () => import('/home/joseluis/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
 
 
 
@@ -64,6 +66,11 @@ export default new Router({
 			name: "index"
 		},
 		{
+			path: "/ente",
+			component: _63246dda,
+			name: "ente"
+		},
+		{
 			path: "/testgraphql",
 			component: _6257d06e,
 			name: "testgraphql"
@@ -74,24 +81,9 @@ export default new Router({
 			name: "produccion"
 		},
 		{
-			path: "/inspire",
-			component: _8dcdcb9e,
-			name: "inspire"
-		},
-		{
-			path: "/example",
-			component: _98001e7e,
-			name: "example"
-		},
-		{
-			path: "/ente",
-			component: _63246dda,
-			name: "ente"
-		},
-		{
-			path: "/about",
-			component: _3398c5b8,
-			name: "about"
+			path: "/kardex",
+			component: _758d0034,
+			name: "kardex"
 		},
 		{
 			path: "/envase",
@@ -99,14 +91,29 @@ export default new Router({
 			name: "envase"
 		},
 		{
-			path: "/login",
-			component: _60d9ca00,
-			name: "login"
+			path: "/about",
+			component: _3398c5b8,
+			name: "about"
 		},
 		{
 			path: "/remision",
 			component: _1a5f5e06,
 			name: "remision"
+		},
+		{
+			path: "/example",
+			component: _98001e7e,
+			name: "example"
+		},
+		{
+			path: "/inspire",
+			component: _8dcdcb9e,
+			name: "inspire"
+		},
+		{
+			path: "/login",
+			component: _60d9ca00,
+			name: "login"
 		}
   ]
 })

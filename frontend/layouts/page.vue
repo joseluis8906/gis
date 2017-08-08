@@ -116,6 +116,22 @@ export default {
 </script>
 
 <style lang="stylus">
+
+@import '../node_modules/vuetify/src/stylus/settings/_colors'
+
+$theme := {
+  primary: $teal.lighten-3
+  accent: $blue.accent-2
+  secondary: $grey.darken-3
+  info: $blue.base
+  warning: $amber.base
+  error: $red.base
+  success: $green.base
+}
+/*primary: $teal.lighten-3*/
+ 
+@import '~vuetify/src/stylus/main'
+
 a
   margin none
   padding none

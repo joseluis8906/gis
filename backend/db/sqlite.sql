@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS "Post" (
 
 
 /*empresa*/
-PRAGMA foreign_key=ON;
+PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS "Ente" (
   "Id" INTEGER PRIMARY KEY,
   "TipoDocumento" TEXT NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS "Envase" (
   "Material" TEXT,
   "Capacidad" DECIMAL,
   "Numero" TEXT UNIQUE,
-  "NumeroInterno" UNIQUE,
+  "NumeroInterno" TEXT UNIQUE,
   "ClaseProducto" TEXT,
   "Presion" DECIMAL,
   "AlturaConValvula" DECIMAL,
