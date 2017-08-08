@@ -63,7 +63,7 @@ const Ente = Db.define('Ente', {
 const Envase = Db.define('Envase', {
   Id: {type: Sequelize.INTEGER, primaryKey: true},
   Estado: Sequelize.STRING,
-  Propietario: {type: Sequelize.INTEGER, references: {model: Ente, key: 'Id'}},
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: 'Id'}},
   Material: Sequelize.STRING,
   Capacidad: Sequelize.DECIMAL,
   Numero: {type: Sequelize.STRING, unique:true},
@@ -90,17 +90,20 @@ const Envase = Db.define('Envase', {
   freezeTableName: true
 });
 
+Ente.hasMany(Envase);
+Envase.belongsTo(Ente);
+
 
 //produccion
 const Produccion = Db.define('Produccion', {
   Id: {type: Sequelize.INTEGER, primaryKey: true},
   Fecha: Sequelize.DATE,
   Lote: Sequelize.STRING,
-  FechaFabricacion: Sequelize.DATE,
-  FechaVencimiento: Sequelize.DATE,
+  FechaFabricacion: Sequelize.DATEONLY,
+  FechaVencimiento: Sequelize.DATEONLY,
   Cantidad: Sequelize.DECIMAL,
   Producto: Sequelize.STRING,
-  Envase: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
+  EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
   PurezaFinal: Sequelize.DECIMAL,
   PresionFinal: Sequelize.DECIMAL
 },
@@ -117,8 +120,8 @@ const Remision = Db.define('Produccion', {
   Numero: Sequelize.INTEGER,
   Sale: Sequelize.STRING,
   Entra: Sequelize.STRING,
-  Cliente: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
-  Envase: Sequelize.INTEGER
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
+  EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}}
 },
 {
   timestamps: false,

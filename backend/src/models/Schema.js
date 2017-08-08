@@ -5,8 +5,6 @@ import { GraphQLObjectType,
   GraphQLList, 
   GraphQLSchema } from 'graphql';
   
-import GraphQLDate from 'graphql-date';
-  
 import Db from './Db.js';
 
 var Person = new GraphQLObjectType({
@@ -43,7 +41,7 @@ var Person = new GraphQLObjectType({
         resolve(Person) {
           return Person.getPosts();
         }
-      }      
+      }
     };
   }
 });
@@ -123,6 +121,12 @@ var Ente = new GraphQLObjectType({
         resolve(Ente) {
           return Ente.Relacion;
         }
+      },
+      Envases: {
+        type: new GraphQLList(Envase),
+        resolve(Ente) {
+          return Ente.getEnvases();
+        }
       }
     };
   }
@@ -147,10 +151,10 @@ var Envase = new GraphQLObjectType({
           return Envase.Estado;
         }
       },
-      Propietario: {
+      EnteId: {
         type: GraphQLInt,
         resolve(Envase) {
-          return Envase.Propietario;
+          return Envase.EnteId;
         }
       },
       Material: {
@@ -232,25 +236,25 @@ var Envase = new GraphQLObjectType({
         }
       },
       FechaCompra: {
-        type: GraphQLDate,
+        type: GraphQLString,
         resolve(Envase) {
           return Envase.FechaCompra;
         }
       },
       Garantia: {
-        type: GraphQLDate,
+        type: GraphQLString,
         resolve(Envase) {
           return Envase.Garantia;
         }
       },
       FechaFabricacion: {
-        type: GraphQLDate,
+        type: GraphQLString,
         resolve(Envase) {
           return Envase.FechaFabricacion;
         }
       },
       PruebaHidrostatica: {
-        type: GraphQLDate,
+        type: GraphQLString,
         resolve(Envase) {
           return Envase.PruebaHidrostatica;
         }
@@ -262,7 +266,7 @@ var Envase = new GraphQLObjectType({
         }
       },
       FechaAlquiler: {
-        type: GraphQLDate,
+        type: GraphQLString,
         resolve(Envase) {
           return Envase.FechaAlquiler;
         }
@@ -327,7 +331,7 @@ var Query = new GraphQLObjectType({
         args: {
           Id: {type: GraphQLInt},
           Estado: {type: GraphQLString},
-          Propietario: {type: GraphQLInt},
+          EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
@@ -341,12 +345,12 @@ var Query = new GraphQLObjectType({
           AcabadoColor: {type: GraphQLString},
           NormaTecnicaFabricacion: {type: GraphQLString},
           Proveedor: {type: GraphQLString},
-          FechaCompra: {type: GraphQLDate},
-          Garantia: {type: GraphQLDate},
-          FechaFabricacion: {type: GraphQLDate},
-          PruebaHidrostatica: {type: GraphQLDate},
+          FechaCompra: {type: GraphQLString},
+          Garantia: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
-          FechaAlquiler: {type: GraphQLDate},
+          FechaAlquiler: {type: GraphQLString},
           Observaciones: {type: GraphQLString}
         },
         resolve(root, args) {
@@ -428,7 +432,7 @@ var Mutation = new GraphQLObjectType({
         type: Envase,
         args: {
           Estado: {type: GraphQLString},
-          Propietario: {type: GraphQLInt},
+          EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
@@ -442,18 +446,18 @@ var Mutation = new GraphQLObjectType({
           AcabadoColor: {type: GraphQLString},
           NormaTecnicaFabricacion: {type: GraphQLString},
           Proveedor: {type: GraphQLString},
-          FechaCompra: {type: GraphQLDate},
-          Garantia: {type: GraphQLDate},
-          FechaFabricacion: {type: GraphQLDate},
-          PruebaHidrostatica: {type: GraphQLDate},
+          FechaCompra: {type: GraphQLString},
+          Garantia: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
-          FechaAlquiler: {type: GraphQLDate},
+          FechaAlquiler: {type: GraphQLString},
           Observaciones: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Envase.create({
             Estado: args.Estado,
-            Propietario: args.Propietario,
+            EnteId: args.EnteId,
             Material: args.Material,
             Capacidad: args.Capacidad,
             Numero: args.Numero,
@@ -481,7 +485,7 @@ var Mutation = new GraphQLObjectType({
         type: Envase,
         args: {
           Estado: {type: GraphQLString},
-          Propietario: {type: GraphQLInt},
+          EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
@@ -495,18 +499,18 @@ var Mutation = new GraphQLObjectType({
           AcabadoColor: {type: GraphQLString},
           NormaTecnicaFabricacion: {type: GraphQLString},
           Proveedor: {type: GraphQLString},
-          FechaCompra: {type: GraphQLDate},
-          Garantia: {type: GraphQLDate},
-          FechaFabricacion: {type: GraphQLDate},
-          PruebaHidrostatica: {type: GraphQLDate},
+          FechaCompra: {type: GraphQLString},
+          Garantia: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
-          FechaAlquiler: {type: GraphQLDate},
+          FechaAlquiler: {type: GraphQLString},
           Observaciones: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Envase.update({
             Estado: args.Estado,
-            Propietario: args.Propietario,
+            EnteId: args.EnteId,
             Material: args.Material,
             Capacidad: args.Capacidad,
             Numero: args.Numero,
