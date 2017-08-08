@@ -1,8 +1,11 @@
 import { GraphQLObjectType, 
   GraphQLInt, 
   GraphQLString, 
+  GraphQLFloat,
   GraphQLList, 
   GraphQLSchema } from 'graphql';
+  
+import GraphQLDate from 'graphql-date';
   
 import Db from './Db.js';
 
@@ -126,6 +129,155 @@ var Ente = new GraphQLObjectType({
 });
 
 
+//envase
+var Envase = new GraphQLObjectType({
+  name: "Envase",
+  description: "Object representation of Envase",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Envase) {
+          return Envase.Id;
+        }
+      },
+      Estado: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Estado;
+        }
+      },
+      Propietario: {
+        type: GraphQLInt,
+        resolve(Envase) {
+          return Envase.Propietario;
+        }
+      },
+      Material: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Material;
+        }
+      },
+      Capacidad: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Capacidad;
+        }
+      },
+      Numero: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Numero;
+        }
+      },
+      NumeroInterno: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.NumeroInterno;
+        }
+      },
+      ClaseProducto: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.ClaseProducto;
+        }
+      },
+      Presion: {
+        type: GraphQLFloat,
+        resolve(Envase) {
+          return Envase.Presion;
+        }
+      },
+      AlturaConValvula: {
+        type: GraphQLFloat,
+        resolve(Envase) {
+          return Envase.AlturaConValvula;
+        }
+      },
+      PesoConValvula: {
+        type: GraphQLFloat,
+        resolve(Envase) {
+          return Envase.PesoConValvula;
+        }
+      },
+      Valvula: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Valvula;
+        }
+      },
+      TipoValvula: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.TipoValvula;
+        }
+      },
+      AcabadoColor: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.AcabadoColor;
+        }
+      },
+      NormaTecnicaFabricacion: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.NormaTecnicaFabricacion;
+        }
+      },
+      Proveedor: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Proveedor;
+        }
+      },
+      FechaCompra: {
+        type: GraphQLDate,
+        resolve(Envase) {
+          return Envase.FechaCompra;
+        }
+      },
+      Garantia: {
+        type: GraphQLDate,
+        resolve(Envase) {
+          return Envase.Garantia;
+        }
+      },
+      FechaFabricacion: {
+        type: GraphQLDate,
+        resolve(Envase) {
+          return Envase.FechaFabricacion;
+        }
+      },
+      PruebaHidrostatica: {
+        type: GraphQLDate,
+        resolve(Envase) {
+          return Envase.PruebaHidrostatica;
+        }
+      },
+      EquipoAlquilado: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.EquipoAlquilado;
+        }
+      },
+      FechaAlquiler: {
+        type: GraphQLDate,
+        resolve(Envase) {
+          return Envase.FechaAlquiler;
+        }
+      },
+      Observaciones: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Observaciones;
+        }
+      }
+    }
+  }
+});
+
+
 //Query
 var Query = new GraphQLObjectType({
   name: "Query",
@@ -168,6 +320,37 @@ var Query = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.Ente.findAll({where: args});
+        }
+      },
+      Envases: {
+        type: new GraphQLList(Envase),
+        args: {
+          Id: {type: GraphQLInt},
+          Estado: {type: GraphQLString},
+          Propietario: {type: GraphQLInt},
+          Material: {type: GraphQLString},
+          Capacidad: {type: GraphQLFloat},
+          Numero: {type: GraphQLString},
+          NumeroInterno: {type: GraphQLString},
+          ClaseProducto: {type: GraphQLString},
+          Presion: {type: GraphQLFloat},
+          AlturaConValvula: {type: GraphQLFloat},
+          PesoConValvula: {type: GraphQLFloat},
+          Valvula: {type: GraphQLString},
+          TipoValvula: {type: GraphQLString},
+          AcabadoColor: {type: GraphQLString},
+          NormaTecnicaFabricacion: {type: GraphQLString},
+          Proveedor: {type: GraphQLString},
+          FechaCompra: {type: GraphQLDate},
+          Garantia: {type: GraphQLDate},
+          FechaFabricacion: {type: GraphQLDate},
+          PruebaHidrostatica: {type: GraphQLDate},
+          EquipoAlquilado: {type: GraphQLString},
+          FechaAlquiler: {type: GraphQLDate},
+          Observaciones: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Envase.findAll({where: args});
         }
       }
     };
@@ -237,6 +420,115 @@ var Mutation = new GraphQLObjectType({
           { where: {
               TipoDocumento: args.TipoDocumento,
               NumeroDocumento: args.NumeroDocumento
+            }
+          });
+        }
+      },
+      AddEnvase: {
+        type: Envase,
+        args: {
+          Estado: {type: GraphQLString},
+          Propietario: {type: GraphQLInt},
+          Material: {type: GraphQLString},
+          Capacidad: {type: GraphQLFloat},
+          Numero: {type: GraphQLString},
+          NumeroInterno: {type: GraphQLString},
+          ClaseProducto: {type: GraphQLString},
+          Presion: {type: GraphQLFloat},
+          AlturaConValvula: {type: GraphQLFloat},
+          PesoConValvula: {type: GraphQLFloat},
+          Valvula: {type: GraphQLString},
+          TipoValvula: {type: GraphQLString},
+          AcabadoColor: {type: GraphQLString},
+          NormaTecnicaFabricacion: {type: GraphQLString},
+          Proveedor: {type: GraphQLString},
+          FechaCompra: {type: GraphQLDate},
+          Garantia: {type: GraphQLDate},
+          FechaFabricacion: {type: GraphQLDate},
+          PruebaHidrostatica: {type: GraphQLDate},
+          EquipoAlquilado: {type: GraphQLString},
+          FechaAlquiler: {type: GraphQLDate},
+          Observaciones: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Envase.create({
+            Estado: args.Estado,
+            Propietario: args.Propietario,
+            Material: args.Material,
+            Capacidad: args.Capacidad,
+            Numero: args.Numero,
+            NumeroInterno: args.NumeroInterno,
+            ClaseProducto: args.ClaseProducto,
+            Presion: args.Presion,
+            AlturaConValvula: args.AlturaConValvula,
+            PesoConValvula: args.PesoConValvula,
+            Valvula: args.Valvula,
+            TipoValvula: args.TipoValvula,
+            AcabadoColor: args.AcabadoColor,
+            NormaTecnicaFabricacion: args.NormaTecnicaFabricacion,
+            Proveedor: args.Proveedor,
+            FechaCompra: args.FechaCompra,
+            Garantia: args.Garantia,
+            FechaFabricacion: args.FechaFabricacion,
+            PruebaHidrostatica: args.PruebaHidrostatica,
+            EquipoAlquilado: args.EquipoAlquilado,
+            FechaAlquiler: args.FechaAlquiler,
+            Observaciones: args.Observaciones
+          });
+        }
+      },
+      UpdateEnvase: {
+        type: Envase,
+        args: {
+          Estado: {type: GraphQLString},
+          Propietario: {type: GraphQLInt},
+          Material: {type: GraphQLString},
+          Capacidad: {type: GraphQLFloat},
+          Numero: {type: GraphQLString},
+          NumeroInterno: {type: GraphQLString},
+          ClaseProducto: {type: GraphQLString},
+          Presion: {type: GraphQLFloat},
+          AlturaConValvula: {type: GraphQLFloat},
+          PesoConValvula: {type: GraphQLFloat},
+          Valvula: {type: GraphQLString},
+          TipoValvula: {type: GraphQLString},
+          AcabadoColor: {type: GraphQLString},
+          NormaTecnicaFabricacion: {type: GraphQLString},
+          Proveedor: {type: GraphQLString},
+          FechaCompra: {type: GraphQLDate},
+          Garantia: {type: GraphQLDate},
+          FechaFabricacion: {type: GraphQLDate},
+          PruebaHidrostatica: {type: GraphQLDate},
+          EquipoAlquilado: {type: GraphQLString},
+          FechaAlquiler: {type: GraphQLDate},
+          Observaciones: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Envase.update({
+            Estado: args.Estado,
+            Propietario: args.Propietario,
+            Material: args.Material,
+            Capacidad: args.Capacidad,
+            Numero: args.Numero,
+            ClaseProducto: args.ClaseProducto,
+            Presion: args.Presion,
+            AlturaConValvula: args.AlturaConValvula,
+            PesoConValvula: args.PesoConValvula,
+            Valvula: args.Valvula,
+            TipoValvula: args.TipoValvula,
+            AcabadoColor: args.AcabadoColor,
+            NormaTecnicaFabricacion: args.NormaTecnicaFabricacion,
+            Proveedor: args.Proveedor,
+            FechaCompra: args.FechaCompra,
+            Garantia: args.Garantia,
+            FechaFabricacion: args.FechaFabricacion,
+            PruebaHidrostatica: args.PruebaHidrostatica,
+            EquipoAlquilado: args.EquipoAlquilado,
+            FechaAlquiler: args.FechaAlquiler,
+            Observaciones: args.Observaciones
+          },
+          { where: {
+              NumeroInterno: args.NumeroInterno
             }
           });
         }

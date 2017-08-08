@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS "Envase" (
   "Propietario" INTEGER DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "Material" TEXT,
   "Capacidad" DECIMAL,
-  "Numero" TEXT UNIQUE,
+  "Numero" TEXT,
   "NumeroInterno" TEXT UNIQUE,
   "ClaseProducto" TEXT,
   "Presion" DECIMAL,
