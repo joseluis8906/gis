@@ -10,7 +10,7 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
-            p Producción
+            p Información de Producción
             
           v-flex( xs12 )
             
@@ -26,13 +26,12 @@ v-layout( align-center justify-center )
               v-text-field( slot="activator"
                             label="Fecha"
                             v-model="Fecha"
-                            prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="Fecha" no-title scrollable actions )
+              v-date-picker( v-model="Fecha" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( primary dark @click.native="cancel()" ) Cancel
+                    v-btn( dark @click.native="cancel()" ) Cancel
                     v-btn( primary dark @click.native="save()" ) Save
             
             v-text-field( label="Lote" v-model="Lote" dark )
@@ -49,13 +48,12 @@ v-layout( align-center justify-center )
               v-text-field( slot="activator"
                             label="Fecha de Fabricacion"
                             v-model="FechaFabricacion"
-                            prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="FechaFabricacion" no-title scrollable actions )
+              v-date-picker( v-model="FechaFabricacion" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( primary dark @click.native="cancel()" ) Cancel
+                    v-btn( dark @click.native="cancel()" ) Cancel
                     v-btn( primary dark @click.native="save()" ) Save
             
             v-menu( lazy
@@ -70,31 +68,54 @@ v-layout( align-center justify-center )
               v-text-field( slot="activator"
                             label="Fecha de Vencimiento"
                             v-model="FechaVencimiento"
-                            prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="FechaVencimiento" no-title scrollable actions )
+              v-date-picker( v-model="FechaVencimiento" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( primary dark @click.native="cancel()" ) Cancel
+                    v-btn( dark @click.native="cancel()" ) Cancel
                     v-btn( primary dark @click.native="save()" ) Save
             
-            v-text-field( label="Cantidad" v-model="Cantidad" dark )
+            v-text-field( label="Cantidad (m³)" v-model="Cantidad" dark )
             
+            v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
             
+            v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
             
-            v-text-field( label="Pureza Final" v-model="PurezaFinal" dark )
+            h5(class="grey--text text--lighten-4") Descripción
             
-            v-text-field( label="Presion Final" v-model="PresionFinal" dark )
+            v-text-field( label="Producto" v-model="Producto" dark )
+            
+            v-select( v-bind:items="ItemsEnvases"
+                      v-model="EnvaseActual"
+                      label="Envase"
+                      item-text="NumeroInterno"
+                      item-value="Id"
+                      return-object
+                      autocomplete
+                      dark )
+            
+            v-btn(fab dark class="indigo mb-5" @click.native="agregar")
+              v-icon(dark) add
             
             v-data-table( v-bind:headers="headers"
-                          :items="items"
-                          hide-actions
-                          class="elevation-1" )
-            
-              template(slot="items" scope="props")
-                td {{ props.item.Envase }}
-                td(class="text-xs-right") {{ props.item.Capacidad }}
+                          v-bind:items="items"
+                          class="elevation-5" )
+              
+              template(slot="headers" scope="props")
+                tr
+                  th( v-for="header in props.headers"
+                      :key="header.text"
+                      :class="['column sortable',\
+                                pagination.descending ? 'desc' : 'asc', \
+                                header.value === pagination.sortBy ? 'active' : '', \
+                                header.align === 'center' ? 'text-xs-center' : 'text-xs-left']" 
+                      class="grey--text text--lighten-4"
+                      @click="changeSort(header.value)") {{ header.text }}
+              
+              template(slot="items" scope="props" light)
+                td {{ props.item.NumeroInterno }}
+                td(class="text-xs-right " style="border-left: 1px solid #333333") {{ props.item.Capacidad }}
             
       v-card-actions
         v-spacer
@@ -104,7 +125,8 @@ v-layout( align-center justify-center )
 </template>
 
 <script>
-import gql from 'graphql-tag';
+
+import ENVASES from '~/queries/Envases.gql'
 
 export default {
   data: () => ({
@@ -117,12 +139,18 @@ export default {
     PurezaFinal: '',
     PresionFinal: '',
     headers: [
-      { text: 'Envase', align: 'left', sortable: true,  value: 'Envase' },
-      { text: 'Capacidad (m3)', align: 'center', sortable: false,  value: 'Capacidad' }
+      { text: 'Envase', align: 'left', sortable: true,  value: 'NumeroInterno' },
+      { text: 'Capacidad (m³)', align: 'center', sortable: false,  value: 'Capacidad' }
     ],
-    items: [
-      {Envase: '029384', Capacidad: 12}
+    items: [],
+    pagination: {
+      sortBy: 'NumeroInterno'
+    },
+    ItemsEnvases: [
     ],
+    EnvaseActual: {},
+    Conjunto: new Set(),
+    ConjuntoTracer: 1,
     
     menu1: false,
     menu2: false,
@@ -131,25 +159,32 @@ export default {
     q: 0
   }),
   apollo: {
-    Posts: {
-      query: gql`
-      query OnePost($Id: Int!) {
-        Posts(PersonId: $Id) {
-          Title
-          Content 
-        }
-      }`,
-      variables() {
-        return {
-          Id: this.q==='' ? 0 : this.q,
-        }
-      },
-      loadingKey: 'loading'
+    Envases: {
+      query: ENVASES,
+      loadingKey: 'loading',
+      update (data) {
+        this.ItemsEnvases = data.Envases ? data.Envases : []
+      }
+    }
+  },
+  computed: {
+    items () {
+      return this.ConjuntoTracer && Array.from(this.Conjunto)
     }
   },
   methods: {
-    recargar() {
-      console.log("si");
+    changeSort (column) {
+      if (this.pagination.sortBy === column) {
+        this.pagination.descending = !this.pagination.descending
+      } else {
+        this.pagination.sortBy = column
+        this.pagination.descending = false
+      }
+    },
+    agregar () {
+      this.Conjunto.add(this.EnvaseActual)
+      this.ConjuntoTracer += 1
+      console.log(this.Conjunto)
       
     }
   }
@@ -158,7 +193,11 @@ export default {
 </script>
 
 <style lang="stylus">
-  .alert-especial
-    position absolute
+.alert-especial
+  position absolute
+
+
+table.table tbody tr:hover
+  color black
     
 </style>

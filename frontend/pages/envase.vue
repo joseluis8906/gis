@@ -37,7 +37,7 @@ v-layout( align-center justify-center )
             
             v-text-field( label="Material" v-model="Material" dark )
             
-            v-text-field( label="Capacidad (m^3)" v-model="Capacidad" dark )
+            v-text-field( label="Capacidad (m³)" v-model="Capacidad" dark )
             
             v-select( v-bind:items="ItemsClaseProducto"
                       v-model="ClaseProducto"
@@ -270,7 +270,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
+        //console.log(data)
         this.Estado = data.OneEnvase ? data.OneEnvase.Estado : ''
         this.EnteId = data.OneEnvase ? data.OneEnvase.EnteId : ''
         this.Propietario = 
@@ -302,7 +302,7 @@ export default {
       query: ENTES,
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
+        //console.log(data)
         this.ItemsPropietario = data.Entes
       }
     }
@@ -374,7 +374,7 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          console.log(Ente);
+          //console.log(Ente);
           var data = {OneEnvase: res.CreateEnvase}
           store.writeQuery({ 
             query: ONE_ENVASE, 
@@ -383,12 +383,12 @@ export default {
             },
             data: data
           })
-          console.log('actualizado')
+          //console.log('actualizado')
         }
       }).then( data => {        
-        console.log(data)
+        //console.log(data)
       }).catch( Err => {
-        console.log(Err)
+        //console.log(Err)
       })
     },
     Update () {
@@ -450,7 +450,7 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          console.log(Envase);
+          //console.log(Envase);
           var data = {OneEnvase: res.UpdateEnvase}
           store.writeQuery({ 
             query: ONE_ENVASE, 
@@ -459,12 +459,12 @@ export default {
             },
             data: data
           })
-          console.log('actualizado')
+          //console.log('actualizado')
         }
       }).then( data => {        
-        console.log(data)
+        //console.log(data)
       }).catch( Err => {
-        console.log(Err)
+        //console.log(Err)
       })
     },
     Reset () {
