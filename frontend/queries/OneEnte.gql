@@ -1,0 +1,11 @@
+query OneEnte($TipoDocumento: String!, $NumeroDocumento: String!) {
+  OneEnte(TipoDocumento: $TipoDocumento, NumeroDocumento: $NumeroDocumento) {
+    Id
+    TipoDocumento
+    NumeroDocumento
+    Nombre
+    Direccion
+    Telefono
+    Relacion 
+  }
+}

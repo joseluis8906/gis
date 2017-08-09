@@ -5,7 +5,8 @@ import VueApollo from 'vue-apollo';
 const apolloClient = new ApolloClient({
   networkInterface: createBatchingNetworkInterface({
     //uri: 'https://api.graph.cool/simple/v1/ciwce5xw82kh7017179gwzn7q',
-    uri: 'http://localhost:3000/graphql'
+    uri: 'http://localhost:3000/graphql',
+    dataIdFromObject: o => o.Id
   })
 });
 

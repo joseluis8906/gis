@@ -26,6 +26,13 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    extend (config) {
+      config.module.rules.push({
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
+      })
+    },
     vendor: [
       'apollo-client',
       'graphql-tag',
@@ -44,4 +51,5 @@ module.exports = {
     'swiper/dist/css/swiper.css',
     { src: '~assets/style/app.styl', lang: 'styl' }
   ]
+  
 }

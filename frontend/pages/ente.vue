@@ -15,27 +15,35 @@ v-layout( align-center justify-center )
             v-select( v-bind:items="ItemsDocumento"
                       v-model="TipoDocumento"
                       label="Tipo de Documento"
-                      class="input-group--focused"
                       item-value="text"
                       dark )
+
             v-text-field( label="Numero de Documento" v-model="NumeroDocumento" dark )
+            
             v-text-field( label="Nombre" v-model="Nombre" dark )
+
             v-text-field( label="Dirección" v-model="Direccion" dark )
-            v-text-field( label="Nombre" v-model="Nombre" dark )
+
+            v-text-field( label="Teléfono" v-model="Telefono" dark )
+
             v-select( v-bind:items="ItemsRelacion"
                       v-model="Relacion"
                       label="Relacion"
-                      class="input-group--focused"
                       item-value="text"
                       dark )
+            
       v-card-actions
         v-spacer
-        v-btn( dark ) Cancelar
-        v-btn( dark primary @click.native="recargar" ) Guardar
+        v-btn( dark @click.native="Reset" ) Cancelar
+        v-btn( dark primary @click.native="CreateOrUpdate" ) Guardar
 </template>
 
 <script>
-import gql from 'graphql-tag';
+
+import ONE_ENTE from '~/queries/OneEnte.gql'
+import CREATE_ENTE from '~/queries/CreateEnte.gql'
+import UPDATE_ENTE from '~/queries/UpdateEnte.gql'
+
 
 export default {
   data: () => ({
@@ -53,33 +61,132 @@ export default {
       {text: 'Propia'},
       {text: 'Cliente'}
     ],
+    
     loading: 0,
-    q: 1
+    update: false,
+    UpdateDb: false
   }),
   apollo: {
-    Posts: {
-      query: gql`
-      query OnePost($Id: Int!) {
-        Posts(PersonId: $Id) {
-          Title
-          Content 
-        }
-      }`,
-      variables() {
+    OneEnte: {
+      query: ONE_ENTE,
+      variables () {
         return {
-          Id: this.q==='' ? 0 : this.q,
+          TipoDocumento: this.TipoDocumento,
+          NumeroDocumento: this.NumeroDocumento
         }
       },
-      loadingKey: 'loading'
+      loadingKey: 'loading',
+      update (data) {
+        this.Nombre = data.OneEnte ? data.OneEnte.Nombre : ''
+        this.Direccion = data.OneEnte ? data.OneEnte.Direccion : ''
+        this.Telefono = data.OneEnte ? data.OneEnte.Telefono : ''
+        this.Relacion = data.OneEnte ? data.OneEnte.Relacion : ''
+        
+        this.update = data.OneEnte ? true : false
+      }
     }
   },
   methods: {
-    recargar() {
-      console.log("si");
+    CreateOrUpdate () {
+      if (this.update) {
+        this.Update();
+      }else{
+        this.Create();
+      }
+    },
+    Create () {
+      const Ente = {
+        TipoDocumento: this.TipoDocumento,
+        NumeroDocumento: this.NumeroDocumento,
+        Nombre: this.Nombre,
+        Direccion: this.Direccion,
+        Telefono: this.Telefono,
+        Relacion: this.Relacion
+      };
       
+      this.Reset ();
+      
+      this.$apollo.mutate ({
+        mutation: CREATE_ENTE,
+        variables: {
+          TipoDocumento: Ente.TipoDocumento,
+          NumeroDocumento: Ente.NumeroDocumento,
+          Nombre: Ente.Nombre,
+          Direccion: Ente.Direccion,
+          Telefono: Ente.Telefono,
+          Relacion: Ente.Relacion
+      },
+      loadingKey: 'loading',
+      update: (store, { data: res }) => {
+        console.log(Ente);
+        var data = {OneEnte: res.CreateEnte}
+        store.writeQuery({ 
+          query: ONE_ENTE, 
+          variables: {
+            TipoDocumento: Ente.TipoDocumento,
+            NumeroDocumento: Ente.NumeroDocumento
+          },
+          data: data
+        })
+      },
+      }).then( data => {        
+        console.log(data)
+      }).catch( Err => {
+        console.log(Err)
+      })
+    },
+    Update () {
+      const Ente = {
+        TipoDocumento: this.TipoDocumento,
+        NumeroDocumento: this.NumeroDocumento,
+        Nombre: this.Nombre,
+        Direccion: this.Direccion,
+        Telefono: this.Telefono,
+        Relacion: this.Relacion
+      };
+      
+      this.Reset ();
+      
+      this.$apollo.mutate ({
+        mutation: UPDATE_ENTE,
+        variables: {
+          TipoDocumento: Ente.TipoDocumento,
+          NumeroDocumento: Ente.NumeroDocumento,
+          Nombre: Ente.Nombre,
+          Direccion: Ente.Direccion,
+          Telefono: Ente.Telefono,
+          Relacion: Ente.Relacion
+      },
+      loadingKey: 'loading',
+      update: (store, { data: res }) => {
+        console.log(Ente);
+        var data = {OneEnte: res.UpdateEnte}
+        store.writeQuery({ 
+          query: ONE_ENTE, 
+          variables: {
+            TipoDocumento: Ente.TipoDocumento,
+            NumeroDocumento: Ente.NumeroDocumento
+          },
+          data: data
+        })
+      },
+      }).then( data => {        
+        console.log(data)
+      }).catch( Err => {
+        console.log(Err)
+      })
+    },
+    Reset () {
+      this.TipoDocumento = ''
+      this.NumeroDocumento = ''
+      this.Nombre = ''
+      this.Direccion = ''
+      this.Telefono = ''
+      this.Relacion = ''
     }
   }
 };
+
 
 </script>
 

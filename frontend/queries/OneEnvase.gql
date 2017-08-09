@@ -1,0 +1,37 @@
+query OneEnvase ($NumeroInterno: String!) {
+  OneEnvase(NumeroInterno: $NumeroInterno) {
+    Id
+    Estado
+    EnteId
+    Material
+    Capacidad
+    ClaseProducto
+    Numero
+    NumeroInterno
+    Presion
+    AlturaConValvula
+    PesoConValvula
+    Valvula
+    TipoValvula
+    AcabadoColor
+    NormaTecnicaFabricacion
+    Proveedor
+    FechaCompra
+    Garantia
+    FechaFabricacion
+    PruebaHidrostatica
+    EquipoAlquilado
+    FechaAlquiler
+    Observaciones
+    Propietario {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Direccion
+      Telefono
+    }
+  }
+}
+
+

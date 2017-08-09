@@ -276,6 +276,12 @@ var Envase = new GraphQLObjectType({
         resolve(Envase) {
           return Envase.Observaciones;
         }
+      },
+      Propietario: {
+        type: Ente,
+        resolve(Envase) {
+          return Envase.getEnte();
+        }
       }
     }
   }
@@ -288,6 +294,13 @@ var Query = new GraphQLObjectType({
   description: "Object representation of Query",
   fields: () => {
     return {
+      Hello: {
+        type: GraphQLString,
+        args: {},
+        resolve(root, args) {
+          return "world";
+        }
+      },
       People: {
         type: new GraphQLList(Person),
         args: {
@@ -326,6 +339,34 @@ var Query = new GraphQLObjectType({
           return Db.models.Ente.findAll({where: args});
         }
       },
+      EntesByNombre: {
+        type: new GraphQLList(Ente),
+        args: {
+          Nombre: {type: GraphQLString},
+        },
+        resolve(root, args) {
+          return Db.models.Ente.findAll({
+            where: {
+              Nombre: {$like: ("%"+args.Nombre+"%")}
+            }
+          });
+        }
+      },      
+      OneEnte: {
+        type: Ente,
+        args: {
+          Id: {type: GraphQLInt},
+          TipoDocumento: {type: GraphQLString},
+          NumeroDocumento: {type: GraphQLString},
+          Nombre: {type: GraphQLString},
+          Direccion: {type: GraphQLString},
+          Telefono: {type: GraphQLString},
+          Relacion: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Ente.findOne({where: args});
+        }
+      },
       Envases: {
         type: new GraphQLList(Envase),
         args: {
@@ -356,6 +397,39 @@ var Query = new GraphQLObjectType({
         resolve(root, args) {
           return Db.models.Envase.findAll({where: args});
         }
+      },
+      OneEnvase: {
+        type: Envase,
+        args: {
+          Id: {type: GraphQLInt},
+          Estado: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          Material: {type: GraphQLString},
+          Capacidad: {type: GraphQLFloat},
+          Numero: {type: GraphQLString},
+          NumeroInterno: {type: GraphQLString},
+          ClaseProducto: {type: GraphQLString},
+          Presion: {type: GraphQLFloat},
+          AlturaConValvula: {type: GraphQLFloat},
+          PesoConValvula: {type: GraphQLFloat},
+          Valvula: {type: GraphQLString},
+          TipoValvula: {type: GraphQLString},
+          AcabadoColor: {type: GraphQLString},
+          NormaTecnicaFabricacion: {type: GraphQLString},
+          Proveedor: {type: GraphQLString},
+          FechaCompra: {type: GraphQLString},
+          Garantia: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          PruebaHidrostatica: {type: GraphQLString},
+          EquipoAlquilado: {type: GraphQLString},
+          FechaAlquiler: {type: GraphQLString},
+          Observaciones: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Envase.findOne({where: args}).then(R => {
+            return R;
+          });
+        }
       }
     };
   }
@@ -383,7 +457,7 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
-      AddEnte: {
+      CreateEnte: {
         type: Ente,
         args: {
           TipoDocumento: {type: GraphQLString},
@@ -415,20 +489,24 @@ var Mutation = new GraphQLObjectType({
           Relacion: {type: GraphQLString}
         },
         resolve(_, args) {
-          return Db.models.Ente.update({
-            Nombre: args.Nombre,
-            Direccion: args.Direccion,
-            Telefono: args.Telefono,
-            Relacion: args.Relacion
-          },
-          { where: {
+          return Db.models.Ente.findOne({where: {
               TipoDocumento: args.TipoDocumento,
               NumeroDocumento: args.NumeroDocumento
-            }
+          }}).then( R => {
+            R.TipoDocumento = args.TipoDocumento;
+            R.NumeroDocumento = args.NumeroDocumento;
+            R.Nombre = args.Nombre;
+            R.Direccion = args.Direccion;
+            R.Telefono = args.Telefono;
+            R.Relacion = args.Relacion;
+
+            R.save();
+
+            return R;
           });
         }
       },
-      AddEnvase: {
+      CreateEnvase: {
         type: Envase,
         args: {
           Estado: {type: GraphQLString},
@@ -478,6 +556,9 @@ var Mutation = new GraphQLObjectType({
             EquipoAlquilado: args.EquipoAlquilado,
             FechaAlquiler: args.FechaAlquiler,
             Observaciones: args.Observaciones
+          }).then(R => {
+            R.Propietario = R.getEnte();
+            return R;
           });
         }
       },
@@ -508,32 +589,37 @@ var Mutation = new GraphQLObjectType({
           Observaciones: {type: GraphQLString}
         },
         resolve(_, args) {
-          return Db.models.Envase.update({
-            Estado: args.Estado,
-            EnteId: args.EnteId,
-            Material: args.Material,
-            Capacidad: args.Capacidad,
-            Numero: args.Numero,
-            ClaseProducto: args.ClaseProducto,
-            Presion: args.Presion,
-            AlturaConValvula: args.AlturaConValvula,
-            PesoConValvula: args.PesoConValvula,
-            Valvula: args.Valvula,
-            TipoValvula: args.TipoValvula,
-            AcabadoColor: args.AcabadoColor,
-            NormaTecnicaFabricacion: args.NormaTecnicaFabricacion,
-            Proveedor: args.Proveedor,
-            FechaCompra: args.FechaCompra,
-            Garantia: args.Garantia,
-            FechaFabricacion: args.FechaFabricacion,
-            PruebaHidrostatica: args.PruebaHidrostatica,
-            EquipoAlquilado: args.EquipoAlquilado,
-            FechaAlquiler: args.FechaAlquiler,
-            Observaciones: args.Observaciones
-          },
-          { where: {
-              NumeroInterno: args.NumeroInterno
-            }
+          return Db.models.Envase.findOne({where: {
+                NumeroInterno: args.NumeroInterno
+              }
+            }).then(R => {
+              R.Estado = args.Estado;
+              R.EnteId = args.EnteId;
+              R.Material = args.Material;
+              R.Capacidad = args.Capacidad;
+              R.Numero = args.Numero;
+              R.ClaseProducto = args.ClaseProducto;
+              R.Presion = args.Presion;
+              R.AlturaConValvula = args.AlturaConValvula;
+              R.PesoConValvula = args.PesoConValvula;
+              R.Valvula = args.Valvula;
+              R.TipoValvula = args.TipoValvula;
+              R.AcabadoColor = args.AcabadoColor;
+              R.NormaTecnicaFabricacion = args.NormaTecnicaFabricacion;
+              R.Proveedor = args.Proveedor;
+              R.FechaCompra = args.FechaCompra;
+              R.Garantia = args.Garantia;
+              R.FechaFabricacion = args.FechaFabricacion;
+              R.PruebaHidrostatica = args.PruebaHidrostatica;
+              R.EquipoAlquilado = args.EquipoAlquilado;
+              R.FechaAlquiler = args.FechaAlquiler;
+              R.Observaciones = args.Observaciones;
+              
+              R.save();
+              
+              R.Propietario = R.getEnte();
+              
+              return R;
           });
         }
       }

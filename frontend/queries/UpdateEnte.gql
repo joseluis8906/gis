@@ -1,0 +1,25 @@
+mutation UpdateEnte ( 
+  $TipoDocumento: String!, 
+  $NumeroDocumento: String!,
+  $Nombre: String!,
+  $Direccion: String!,
+  $Telefono: String!,
+  $Relacion: String!
+) {
+  UpdateEnte (
+    TipoDocumento: $TipoDocumento,
+    NumeroDocumento: $NumeroDocumento,
+    Nombre: $Nombre,
+    Direccion: $Direccion,
+    Telefono: $Telefono,
+    Relacion: $Relacion
+  ){
+    Id
+    TipoDocumento
+    NumeroDocumento
+    Nombre
+    Direccion
+    Telefono
+    Relacion
+  }
+}
