@@ -73,7 +73,8 @@ CREATE TABLE IF NOT EXISTS "Produccion" (
   "Producto" TEXT,
   "EnvaseId" INTEGER DEFAULT NULL REFERENCES "Envase"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "PurezaFinal" DECIMAL,
-  "PresionFinal" DECIMAL
+  "PresionFinal" DECIMAL,
+  UNIQUE(Fecha, Lote, EnvaseId)
 );
 
 

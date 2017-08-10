@@ -36,6 +36,14 @@ v-layout( align-center justify-center )
             
             v-text-field( label="Lote" v-model="Lote" dark )
             
+            v-select( v-bind:items="ItemsClaseProducto"
+                      v-model="Producto"
+                      label="Producto"
+                      item-text="text"
+                      item-value="text"
+                      autocomplete
+                      dark )
+            
             v-menu( lazy
                     :close-on-content-click="false"
                     v-model="menu2"
@@ -76,15 +84,11 @@ v-layout( align-center justify-center )
                     v-btn( dark @click.native="cancel()" ) Cancel
                     v-btn( primary dark @click.native="save()" ) Save
             
-            v-text-field( label="Cantidad (m³)" v-model="Cantidad" dark )
-            
             v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
             
             v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
             
             h5(class="grey--text text--lighten-4") Descripción
-            
-            v-text-field( label="Producto" v-model="Producto" dark )
             
             v-select( v-bind:items="ItemsEnvases"
                       v-model="EnvaseActual"
@@ -93,40 +97,42 @@ v-layout( align-center justify-center )
                       item-value="Id"
                       return-object
                       autocomplete
+                      :hint="`Capacidad: ${EnvaseActual.Capacidad} m³`"
+                      persistent-hint
                       dark )
+            
+            v-text-field( label="Cantidad (m³)" v-model="EnvaseActual.Cantidad" dark )
             
             v-btn(fab dark class="indigo mb-5" @click.native="agregar")
               v-icon(dark) add
             
             v-data-table( v-bind:headers="headers"
                           v-bind:items="items"
-                          class="elevation-5" )
+                          class="elevation-5 grey lighten-1 grey--text text--darken-4" )
               
-              template(slot="headers" scope="props")
-                tr
-                  th( v-for="header in props.headers"
-                      :key="header.text"
-                      :class="['column sortable',\
-                                pagination.descending ? 'desc' : 'asc', \
-                                header.value === pagination.sortBy ? 'active' : '', \
-                                header.align === 'center' ? 'text-xs-center' : 'text-xs-left']" 
-                      class="grey--text text--lighten-4"
-                      @click="changeSort(header.value)") {{ header.text }}
-              
-              template(slot="items" scope="props" light)
+              template(slot="items" scope="props")
                 td {{ props.item.NumeroInterno }}
-                td(class="text-xs-right " style="border-left: 1px solid #333333") {{ props.item.Capacidad }}
-            
-      v-card-actions
-        v-spacer
-        v-btn( dark ) Cancelar
-        v-btn( dark primary @click.native="recargar" ) Guardar
+                td( class="text-xs-right " 
+                    style="border-left: 1px solid #999999" ) {{ props.item.Capacidad }}
+                td( class="text-xs-right " 
+                    style="border-left: 1px solid #999999"
+                    ) {{ props.item.Cantidad }}
+                td(style="width:24px; border-left: 1px solid #999999")
+                  v-btn( fab
+                         dark
+                         small
+                         error
+                         style="width: 24px; height:24px"
+                         @click.native="eliminar(props.item)")
+                    v-icon(dark) remove
         
 </template>
 
 <script>
 
 import ENVASES from '~/queries/Envases.gql'
+import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql'
+import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql'
 
 export default {
   data: () => ({
@@ -134,13 +140,14 @@ export default {
     Lote: '',
     FechaFabricacion: '',
     FechaVencimiento: '',
-    Cantidad: '',
     Producto: '',
     PurezaFinal: '',
     PresionFinal: '',
     headers: [
       { text: 'Envase', align: 'left', sortable: true,  value: 'NumeroInterno' },
-      { text: 'Capacidad (m³)', align: 'center', sortable: false,  value: 'Capacidad' }
+      { text: 'Capacidad (m³)', align: 'center', sortable: false,  value: 'Capacidad' },
+      { text: 'Cantidad (m³)', align: 'center', sortable: false,  value: 'Cantidad' },
+      { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
     ],
     items: [],
     pagination: {
@@ -148,44 +155,137 @@ export default {
     },
     ItemsEnvases: [
     ],
-    EnvaseActual: {},
+    ItemsClaseProducto: [
+      {text: 'Oxígeno Medicinal'},
+      {text: 'Oxígeno Industrial'},
+      {text: 'Argón'},
+      {text: 'Acetileno'},
+      {text: 'Dióxido de Carbóno'},
+      {text: 'Helio'},
+      {text: 'Nitrógeno'},
+      {text: 'Aire Seco'}
+    ],
+    EnvaseActual: {Cantidad: '', Capacidad: ''},
     Conjunto: new Set(),
     ConjuntoTracer: 1,
     
     menu1: false,
     menu2: false,
     menu3: false,
-    loading: 0,
-    q: 0
+    loading: 0
   }),
   apollo: {
     Envases: {
       query: ENVASES,
       loadingKey: 'loading',
       update (data) {
-        this.ItemsEnvases = data.Envases ? data.Envases : []
+        if (data.Envases) {
+          this.ItemsEnvases = []
+          for (let i=0; i<data.Envases.length; i++) {
+            var tmp = {}
+            tmp.Id = data.Envases[i].Id
+            tmp.NumeroInterno = data.Envases[i].NumeroInterno
+            tmp.Capacidad = data.Envases[i].Capacidad
+            tmp.Cantidad = ''
+            this.ItemsEnvases.push(tmp)
+          }
+        }
       }
     }
   },
-  computed: {
-    items () {
-      return this.ConjuntoTracer && Array.from(this.Conjunto)
+  watch: {
+    EnvaseActual: {
+      handler: function () {
+        this.controlCantidad ()
+      },
+      deep: true
     }
   },
   methods: {
-    changeSort (column) {
-      if (this.pagination.sortBy === column) {
-        this.pagination.descending = !this.pagination.descending
-      } else {
-        this.pagination.sortBy = column
-        this.pagination.descending = false
+    agregar () {
+      if (this.EnvaseActual.Cantidad !== '' && this.EnvaseActual.Capacidad !== '') {
+        if (this.EnvaseActual.Capacidad >= Number(this.EnvaseActual.Cantidad)) {
+          if (!this.Conjunto.has(this.EnvaseActual)) {
+            this.Conjunto.add(this.EnvaseActual)
+            this.items = Array.from(this.Conjunto)
+            
+            const Produccion = {
+              Fecha: this.Fecha,
+              Lote: this.Lote,
+              FechaFabricacion: this.FechaFabricacion,
+              FechaVencimiento: this.FechaVencimiento,
+              Cantidad: this.EnvaseActual.Cantidad,
+              Producto: this.Producto,
+              EnvaseId: this.EnvaseActual.Id,
+              PurezaFinal: this.PurezaFinal,
+              PresionFinal: this.PresionFinal,
+            }
+            
+            this.$apollo.mutate ({
+              mutation: CREATE_PRODUCCION,
+              variables: {
+                Fecha: Produccion.Fecha,
+                Lote: Produccion.Lote,
+                FechaFabricacion: Produccion.FechaFabricacion,
+                FechaVencimiento: Produccion.FechaVencimiento,
+                Cantidad: Produccion.Cantidad,
+                Producto: Produccion.Producto,
+                EnvaseId: Produccion.EnvaseId,
+                PurezaFinal: Produccion.PurezaFinal,
+                PresionFinal: Produccion.PresionFinal
+              },
+              loadingKey: 'loading',
+              update (data) {
+                console.log (data)
+              }
+            })
+            
+            this.EnvaseActual = {Cantidad: '', Capacidad: ''}
+          }
+        }
       }
     },
-    agregar () {
-      this.Conjunto.add(this.EnvaseActual)
-      this.ConjuntoTracer += 1
-      console.log(this.Conjunto)
+    controlCantidad () {
+      if (Number(this.EnvaseActual.Cantidad) >= this.EnvaseActual.Capacidad) {
+        this.EnvaseActual.Cantidad = this.EnvaseActual.Capacidad
+      }
+    },
+    eliminar (item) {
+      this.Conjunto.delete(item)
+      this.items = Array.from(this.Conjunto)
       
+      const Produccion = {
+        Fecha: this.Fecha,
+        Lote: this.Lote,
+        FechaFabricacion: this.FechaFabricacion,
+        FechaVencimiento: this.FechaVencimiento,
+        Cantidad: item.Cantidad,
+        Producto: this.Producto,
+        EnvaseId: item.Id,
+        PurezaFinal: this.PurezaFinal,
+        PresionFinal: this.PresionFinal,
+      }
+      
+      this.$apollo.mutate ({
+        mutation: DELETE_PRODUCCION,
+        variables: {
+          Fecha: Produccion.Fecha,
+          Lote: Produccion.Lote,
+          FechaFabricacion: Produccion.FechaFabricacion,
+          FechaVencimiento: Produccion.FechaVencimiento,
+          Cantidad: Produccion.Cantidad,
+          Producto: Produccion.Producto,
+          EnvaseId: Produccion.EnvaseId,
+          PurezaFinal: Produccion.PurezaFinal,
+          PresionFinal: Produccion.PresionFinal
+        },
+        loadingKey: 'loading',
+        update (data) {
+          console.log (data)
+        }
+      })
+      
+      this.EnvaseActual = {Cantidad: '', Capacidad: ''}
     }
   }
 };
@@ -195,9 +295,4 @@ export default {
 <style lang="stylus">
 .alert-especial
   position absolute
-
-
-table.table tbody tr:hover
-  color black
-    
 </style>

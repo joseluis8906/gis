@@ -97,7 +97,7 @@ Envase.belongsTo(Ente);
 //produccion
 const Produccion = Db.define('Produccion', {
   Id: {type: Sequelize.INTEGER, primaryKey: true},
-  Fecha: Sequelize.DATE,
+  Fecha: Sequelize.DATEONLY,
   Lote: Sequelize.STRING,
   FechaFabricacion: Sequelize.DATEONLY,
   FechaVencimiento: Sequelize.DATEONLY,
@@ -112,9 +112,12 @@ const Produccion = Db.define('Produccion', {
   freezeTableName: true
 });
 
+Envase.hasMany(Produccion);
+Produccion.belongsTo(Envase);
+
 
 //remision
-const Remision = Db.define('Produccion', {
+const Remision = Db.define('Remision', {
   Id: {type: Sequelize.INTEGER, primaryKey: true},
   Fecha: Sequelize.DATE,
   Numero: Sequelize.INTEGER,

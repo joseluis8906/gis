@@ -195,6 +195,7 @@ import ONE_ENVASE from '~/queries/OneEnvase.gql'
 import CREATE_ENVASE from '~/queries/CreateEnvase.gql'
 import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
 import ENTES from '~/queries/Entes.gql'
+import ENVASES from '~/queries/Envases.gql'
 
 export default {
   data: () => ({
@@ -383,7 +384,26 @@ export default {
             },
             data: data
           })
-          //console.log('actualizado')
+          
+          try{
+          
+            data = store.readQuery({
+              query: ENVASES
+            })
+          
+            data.Envases.push(res.CreateEnvase)
+          
+            var filtered = new Set(data.Envases)
+            data.Envases = Array.from(filtered)
+          
+            store.writeQuery({
+              query: ENVASES,
+              data: data
+            })
+          } catch (Err) {
+          
+            console.log ('Error controlado: '+ Err)
+          }
         }
       }).then( data => {        
         //console.log(data)
@@ -450,7 +470,7 @@ export default {
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
-          //console.log(Envase);
+          //console.log(res);
           var data = {OneEnvase: res.UpdateEnvase}
           store.writeQuery({ 
             query: ONE_ENVASE, 
@@ -459,7 +479,29 @@ export default {
             },
             data: data
           })
-          //console.log('actualizado')
+          
+          try {
+          
+            data = store.readQuery({
+              query: ENVASES
+            })
+          
+            console.log(data)
+          
+            data.Envases.push(res.UpdateEnvase)
+          
+            var filtered = new Set(data.Envases)
+            data.Envases = Array.from(filtered)
+          
+            store.writeQuery({
+              query: ENVASES,
+              data: data
+            })
+          } catch (Err) {
+          
+            console.log ("Error controlado: "+Err)
+          }
+          
         }
       }).then( data => {        
         //console.log(data)
@@ -501,7 +543,9 @@ export default {
 </script>
 
 <style lang="stylus">
-  .alert-especial
-    position absolute
-    
+.alert-especial
+  position absolute
+
+.application--dark .btn.btn--icon
+  color red
 </style>

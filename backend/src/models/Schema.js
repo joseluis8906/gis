@@ -288,6 +288,76 @@ var Envase = new GraphQLObjectType({
 });
 
 
+var Produccion = new GraphQLObjectType({
+  name: "Produccion",
+  description: "Object representation of Produccion",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Produccion) {
+          return Produccion.Id;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.Fecha;
+        }
+      },
+      Lote: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.Lote;
+        }
+      },
+      FechaFabricacion: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.FechaFabricacion;
+        }
+      },
+      FechaVencimiento: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.FechaVencimiento;
+        }
+      },
+      Cantidad: {
+        type: GraphQLFloat,
+        resolve(Produccion) {
+          return Produccion.Cantidad;
+        }
+      },
+      Producto: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.Producto;
+        }
+      },
+      EnvaseId: {
+        type: GraphQLInt,
+        resolve(Produccion) {
+          return Produccion.EnvaseId;
+        }
+      },
+      PurezaFinal: {
+        type: GraphQLFloat,
+        resolve(Produccion) {
+          return Produccion.PurezaFinal;
+        }
+      },
+      PresionFinal: {
+        type: GraphQLFloat,
+        resolve(Produccion) {
+          return Produccion.PresionFinal;
+        }
+      }
+    }
+  }
+});
+
+
 //Query
 var Query = new GraphQLObjectType({
   name: "Query",
@@ -429,6 +499,41 @@ var Query = new GraphQLObjectType({
           return Db.models.Envase.findOne({where: args}).then(R => {
             return R;
           });
+        }
+      },
+      Produccions: {
+        type: Produccion,
+        args: {
+          Id: {type: GraphQLInt},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          Producto: {type: GraphQLString},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat}
+        },
+        resolve(root, args) {
+          return Db.models.Produccion.findAll({where: args});
+        }
+      },
+      OneProduccion: {
+        type: Produccion,
+        args: {
+          Id: {type: GraphQLInt},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          Producto: {type: GraphQLString},
+          EnvaseId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat}
+        },
+        resolve(root, args) {
+          return Db.models.Produccion.findOne({where: args});
         }
       }
     };
@@ -614,12 +719,66 @@ var Mutation = new GraphQLObjectType({
               R.EquipoAlquilado = args.EquipoAlquilado;
               R.FechaAlquiler = args.FechaAlquiler;
               R.Observaciones = args.Observaciones;
-              
               R.save();
-              
               R.Propietario = R.getEnte();
               
               return R;
+          });
+        }
+      },
+      CreateProduccion: {
+        type: Produccion,
+        args: {
+          Id: {type: GraphQLInt},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          Producto: {type: GraphQLString},
+          EnvaseId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Produccion.create({
+            Fecha: args.Fecha,
+            Lote: args.Lote,
+            FechaFabricacion: args.FechaFabricacion,
+            FechaVencimiento: args.FechaVencimiento,
+            Cantidad: args.Cantidad,
+            Producto: args.Producto,
+            EnvaseId: args.EnvaseId,
+            PurezaFinal: args.PurezaFinal,
+            PresionFinal: args.PresionFinal
+          }).then(R => {
+            return R;
+          });
+        }
+      },
+      DeleteProduccion: {
+        type: Produccion,
+        args: {
+          Id: {type: GraphQLInt},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          Producto: {type: GraphQLString},
+          EnvaseId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Produccion.findOne({
+            where : {
+              Fecha: args.Fecha,
+              Lote: args.Lote,
+              EnvaseId: args.EnvaseId
+            }
+          }).then(R => {
+            return R.destroy();
           });
         }
       }
