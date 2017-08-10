@@ -131,7 +131,9 @@ v-layout( align-center justify-center )
 <script>
 
 import ENVASES from '~/queries/Envases.gql'
+import PRODUCCIONS from '~/queries/Produccions.gql'
 import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql'
+import UPDATE_PRODUCCION from '~/queries/UpdateProduccion.gql'
 import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql'
 
 export default {
@@ -191,6 +193,34 @@ export default {
           }
         }
       }
+    },
+    Produccions: {
+      query: PRODUCCIONS,
+      variables () {
+        return {
+          Fecha: this.Fecha,
+          Lote: this.Lote
+        }
+      },
+      loadingKey: 'loading',
+      update (data) {
+        if (data.Produccions.length > 0) {
+          this.FechaFabricacion = data.Produccions[0].FechaFabricacion
+          this.FechaVencimiento = data.Produccions[0].FechaVencimiento
+          this.Producto = data.Produccions[0].Producto
+          this.PurezaFinal = data.Produccions[0].PurezaFinal
+          this.PresionFinal = data.Produccions[0].PresionFinal
+          this.items = []
+          for (let i=0; i<data.Produccions.length; i++) {
+            var tmp = {}
+            tmp.Id = data.Produccions[i].EnvaseId
+            tmp.NumeroInterno = data.Produccions[i].Envase.NumeroInterno
+            tmp.Capacidad = data.Produccions[i].Envase.Capacidad
+            tmp.Cantidad = data.Produccions[i].Cantidad
+            this.items.push(tmp)
+          }
+        }
+      }
     }
   },
   watch: {
@@ -241,6 +271,40 @@ export default {
             })
             
             this.EnvaseActual = {Cantidad: '', Capacidad: ''}
+            
+          } else {
+          
+            const Produccion = {
+              Fecha: this.Fecha,
+              Lote: this.Lote,
+              FechaFabricacion: this.FechaFabricacion,
+              FechaVencimiento: this.FechaVencimiento,
+              Cantidad: this.EnvaseActual.Cantidad,
+              Producto: this.Producto,
+              EnvaseId: this.EnvaseActual.Id,
+              PurezaFinal: this.PurezaFinal,
+              PresionFinal: this.PresionFinal,
+            }
+            
+            this.$apollo.mutate ({
+              mutation: UPDATE_PRODUCCION,
+              variables: {
+                Fecha: Produccion.Fecha,
+                Lote: Produccion.Lote,
+                FechaFabricacion: Produccion.FechaFabricacion,
+                FechaVencimiento: Produccion.FechaVencimiento,
+                Cantidad: Produccion.Cantidad,
+                Producto: Produccion.Producto,
+                EnvaseId: Produccion.EnvaseId,
+                PurezaFinal: Produccion.PurezaFinal,
+                PresionFinal: Produccion.PresionFinal
+              },
+              loadingKey: 'loading',
+              update (data) {
+                console.log (data)
+              }
+            })
+            
           }
         }
       }

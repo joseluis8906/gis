@@ -1,0 +1,34 @@
+mutation UpdateProduccion ( 
+  $Fecha: String!, 
+  $Lote: String!,
+  $FechaFabricacion: String!,
+  $FechaVencimiento: String!,
+  $Cantidad: Float!,
+  $Producto: String!,
+  $EnvaseId: Int!,
+  $PurezaFinal: Float!,
+  $PresionFinal: Float!
+) {
+  UpdateProduccion (
+    Fecha: $Fecha,
+    Lote: $Lote,
+    FechaFabricacion: $FechaFabricacion,
+    FechaVencimiento: $FechaVencimiento,
+    Cantidad: $Cantidad,
+    Producto: $Producto,
+    EnvaseId: $EnvaseId,
+    PurezaFinal: $PurezaFinal,
+    PresionFinal: $PresionFinal
+  ){
+    Id
+    Fecha
+    Lote
+    FechaFabricacion
+    FechaVencimiento
+    Cantidad
+    Producto
+    EnvaseId
+    PurezaFinal
+    PresionFinal
+  }
+}

@@ -352,6 +352,12 @@ var Produccion = new GraphQLObjectType({
         resolve(Produccion) {
           return Produccion.PresionFinal;
         }
+      },
+      Envase: {
+        type: Envase,
+        resolve(Produccion) {
+          return Produccion.getEnvase();
+        }
       }
     }
   }
@@ -502,7 +508,7 @@ var Query = new GraphQLObjectType({
         }
       },
       Produccions: {
-        type: Produccion,
+        type: new GraphQLList(Produccion),
         args: {
           Id: {type: GraphQLInt},
           Fecha: {type: GraphQLString},
@@ -510,12 +516,13 @@ var Query = new GraphQLObjectType({
           FechaFabricacion: {type: GraphQLString},
           FechaVencimiento: {type: GraphQLString},
           Cantidad: {type: GraphQLFloat},
+          EnvaseId: {type: GraphQLInt},
           Producto: {type: GraphQLString},
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat}
         },
         resolve(root, args) {
-          return Db.models.Produccion.findAll({where: args});
+          return Db.models.Produccion.findAll({where: args},);
         }
       },
       OneProduccion: {
@@ -752,6 +759,40 @@ var Mutation = new GraphQLObjectType({
             PurezaFinal: args.PurezaFinal,
             PresionFinal: args.PresionFinal
           }).then(R => {
+            return R;
+          });
+        }
+      },
+      UpdateProduccion: {
+        type: Produccion,
+        args: {
+          Id: {type: GraphQLInt},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          Producto: {type: GraphQLString},
+          EnvaseId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Produccion.findOne({ 
+            where: {
+              Fecha: args.Fecha,
+              Lote: args.Lote,
+              EnvaseId: args.EnvaseId
+            }
+          }).then(R => {
+            
+            R.FechaFabricacion = args.FechaFabricacion;
+            R.FechaVencimiento = args.FechaVencimiento;
+            R.Cantidad = args.Cantidad;
+            R.Producto = args.Producto;
+            R.PurezaFinal = args.PurezaFinal;
+            R.PresionFinal = args.PresionFinal;
+            R.save();
             return R;
           });
         }
