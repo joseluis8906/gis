@@ -30,5 +30,10 @@ mutation UpdateProduccion (
     EnvaseId
     PurezaFinal
     PresionFinal
+    Envase {
+      Id
+      NumeroInterno
+      Capacidad
+    }
   }
 }

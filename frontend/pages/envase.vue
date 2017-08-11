@@ -10,7 +10,7 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
-            p Hoja de Vida del Envase
+            h5(class="grey--text text--lighten-4") Envase
             
           v-flex( xs12 )
             
@@ -393,9 +393,6 @@ export default {
           
             data.Envases.push(res.CreateEnvase)
           
-            var filtered = new Set(data.Envases)
-            data.Envases = Array.from(filtered)
-          
             store.writeQuery({
               query: ENVASES,
               data: data
@@ -485,18 +482,18 @@ export default {
             data = store.readQuery({
               query: ENVASES
             })
-          
-            console.log(data)
-          
-            data.Envases.push(res.UpdateEnvase)
-          
-            var filtered = new Set(data.Envases)
-            data.Envases = Array.from(filtered)
-          
+            
+            for (let i=0; i<data.Envases.length; i++) {
+              if (data.Envases[i].Id === res.UpdateEnvase.Id) {
+                data.Envases[i] = res.UpdateEnvase
+              }
+            }
+            
             store.writeQuery({
               query: ENVASES,
               data: data
             })
+            
           } catch (Err) {
           
             console.log ("Error controlado: "+Err)

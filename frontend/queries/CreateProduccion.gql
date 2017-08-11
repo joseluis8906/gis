@@ -30,5 +30,10 @@ mutation CreateProduccion (
     EnvaseId
     PurezaFinal
     PresionFinal
+    Envase {
+      Id
+      NumeroInterno
+      Capacidad
+    }
   }
 }

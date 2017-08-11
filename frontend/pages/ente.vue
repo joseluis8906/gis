@@ -10,7 +10,8 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
-            p Información Empresarial
+            h5(class="grey--text text--lighten-4") Ente
+            
           v-flex( xs12 )
             v-select( v-bind:items="ItemsDocumento"
                       v-model="TipoDocumento"

@@ -10,7 +10,7 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
-            p Información de Producción
+            h5(class="grey--text text--lighten-4") Producción
             
           v-flex( xs12 )
             
@@ -88,7 +88,7 @@ v-layout( align-center justify-center )
             
             v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
             
-            h5(class="grey--text text--lighten-4") Descripción
+            h6(class="grey--text text--lighten-4") Descripción
             
             v-select( v-bind:items="ItemsEnvases"
                       v-model="EnvaseActual"
@@ -125,7 +125,9 @@ v-layout( align-center justify-center )
                          style="width: 24px; height:24px"
                          @click.native="eliminar(props.item)")
                     v-icon(dark) remove
-        
+      v-card-actions
+        v-spacer
+        v-btn( dark warning @click.native="hardReset" ) Limpiar
 </template>
 
 <script>
@@ -169,7 +171,6 @@ export default {
     ],
     EnvaseActual: {Cantidad: '', Capacidad: ''},
     Conjunto: new Set(),
-    ConjuntoTracer: 1,
     
     menu1: false,
     menu2: false,
@@ -204,6 +205,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
+        console.log(data)
         if (data.Produccions.length > 0) {
           this.FechaFabricacion = data.Produccions[0].FechaFabricacion
           this.FechaVencimiento = data.Produccions[0].FechaVencimiento
@@ -217,8 +219,16 @@ export default {
             tmp.NumeroInterno = data.Produccions[i].Envase.NumeroInterno
             tmp.Capacidad = data.Produccions[i].Envase.Capacidad
             tmp.Cantidad = data.Produccions[i].Cantidad
-            this.items.push(tmp)
+            for (let j=0; j<this.ItemsEnvases.length; j++) {
+              if ( data.Produccions[i].Envase.Id === this.ItemsEnvases[j].Id ) {
+                this.ItemsEnvases[j].Cantidad = data.Produccions[i].Cantidad
+                this.Conjunto.add(this.ItemsEnvases[j])
+                this.items = Array.from(this.Conjunto)
+              }
+            }
           }
+        } else {
+          this.reset ()
         }
       }
     }
@@ -265,12 +275,36 @@ export default {
                 PresionFinal: Produccion.PresionFinal
               },
               loadingKey: 'loading',
-              update (data) {
-                console.log (data)
+              update (store, {data: res}) {
+                console.log('guardar')
+                console.log ({store: store, res: res})
+                
+                try{
+                  const data = store.readQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Fecha: Produccion.Fecha,
+                      Lote: Produccion.Lote
+                    }
+                  })
+                  
+                  data.Produccions.push(res.CreateProduccion)
+                  
+                  store.writeQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Fecha: Produccion.Fecha,
+                      Lote: Produccion.Lote
+                    },
+                    data
+                  })
+                  
+                } catch (Err) {
+                  console.log(`Error controlado: ${Err}`)
+                }
+                
               }
             })
-            
-            this.EnvaseActual = {Cantidad: '', Capacidad: ''}
             
           } else {
           
@@ -300,12 +334,45 @@ export default {
                 PresionFinal: Produccion.PresionFinal
               },
               loadingKey: 'loading',
-              update (data) {
-                console.log (data)
+              update (store, {data: res}) {
+                console.log('actualizar')
+                console.log ({store: store, res: res})
+                
+                try{
+                  const data = store.readQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Fecha: Produccion.Fecha,
+                      Lote: Produccion.Lote
+                    }
+                  })
+                  
+                  for (let i=0; i<data.Produccions.length; i++) {
+                    if (data.Produccions[i].EnvaseId === res.UpdateProduccion.EnvaseId) {
+                      data.Produccions[i] = res.UpdateProduccion
+                    }
+                  }
+                  
+                  store.writeQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Fecha: Produccion.Fecha,
+                      Lote: Produccion.Lote
+                    },
+                    data
+                  })
+                  
+                } catch (Err) {
+                  console.log(`Error controlado: ${Err}`)
+                }
+                
               }
+              
             })
             
           }
+          
+          this.EnvaseActual = {Cantidad: '', Capacidad: ''}
         }
       }
     },
@@ -344,12 +411,66 @@ export default {
           PresionFinal: Produccion.PresionFinal
         },
         loadingKey: 'loading',
-        update (data) {
-          console.log (data)
+        update (store, {data: res}) {
+          console.log ({store: store, res: res})
+          
+          try{
+            const data = store.readQuery({
+              query: PRODUCCIONS,
+              variables: {
+                Fecha: Produccion.Fecha,
+                Lote: Produccion.Lote
+              }
+            })
+            
+            for (let i=0; i<data.Produccions.length; i++) {
+              if (data.Produccions[i].EnvaseId === res.DeleteProduccion.EnvaseId) {
+                data.Produccions.splice(i, 1)
+              }
+            }
+            
+            store.writeQuery({
+              query: PRODUCCIONS,
+              variables: {
+                Fecha: Produccion.Fecha,
+                Lote: Produccion.Lote
+              },
+              data
+            })
+            
+          } catch (Err) {
+            console.log(`Error controlado: ${Err}`)
+          }
+          
         }
       })
       
+      for (let j=0; j<this.ItemsEnvases.length; j++) {
+        if ( this.ItemsEnvases[j].Id === item.Id ) {
+          this.ItemsEnvases[j].Cantidad = ''
+        }
+      }
+      
       this.EnvaseActual = {Cantidad: '', Capacidad: ''}
+    },
+    reset () {
+      
+      this.FechaFabricacion = '',
+      this.FechaVencimiento = '',
+      this.Producto = '',
+      this.PurezaFinal = '',
+      this.PresionFinal = '',
+      this.EnvaseActual = {Cantidad: '', Capacidad: ''}
+      this.Conjunto.clear ()
+      this.items = Array.from(this.Conjunto)
+      for (let j=0; j<this.ItemsEnvases.length; j++) {
+        this.ItemsEnvases[j].Cantidad = ''
+      }
+      
+    },
+    hardReset () {
+      this.Fecha = ''
+      this.Lote = ''
     }
   }
 };
