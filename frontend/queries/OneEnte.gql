@@ -4,6 +4,7 @@ query OneEnte($TipoDocumento: String!, $NumeroDocumento: String!) {
     TipoDocumento
     NumeroDocumento
     Nombre
+    Ciudad
     Direccion
     Telefono
     Relacion 

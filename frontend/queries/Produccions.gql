@@ -1,6 +1,6 @@
 query Produccions ( 
-  $Fecha: String!, 
-  $Lote: String!,
+  $Fecha: String, 
+  $Lote: String,
   $FechaFabricacion: String,
   $FechaVencimiento: String,
   $Cantidad: Float,

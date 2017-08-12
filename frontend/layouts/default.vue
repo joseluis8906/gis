@@ -68,7 +68,7 @@ $theme := {
 @import '~vuetify/src/stylus/main'
 
 #sandbox
-  border 1px solid rgba(0, 0, 0, .1)
+  border 1px solid rgba(0, 0, 0, .25)
   overflow hidden
 
 </style>

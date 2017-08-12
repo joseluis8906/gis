@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS "Ente" (
   "TipoDocumento" TEXT NOT NULL,
   "NumeroDocumento" TEXT NOT NULL,
   "Nombre" TEXT,
+  "Ciudad" TEXT,
   "Direccion" TEXT,
   "Telefono" TEXT,
   "Relacion" TEXT,/*Propio/Cliente*/
@@ -80,11 +81,13 @@ CREATE TABLE IF NOT EXISTS "Produccion" (
 
 CREATE TABLE IF NOT EXISTS "Remision" (
   "Id" INTEGER PRIMARY KEY,
+  "Numero" TEXT,
   "Fecha" DATE,
-  "Numero" INTEGER,
+  "EnteId" INTEGER DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "Sale" TEXT,
   "Entra" TEXT,
-  "EnteId" INTEGER DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
-  "EnvaseId" INTEGER DEFAULT NULL REFERENCES "Envase"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
-  UNIQUE ("Numero", "EnvaseId")
+  "ProduccionId" INTEGER DEFAULT NULL REFERENCES "Produccion"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "Total" DECIMAL,
+  UNIQUE ("Numero", "ProduccionId")
 );
+

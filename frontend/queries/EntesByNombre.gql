@@ -4,6 +4,7 @@ query EntesByNombre($Nombre: String!) {
     TipoDocumento
     NumeroDocumento
     Nombre
+    Ciudad
     Direccion
     Telefono
     Relacion 

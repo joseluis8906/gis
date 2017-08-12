@@ -22,6 +22,8 @@ v-layout( align-center justify-center )
             v-text-field( label="Numero de Documento" v-model="NumeroDocumento" dark )
             
             v-text-field( label="Nombre" v-model="Nombre" dark )
+            
+            v-text-field( label="Ciudad" v-model="Ciudad" dark )
 
             v-text-field( label="Dirección" v-model="Direccion" dark )
 
@@ -41,6 +43,7 @@ v-layout( align-center justify-center )
 
 <script>
 
+import ENTES from '~/queries/Entes.gql'
 import ONE_ENTE from '~/queries/OneEnte.gql'
 import CREATE_ENTE from '~/queries/CreateEnte.gql'
 import UPDATE_ENTE from '~/queries/UpdateEnte.gql'
@@ -51,6 +54,7 @@ export default {
     TipoDocumento: '',
     NumeroDocumento: '',
     Nombre: '',
+    Ciudad: '',
     Direccion: '',
     Telefono: '',
     Relacion: '',
@@ -79,6 +83,7 @@ export default {
       loadingKey: 'loading',
       update (data) {
         this.Nombre = data.OneEnte ? data.OneEnte.Nombre : ''
+        this.Ciudad = data.OneEnte ? data.OneEnte.Ciudad : ''
         this.Direccion = data.OneEnte ? data.OneEnte.Direccion : ''
         this.Telefono = data.OneEnte ? data.OneEnte.Telefono : ''
         this.Relacion = data.OneEnte ? data.OneEnte.Relacion : ''
@@ -100,6 +105,7 @@ export default {
         TipoDocumento: this.TipoDocumento,
         NumeroDocumento: this.NumeroDocumento,
         Nombre: this.Nombre,
+        Ciudad: this.Ciudad,
         Direccion: this.Direccion,
         Telefono: this.Telefono,
         Relacion: this.Relacion
@@ -113,6 +119,7 @@ export default {
           TipoDocumento: Ente.TipoDocumento,
           NumeroDocumento: Ente.NumeroDocumento,
           Nombre: Ente.Nombre,
+          Ciudad: Ente.Ciudad,
           Direccion: Ente.Direccion,
           Telefono: Ente.Telefono,
           Relacion: Ente.Relacion
@@ -129,6 +136,24 @@ export default {
           },
           data: data
         })
+       
+        try{
+          
+          data = store.readQuery({
+            query: ENTES
+          })
+        
+          data.Entes.push(res.CreateEnte)
+        
+          store.writeQuery({
+            query: ENTES,
+            data: data
+          })
+        } catch (Err) {
+        
+          console.log ('Error controlado: '+ Err)
+        }
+          
       },
       }).then( data => {        
         console.log(data)
@@ -141,6 +166,7 @@ export default {
         TipoDocumento: this.TipoDocumento,
         NumeroDocumento: this.NumeroDocumento,
         Nombre: this.Nombre,
+        Ciudad: this.Ciudad,
         Direccion: this.Direccion,
         Telefono: this.Telefono,
         Relacion: this.Relacion
@@ -154,6 +180,7 @@ export default {
           TipoDocumento: Ente.TipoDocumento,
           NumeroDocumento: Ente.NumeroDocumento,
           Nombre: Ente.Nombre,
+          Ciudad: Ente.Ciudad,
           Direccion: Ente.Direccion,
           Telefono: Ente.Telefono,
           Relacion: Ente.Relacion
@@ -170,6 +197,29 @@ export default {
           },
           data: data
         })
+        
+        try {
+          
+          data = store.readQuery({
+            query: ENTES
+          })
+          
+          for (let i=0; i<data.Entes.length; i++) {
+            if (data.Entes[i].Id === res.UpdateEnte.Id) {
+              data.Entes[i] = res.UpdateEnte
+            }
+          }
+          
+          store.writeQuery({
+            query: ENTES,
+            data: data
+          })
+          
+        } catch (Err) {
+        
+          console.log ("Error controlado: "+Err)
+        }
+        
       },
       }).then( data => {        
         console.log(data)
@@ -181,6 +231,7 @@ export default {
       this.TipoDocumento = ''
       this.NumeroDocumento = ''
       this.Nombre = ''
+      this.Ciudad = ''
       this.Direccion = ''
       this.Telefono = ''
       this.Relacion = ''

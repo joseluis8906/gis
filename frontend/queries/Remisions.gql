@@ -1,0 +1,43 @@
+query Remisions ( 
+  $Numero: String, 
+  $Fecha: String,
+  $EnteId: Int,
+) {
+  Remisions (
+    Numero: $Numero, 
+    Fecha: $Fecha,
+    EnteId: $EnteId,
+  ){
+    Id
+    Numero
+    Fecha
+    EnteId
+    Sale
+    Entra
+    ProduccionId
+    Total
+    Ente {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Ciudad
+      Direccion
+      Telefono
+    }
+    Produccion {
+      Id
+      Fecha
+      Lote
+      Cantidad
+      Producto
+      FechaFabricacion
+      FechaVencimiento
+      Envase {
+        Id
+        NumeroInterno
+        Capacidad
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@
 const masks = {
   currency: {
     mask (value) {
-      return '$' + value.toLocaleString()
+      return '$' + (value !== null ? value.toLocaleString() : ''.toLocaleString())
     },
     unmask (value) {
       value = parseFloat(value.replace(/[^\d\.]/g, ""))
@@ -49,7 +49,7 @@ export default {
     displayValue: {
       get: function() {
         if (this.inputFocused) {
-          return this.value.toString()
+          return (this.value !== null ? this.value.toLocaleString() : ''.toLocaleString())
         } else {
           return this.mask(this.value)
         }

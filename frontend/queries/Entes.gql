@@ -4,6 +4,7 @@ query Entes {
     TipoDocumento
     NumeroDocumento
     Nombre
+    Ciudad
     Direccion
     Telefono
     Relacion 

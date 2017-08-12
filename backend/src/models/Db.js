@@ -49,6 +49,7 @@ const Ente = Db.define('Ente', {
   TipoDocumento: Sequelize.STRING,
   NumeroDocumento: Sequelize.STRING,
   Nombre: Sequelize.STRING,
+  Ciudad: Sequelize.STRING,
   Direccion: Sequelize.STRING,
   Telefono: Sequelize.STRING,
   Relacion: Sequelize.STRING
@@ -119,17 +120,24 @@ Produccion.belongsTo(Envase);
 //remision
 const Remision = Db.define('Remision', {
   Id: {type: Sequelize.INTEGER, primaryKey: true},
-  Fecha: Sequelize.DATE,
-  Numero: Sequelize.INTEGER,
+  Numero: Sequelize.STRING,
+  Fecha: Sequelize.DATEONLY,
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
   Sale: Sequelize.STRING,
   Entra: Sequelize.STRING,
-  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
-  EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}}
+  ProduccionId: {type: Sequelize.INTEGER, references: {model: Produccion, key: "Id"}},
+  Total: Sequelize.DECIMAL
 },
 {
   timestamps: false,
   freezeTableName: true
 });
+
+Ente.hasMany(Remision)
+Remision.belongsTo(Ente)
+
+Produccion.hasMany(Remision)
+Remision.belongsTo(Produccion)
 
 
 //open connection

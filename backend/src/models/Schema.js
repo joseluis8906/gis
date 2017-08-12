@@ -104,6 +104,12 @@ var Ente = new GraphQLObjectType({
           return Ente.Nombre;
         }
       },
+      Ciudad: {
+        type: GraphQLString,
+        resolve(Ente) {
+          return Ente.Ciudad;
+        }
+      },
       Direccion: {
         type: GraphQLString,
         resolve(Ente) {
@@ -288,6 +294,7 @@ var Envase = new GraphQLObjectType({
 });
 
 
+//produccion
 var Produccion = new GraphQLObjectType({
   name: "Produccion",
   description: "Object representation of Produccion",
@@ -364,6 +371,77 @@ var Produccion = new GraphQLObjectType({
 });
 
 
+//remision
+var Remision = new GraphQLObjectType({
+  name: "Remision",
+  description: "Object representation of Remision",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.Id;
+        }
+      },
+      Numero: {
+        type: GraphQLString,
+        resolve(Remision) {
+          return Remision.Numero;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Remision) {
+          return Remision.Fecha;
+        }
+      },
+      EnteId: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.EnteId;
+        }
+      },
+      Sale: {
+        type: GraphQLString,
+        resolve(Remision) {
+          return Remision.Sale;
+        }
+      },
+      Entra: {
+        type: GraphQLString,
+        resolve(Remision) {
+          return Remision.Entra;
+        }
+      },
+      ProduccionId: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.ProduccionId;
+        }
+      },
+      Total: {
+        type: GraphQLFloat,
+        resolve(Remision) {
+          return Remision.Total;
+        }
+      },
+      Ente: {
+        type: Ente,
+        resolve(Remision) {
+          return Remision.getEnte();
+        }
+      },
+      Produccion: {
+        type: Produccion,
+        resolve(Remision) {
+          return Remision.getProduccion();
+        }
+      }
+    }
+  }
+})
+
+
 //Query
 var Query = new GraphQLObjectType({
   name: "Query",
@@ -407,6 +485,7 @@ var Query = new GraphQLObjectType({
           TipoDocumento: {type: GraphQLString},
           NumeroDocumento: {type: GraphQLString},
           Nombre: {type: GraphQLString},
+          Ciudad: {type: GraphQLString},
           Direccion: {type: GraphQLString},
           Telefono: {type: GraphQLString},
           Relacion: {type: GraphQLString}
@@ -435,6 +514,7 @@ var Query = new GraphQLObjectType({
           TipoDocumento: {type: GraphQLString},
           NumeroDocumento: {type: GraphQLString},
           Nombre: {type: GraphQLString},
+          Ciudad: {type: GraphQLString},
           Direccion: {type: GraphQLString},
           Telefono: {type: GraphQLString},
           Relacion: {type: GraphQLString}
@@ -542,6 +622,18 @@ var Query = new GraphQLObjectType({
         resolve(root, args) {
           return Db.models.Produccion.findOne({where: args});
         }
+      },
+      Remisions: {
+        type: new GraphQLList(Remision),
+        args: {
+          Id: {type: GraphQLString},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+        },
+        resolve(root, args) {
+          return Db.models.Remision.findAll({where: args})
+        }
       }
     };
   }
@@ -575,6 +667,7 @@ var Mutation = new GraphQLObjectType({
           TipoDocumento: {type: GraphQLString},
           NumeroDocumento: {type: GraphQLString},
           Nombre: {type: GraphQLString},
+          Ciudad: {type: GraphQLString},
           Direccion: {type: GraphQLString},
           Telefono: {type: GraphQLString},
           Relacion: {type: GraphQLString}
@@ -584,9 +677,12 @@ var Mutation = new GraphQLObjectType({
             TipoDocumento: args.TipoDocumento,
             NumeroDocumento: args.NumeroDocumento,
             Nombre: args.Nombre,
+            Ciudad: args.Ciudad,
             Direccion: args.Direccion,
             Telefono: args.Telefono,
             Relacion: args.Relacion
+          }).then(R => {
+            return R;
           });
         }
       },
@@ -596,6 +692,7 @@ var Mutation = new GraphQLObjectType({
           TipoDocumento: {type: GraphQLString},
           NumeroDocumento: {type: GraphQLString},
           Nombre: {type: GraphQLString},
+          Ciudad: {type: GraphQLString},
           Direccion: {type: GraphQLString},
           Telefono: {type: GraphQLString},
           Relacion: {type: GraphQLString}
@@ -608,6 +705,7 @@ var Mutation = new GraphQLObjectType({
             R.TipoDocumento = args.TipoDocumento;
             R.NumeroDocumento = args.NumeroDocumento;
             R.Nombre = args.Nombre;
+            R.Ciudad = args.Ciudad,
             R.Direccion = args.Direccion;
             R.Telefono = args.Telefono;
             R.Relacion = args.Relacion;
@@ -820,6 +918,32 @@ var Mutation = new GraphQLObjectType({
             }
           }).then(R => {
             return R.destroy();
+          });
+        }
+      },
+      CreateRemision: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          Sale: {type: GraphQLString},
+          Entra: {type: GraphQLString},
+          ProduccionId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Remision.create({
+            Numero: args.Numero,
+            Fecha: args.Fecha,
+            EnteId: args.EnteId,
+            Sale: args.Sale,
+            Entra: args.Entra,
+            ProduccionId: args.ProduccionId,
+            Total: args.Total,
+          }).then(R => {
+            return R;
           });
         }
       }

@@ -75,27 +75,33 @@ v-layout( align-center justify-center )
             v-text-field( label="Proveedor" v-model="Proveedor" dark )
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu1"
                     transition="scale-transition"
                     offset-y
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+              
               v-text-field( slot="activator"
                             label="Fecha de Compra"
-                            v-model="FechaCompra"
-                            readonly )
+                            v-model="FechaCompra" 
+                            readonly)
               
-              v-date-picker( v-model="FechaCompra" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="FechaCompra"
+                             autosave
+                             no-title
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="FechaCompra=null" ) Limpiar
                     
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu2"
                     transition="scale-transition"
                     offset-y
@@ -105,17 +111,23 @@ v-layout( align-center justify-center )
             
               v-text-field( slot="activator"
                             label="Garantía"
-                            v-model="Garantia"
-                            readonly )
-              
-              v-date-picker( v-model="Garantia" no-title scrollable actions dark )
+                            v-model="Garantia" 
+                            readonly)
+                            
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="Garantia"
+                             autosave
+                             no-title
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="Garantia=null" ) Limpiar
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu3"
                     transition="scale-transition"
                     offset-y
@@ -128,14 +140,20 @@ v-layout( align-center justify-center )
                             v-model="FechaFabricacion"
                             readonly )
               
-              v-date-picker( v-model="FechaFabricacion" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="FechaFabricacion" 
+                             no-title 
+                             autosave
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="FechaFabricacion=null" ) Limpiar
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu4"
                     transition="scale-transition"
                     offset-y
@@ -148,11 +166,17 @@ v-layout( align-center justify-center )
                             v-model="PruebaHidrostatica"
                             readonly )
               
-              v-date-picker( v-model="PruebaHidrostatica" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="PruebaHidrostatica" 
+                             no-title 
+                             autosave
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="PruebaHidrostatica=null" ) Limpiar
             
             v-select( v-bind:items="ItemsEquipoAlquilado"
                       v-model="EquipoAlquilado"
@@ -161,7 +185,7 @@ v-layout( align-center justify-center )
                       dark )
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu5"
                     transition="scale-transition"
                     offset-y
@@ -174,12 +198,18 @@ v-layout( align-center justify-center )
                             v-model="FechaAlquiler"
                             readonly )
               
-              v-date-picker( v-model="FechaAlquiler" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="FechaAlquiler" 
+                             no-title 
+                             autosave
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
-            
+                    v-btn( dark warning @click.native="FechaAlquiler=null" ) Limpiar
+              
             v-text-field( label="Observaciones" v-model="Observaciones" multi-line dark )
             
       v-card-actions
@@ -215,12 +245,12 @@ export default {
     AcabadoColor: '',
     NormaTecnicaFabricacion: '',
     Proveedor: '',
-    FechaCompra: '',
+    FechaCompra: null,
     Garantia: '',
-    FechaFabricacion: '',
-    PruebaHidrostatica: '',
+    FechaFabricacion: null,
+    PruebaHidrostatica: null,
     EquipoAlquilado: '',
-    FechaAlquiler: '',
+    FechaAlquiler: null,
     Observaciones: '',
     
     ItemsEstado: [
@@ -258,6 +288,21 @@ export default {
     menu3: false,
     menu4: false,
     menu5: false,
+    
+    months: [
+      'Enero',
+      'Febrero', 
+      'Marzo', 
+      'Abril', 
+      'Mayo', 
+      'Junio', 
+      'Julio', 
+      'Agosto', 
+      'Septiembre', 
+      'Octubre', 
+      'Noviembre', 
+      'Diciembre'],
+    days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
     
     loading: 0,
   }),
@@ -334,12 +379,12 @@ export default {
         AcabadoColor: this.AcabadoColor,
         NormaTecnicaFabricacion: this.NormaTecnicaFabricacion,
         Proveedor: this.Proveedor,
-        FechaCompra: this.FechaCompra,
-        Garantia: this.Garantia,
-        FechaFabricacion: this.FechaFabricacion,
-        PruebaHidrostatica: this.PruebaHidrostatica,
+        FechaCompra: this.FechaCompra !== '' ? this.FechaCompra : null,
+        Garantia: this.Garantia !== '' ? this.Garantia : null,
+        FechaFabricacion: this.FechaFabricacion !== '' ? this.FechaFabricacion : null,
+        PruebaHidrostatica: this.PruebaHidrostatica !== '' ? this.PruebaHidrostatica : null,
         EquipoAlquilado: this.EquipoAlquilado,
-        FechaAlquiler: this.FechaAlquiler,
+        FechaAlquiler: this.FechaAlquiler !== '' ? this.FechaAlquiler : null,
         Observaciones: this.Observaciones,
         Propietario: this.Propietario
       };
@@ -426,12 +471,12 @@ export default {
         AcabadoColor: this.AcabadoColor,
         NormaTecnicaFabricacion: this.NormaTecnicaFabricacion,
         Proveedor: this.Proveedor,
-        FechaCompra: this.FechaCompra,
-        Garantia: this.Garantia,
-        FechaFabricacion: this.FechaFabricacion,
-        PruebaHidrostatica: this.PruebaHidrostatica,
+        FechaCompra: this.FechaCompra !== '' ? this.FechaCompra : null,
+        Garantia: this.Garantia !== '' ? this.Garantia : null,
+        FechaFabricacion: this.FechaFabricacion !== '' ? this.FechaFabricacion : null,
+        PruebaHidrostatica: this.PruebaHidrostatica !== '' ? this.PruebaHidrostatica : null,
         EquipoAlquilado: this.EquipoAlquilado,
-        FechaAlquiler: this.FechaAlquiler,
+        FechaAlquiler: this.FechaAlquiler !== '' ? this.FechaAlquiler : null,
         Observaciones: this.Observaciones,
         Propietario: this.Propietario
       };

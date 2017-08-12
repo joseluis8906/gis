@@ -15,7 +15,7 @@ v-layout( align-center justify-center )
           v-flex( xs12 )
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu1"
                     transition="scale-transition"
                     offset-y
@@ -28,11 +28,16 @@ v-layout( align-center justify-center )
                             v-model="Fecha"
                             readonly )
               
-              v-date-picker( v-model="Fecha" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="Fecha" 
+                             no-title 
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="Fecha=null" ) Limpiar
             
             v-text-field( label="Lote" v-model="Lote" dark )
             
@@ -45,7 +50,7 @@ v-layout( align-center justify-center )
                       dark )
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu2"
                     transition="scale-transition"
                     offset-y
@@ -58,14 +63,20 @@ v-layout( align-center justify-center )
                             v-model="FechaFabricacion"
                             readonly )
               
-              v-date-picker( v-model="FechaFabricacion" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="FechaFabricacion" 
+                             no-title 
+                             autosave
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="FechaFabricacion=null" ) Limpiar
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu3"
                     transition="scale-transition"
                     offset-y
@@ -78,11 +89,17 @@ v-layout( align-center justify-center )
                             v-model="FechaVencimiento"
                             readonly )
               
-              v-date-picker( v-model="FechaVencimiento" no-title scrollable actions dark )
+              v-date-picker( :months="months"
+                             :days="days"
+                             first-day-of-week="D"
+                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
+                             v-model="FechaVencimiento" 
+                             no-title 
+                             autosave
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="FechaVencimiento=null" ) Limpiar
             
             v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
             
@@ -140,10 +157,10 @@ import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql'
 
 export default {
   data: () => ({
-    Fecha: '',
+    Fecha: null,
     Lote: '',
-    FechaFabricacion: '',
-    FechaVencimiento: '',
+    FechaFabricacion: null,
+    FechaVencimiento: null,
     Producto: '',
     PurezaFinal: '',
     PresionFinal: '',
@@ -171,6 +188,20 @@ export default {
     ],
     EnvaseActual: {Cantidad: '', Capacidad: ''},
     Conjunto: new Set(),
+    months: [
+      'Enero',
+      'Febrero', 
+      'Marzo', 
+      'Abril', 
+      'Mayo', 
+      'Junio', 
+      'Julio', 
+      'Agosto', 
+      'Septiembre', 
+      'Octubre', 
+      'Noviembre', 
+      'Diciembre'],
+    days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
     
     menu1: false,
     menu2: false,
@@ -199,7 +230,7 @@ export default {
       query: PRODUCCIONS,
       variables () {
         return {
-          Fecha: this.Fecha,
+          Fecha: this.Fecha !== null ? this.Fecha : '',
           Lote: this.Lote
         }
       },
