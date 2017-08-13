@@ -138,6 +138,8 @@ import VMoney from '~/components/MonetaryInput.vue'
 import REMISIONS from '~/queries/Remisions.gql'
 import PRODUCCIONS from '~/queries/Produccions.gql'
 import CREATE_REMISION from '~/queries/CreateRemision.gql'
+import DELETE_REMISION from '~/queries/DeleteRemision.gql'
+import ONE_ENTE from '~/queries/OneEnte.gql'
 
 export default {
   data: () => ({
@@ -148,7 +150,7 @@ export default {
       TipoDocumento: null,
       NumeroDocumento: null,
       Nombre: null,
-      Direccion: null,
+      Ciudad: null,
       Direccion: null,
       Telefono: null
     }, 
@@ -204,7 +206,7 @@ export default {
       },
       loadingKey: "loading",
       update (data) {
-        console.log(data)
+        //console.log(data)
         
         if (data.Remisions.length > 0) {
           
@@ -215,7 +217,7 @@ export default {
           for (let i=0; i<data.Remisions.length; i++) {
           
             var tmp = {
-              RemisionId: data.Remisions[i].Id ? data.Remisions[i].Id : null,
+              Id: data.Remisions[i].Id ? data.Remisions[i].Id : null,
               ProduccionId: data.Remisions[i].Produccion.Id,
               Cantidad: data.Remisions[i].Produccion.Cantidad,
               NumeroInterno: data.Remisions[i].Produccion.Envase.NumeroInterno, EnvaseEditable:false,
@@ -244,7 +246,7 @@ export default {
       query: PRODUCCIONS,
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
+        //console.log(data)
         if (data.Produccions.length>0) {
           
           this.ItemsProduccion = []
@@ -252,7 +254,7 @@ export default {
           for(let i=0; i<data.Produccions.length; i++) {
             
             var tmp = {
-            RemisionId: null,
+            Id: null,
             ProduccionId: data.Produccions[i].Id,
             Cantidad: data.Produccions[i].Cantidad,
             NumeroInterno: data.Produccions[i].Envase.NumeroInterno, EnvaseEditable:false,
@@ -269,12 +271,31 @@ export default {
           
         }
       }
+    },
+    OneEnte: {
+      query: ONE_ENTE,
+      variables () {
+        return {
+          TipoDocumento: this.Cliente.TipoDocumento ? this.Cliente.TipoDocumento : '',
+          NumeroDocumento: this.Cliente.NumeroDocumento ? this.Cliente.NumeroDocumento : ''
+        }
+      },
+      loadingKey: 'loading',
+      update (data) {
+        
+        this.Cliente.Id = data.OneEnte ? data.OneEnte.Id : null
+        this.Cliente.Nombre = data.OneEnte ? data.OneEnte.Nombre : ''
+        this.Cliente.Ciudad = data.OneEnte ? data.OneEnte.Ciudad : ''
+        this.Cliente.Direccion = data.OneEnte ? data.OneEnte.Direccion : ''
+        this.Cliente.Telefono = data.OneEnte ? data.OneEnte.Telefono : ''
+        
+      }
     }
   },
   methods: {
     agregar () {
       var tmp = {
-        RemisionId: null,
+        Id: null,
         ProduccionId: null,
         Cantidad: null,
         NumeroInterno: null, EnvaseEditable:false,
@@ -285,6 +306,7 @@ export default {
         Vencimiento: null,
         Lote: null,
         Total: null, TotalEditable: false, TotalFocus: false}
+        
       this.conjuntoItems.add(tmp)
       this.items = Array.from(this.conjuntoItems)
     },
@@ -307,6 +329,8 @@ export default {
       this.CreateOrUpdate(item)
     },
     CreateOrUpdate (item) {
+      //console.log('Entrando a crear')
+      //console.log(item);
       if (
         this.Numero !== null && 
         this.Cliente.Id !== null &&
@@ -316,19 +340,19 @@ export default {
         item.Total !== '$' ) {
         
         const Remision = {
-              Numero: this.Numero,
-              Fecha: this.Fecha,
-              EnteId: this.Cliente.Id,
-              Sale: item.Sale,
-              Entra: item.Entra,
-              ProduccionId: item.ProduccionId,
-              Total: item.Total
-            }
+          Numero: this.Numero,
+          Fecha: this.Fecha,
+          EnteId: this.Cliente.Id,
+          Sale: item.Sale,
+          Entra: item.Entra,
+          ProduccionId: item.ProduccionId,
+          Total: item.Total
+        }
         
-        console.log('a guardar')
-        console.log(Remision)
+        //console.log('revisar la id para guardar')
+        //console.log(item)
         
-        if (item.RemisionId === null) {
+        if (item.Id === null) {
           
           this.$apollo.mutate ({
             mutation: CREATE_REMISION,
@@ -344,8 +368,8 @@ export default {
             loadingKey: 'loading',
             update (store, {data: res}) {
               
-              console.log('guardar')
-              console.log ({store: store, res: res})
+              //console.log('guardar en cache')
+              //console.log ({store: store, res: res})
               
               try{
                 const data = store.readQuery({
@@ -366,20 +390,85 @@ export default {
                 })
                 
               } catch (Err) {
-                console.log(`Error controlado: ${Err}`)
+                //console.log(`Error controlado: ${Err}`)
               }
               
             }
           })
           
+        } else {
+          
+          //console.log('no se guarda en db por id')
+          
         }
         
+        
+      } else {
+      
+        //console.log('no se guarda en bd por parametros')
+      
       }
       
     },
     eliminar (item) {
+      
+      const Remision = {
+        Numero: this.Numero,
+        ProduccionId: item.ProduccionId
+      }
+      
+      if (item.Id !== null) {
+        
+        this.$apollo.mutate ({
+          mutation: DELETE_REMISION,
+          variables: {
+            Numero: Remision.Numero,
+            ProduccionId: Remision.ProduccionId
+          },
+          loadingKey: 'loading',
+          update (store, {data: res}) {
+            
+            //console.log('eliminar')
+            //console.log ({store: store, res: res})
+            
+            try{
+              const data = store.readQuery({
+                query: REMISIONS,
+                variables: {
+                  Numero: Remision.Numero,
+                  ProduccionId: Remision.ProduccionId
+                }
+              })
+              
+              
+              for (let i=0; i<data.Remisions.length; i++) {
+                if (data.Remisions[i].ProduccionId === res.DeleteRemision.ProduccionId) {
+                  //console.log('Eliminado de cache')
+                  data.Remisions.splice(i, 1)
+                }
+              }
+              
+              store.writeQuery({
+                query: REMISIONS,
+                variables: {
+                  Numero: Remision.Numero,
+                  ProduccionId: Remision.ProduccionId
+                },
+                data
+              })
+              
+            } catch (Err) {
+              //console.log(`Error controlado: ${Err}`)
+            }
+            
+          }
+        })
+        
+      }
+      
       this.conjuntoItems.delete(item)
       this.items = Array.from(this.conjuntoItems)
+      
     },
     hardReset () {
       this.Numero = null
@@ -401,11 +490,11 @@ export default {
       this.items = Array.from(this.conjuntoItems)
     },
     loadProduccion (item) {
-      console.log (item)
+      //console.log (item)
       for (let i=0; i<this.ItemsProduccion.length; i++) {
         if (item.NumeroInterno === this.ItemsProduccion[i].NumeroInterno) {
-          console.log('loaded')
-          console.log(this.ItemsProduccion[i])
+          //console.log('loaded')
+          //console.log(this.ItemsProduccion[i])
           item.ProduccionId = this.ItemsProduccion[i].ProduccionId
           item.Cantidad = this.ItemsProduccion[i].Cantidad
           item.Producto = this.ItemsProduccion[i].Producto

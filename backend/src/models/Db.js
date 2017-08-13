@@ -45,7 +45,7 @@ Post.belongsTo(Person);
 
 //Ente
 const Ente = Db.define('Ente', {
-  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   TipoDocumento: Sequelize.STRING,
   NumeroDocumento: Sequelize.STRING,
   Nombre: Sequelize.STRING,
@@ -62,7 +62,7 @@ const Ente = Db.define('Ente', {
 
 //Envase
 const Envase = Db.define('Envase', {
-  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   Estado: Sequelize.STRING,
   EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: 'Id'}},
   Material: Sequelize.STRING,
@@ -97,7 +97,7 @@ Envase.belongsTo(Ente);
 
 //produccion
 const Produccion = Db.define('Produccion', {
-  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   Fecha: Sequelize.DATEONLY,
   Lote: Sequelize.STRING,
   FechaFabricacion: Sequelize.DATEONLY,
@@ -119,7 +119,7 @@ Produccion.belongsTo(Envase);
 
 //remision
 const Remision = Db.define('Remision', {
-  Id: {type: Sequelize.INTEGER, primaryKey: true},
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   Numero: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
   EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},

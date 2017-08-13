@@ -626,13 +626,25 @@ var Query = new GraphQLObjectType({
       Remisions: {
         type: new GraphQLList(Remision),
         args: {
-          Id: {type: GraphQLString},
+          Id: {type: GraphQLInt},
           Numero: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
         },
         resolve(root, args) {
           return Db.models.Remision.findAll({where: args})
+        }
+      },
+      OneRemision: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+        },
+        resolve(root, args) {
+          return Db.models.Remision.findOne({where: args})
         }
       }
     };
@@ -681,7 +693,7 @@ var Mutation = new GraphQLObjectType({
             Direccion: args.Direccion,
             Telefono: args.Telefono,
             Relacion: args.Relacion
-          }).then(R => {
+          }).then( R => {
             return R;
           });
         }
@@ -766,7 +778,7 @@ var Mutation = new GraphQLObjectType({
             EquipoAlquilado: args.EquipoAlquilado,
             FechaAlquiler: args.FechaAlquiler,
             Observaciones: args.Observaciones
-          }).then(R => {
+          }).then( R => {
             R.Propietario = R.getEnte();
             return R;
           });
@@ -802,7 +814,7 @@ var Mutation = new GraphQLObjectType({
           return Db.models.Envase.findOne({where: {
                 NumeroInterno: args.NumeroInterno
               }
-            }).then(R => {
+            }).then( R => {
               R.Estado = args.Estado;
               R.EnteId = args.EnteId;
               R.Material = args.Material;
@@ -856,8 +868,10 @@ var Mutation = new GraphQLObjectType({
             EnvaseId: args.EnvaseId,
             PurezaFinal: args.PurezaFinal,
             PresionFinal: args.PresionFinal
-          }).then(R => {
+          }).then( R => {
+          
             return R;
+            
           });
         }
       },
@@ -882,7 +896,7 @@ var Mutation = new GraphQLObjectType({
               Lote: args.Lote,
               EnvaseId: args.EnvaseId
             }
-          }).then(R => {
+          }).then( R => {
             
             R.FechaFabricacion = args.FechaFabricacion;
             R.FechaVencimiento = args.FechaVencimiento;
@@ -916,7 +930,7 @@ var Mutation = new GraphQLObjectType({
               Lote: args.Lote,
               EnvaseId: args.EnvaseId
             }
-          }).then(R => {
+          }).then( R => {
             return R.destroy();
           });
         }
@@ -941,9 +955,34 @@ var Mutation = new GraphQLObjectType({
             Sale: args.Sale,
             Entra: args.Entra,
             ProduccionId: args.ProduccionId,
-            Total: args.Total,
-          }).then(R => {
+            Total: args.Total
+          }).then( R => {
+            console.log(R)
             return R;
+            
+          });
+        }
+      },
+      DeleteRemision: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          Sale: {type: GraphQLString},
+          Entra: {type: GraphQLString},
+          ProduccionId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Remision.findOne({
+            where: {
+              Numero: args.Numero,
+              ProduccionId: args.ProduccionId
+            }
+          }).then( R => {
+            return R.destroy();
           });
         }
       }

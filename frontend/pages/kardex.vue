@@ -10,18 +10,19 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
-            p Kardex
+            h5(class="grey--text text--lighten-4") Kardéx
             
           v-flex( xs12 )
             v-select( v-bind:items="ItemsTipoKardex"
                       v-model="TipoKardex"
-                      label="Tipo de Kardex"
-                      class="input-group--focused"
+                      label="Tipo"
                       item-value="text"
                       dark )
             
+            v-text-field( label="Número" v-model="Numero" v-if="esUnico" dark )
+            
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu1"
                     transition="scale-transition"
                     offset-y
@@ -32,17 +33,17 @@ v-layout( align-center justify-center )
               v-text-field( slot="activator"
                             label="Fecha Inicial"
                             v-model="FechaInicial"
-                            prepend-icon="event"
                             readonly )
               
-              v-date-picker( v-model="FechaInicial" no-title scrollable actions dark )
+              v-date-picker( v-model="FechaInicial" 
+                             no-title 
+                             dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
-                    v-btn( primary dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
+                    v-btn( dark warning @click.native="FechaInicial=null" ) Limpiar
             
             v-menu( lazy
-                    :close-on-content-click="false"
+                    :close-on-content-click="true"
                     v-model="menu2"
                     transition="scale-transition"
                     offset-y
@@ -53,16 +54,14 @@ v-layout( align-center justify-center )
               v-text-field( slot="activator"
                             label="Fecha Final"
                             v-model="FechaFinal"
-                            prepend-icon="event"
                             readonly )
               
               v-date-picker( v-model="FechaFinal" no-title scrollable actions dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
-                    v-btn( primary dark @click.native="save()" ) Save
             
-            v-text-field( label="Número" v-model="Numero" dark )
+            
             
       v-card-actions
         v-spacer
@@ -75,10 +74,11 @@ import gql from 'graphql-tag';
 
 export default {
   data: () => ({
-    TipoKardex: '',
-    FechaInicial: '',
-    FechaFinal: '',
-    Numero: '',
+    TipoKardex: null,
+    FechaInicial: null,
+    FechaFinal: null,
+    Numero: null,
+    esUnico: false,
     ItemsTipoKardex: [{text: 'Todos'}, {text: 'Único'}],
     
     menu1: false,
@@ -107,6 +107,11 @@ export default {
     generar() {
       window.open('about:blank');
       
+    }
+  },
+  watch: {
+    TipoKardex (value) {
+      value === 'Único' ? this.esUnico = true : this.esUnico = false
     }
   }
 };

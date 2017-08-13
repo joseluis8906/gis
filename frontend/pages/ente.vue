@@ -126,7 +126,7 @@ export default {
       },
       loadingKey: 'loading',
       update: (store, { data: res }) => {
-        console.log(Ente);
+        //console.log(Ente);
         var data = {OneEnte: res.CreateEnte}
         store.writeQuery({ 
           query: ONE_ENTE, 
@@ -151,14 +151,14 @@ export default {
           })
         } catch (Err) {
         
-          console.log ('Error controlado: '+ Err)
+          //console.log ('Error controlado: '+ Err)
         }
           
       },
       }).then( data => {        
-        console.log(data)
+        //console.log(data)
       }).catch( Err => {
-        console.log(Err)
+        //console.log(Err)
       })
     },
     Update () {
@@ -187,7 +187,7 @@ export default {
       },
       loadingKey: 'loading',
       update: (store, { data: res }) => {
-        console.log(Ente);
+        //console.log(Ente);
         var data = {OneEnte: res.UpdateEnte}
         store.writeQuery({ 
           query: ONE_ENTE, 
@@ -217,14 +217,14 @@ export default {
           
         } catch (Err) {
         
-          console.log ("Error controlado: "+Err)
+          //console.log ("Error controlado: "+Err)
         }
         
       },
       }).then( data => {        
-        console.log(data)
+        //console.log(data)
       }).catch( Err => {
-        console.log(Err)
+        //console.log(Err)
       })
     },
     Reset () {
