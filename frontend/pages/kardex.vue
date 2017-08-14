@@ -83,29 +83,11 @@ export default {
     
     menu1: false,
     menu2: false,
-    loading: 0,
-    q: 0
+    loading: 0
   }),
-  apollo: {
-    Posts: {
-      query: gql`
-      query OnePost($Id: Int!) {
-        Posts(PersonId: $Id) {
-          Title
-          Content 
-        }
-      }`,
-      variables() {
-        return {
-          Id: this.q==='' ? 0 : this.q,
-        }
-      },
-      loadingKey: 'loading'
-    }
-  },
   methods: {
     generar() {
-      window.open('about:blank');
+      window.open('/reportekardex');
       
     }
   },

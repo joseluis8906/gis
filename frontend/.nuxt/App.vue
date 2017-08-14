@@ -14,7 +14,9 @@ let layouts = {
 
   "_page": () => import('/home/joseluis/Developments/gis/frontend/layouts/page.vue'  /* webpackChunkName: "layouts/page" */),
 
-  "_plain": () => import('/home/joseluis/Developments/gis/frontend/layouts/plain.vue'  /* webpackChunkName: "layouts/plain" */)
+  "_plain": () => import('/home/joseluis/Developments/gis/frontend/layouts/plain.vue'  /* webpackChunkName: "layouts/plain" */),
+
+  "_report": () => import('/home/joseluis/Developments/gis/frontend/layouts/report.vue'  /* webpackChunkName: "layouts/report" */)
 
 }
 

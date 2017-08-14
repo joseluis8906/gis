@@ -5,7 +5,7 @@
       v-card(class="mt-5 pt-3 pb-3 pl-3 pr-3")
         v-card-text
           div(class="text-xs-center")
-            img(src="~assets/logo.gis.png" alt="Vuetify.js")
+            img(src="~assets/logo.gis.png" alt="logo.gis")
             
           h6(class="pt-4 grey--text text--lighten-4") Inicie Sessión
           p(class="pb-4") Con su cuenta GIS

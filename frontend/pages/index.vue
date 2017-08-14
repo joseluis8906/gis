@@ -1,5 +1,4 @@
 <template lang="pug">
-doctype html
 div(class="hello")
   g-carousel
   g-icon-grid
