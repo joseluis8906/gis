@@ -50,6 +50,7 @@ mutation UpdateEnvase (
     Estado
     EnteId
     Material
+    UnidadMedidaCapacidad
     Capacidad
     ClaseProducto
     Numero

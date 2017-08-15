@@ -1,9 +1,19 @@
 <template lang="pug">
 v-layout( align-center justify-center )
-  v-dialog( persistent v-model="loading" )
-    v-card
-      v-card-title( class="headline text-xs-center" ) Cargando
-        v-icon autorenew
+  v-snackbar(
+    :timeout="snackbar.timeout"
+    :success="snackbar.context === 'success'"
+    :info="snackbar.context === 'info'"
+    :warning="snackbar.context === 'warning'"
+    :error="snackbar.context === 'error'"
+    :primary="snackbar.context === 'primary'"
+    :secondary="snackbar.context === 'secondary'"
+    :multi-line="snackbar.mode === 'multi-line'"
+    :vertical="snackbar.mode === 'vertical'"
+    :top="true"
+    v-model="loading" ) 
+      h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
+      v-icon autorenew
   
   v-flex( xs12 md8 lg6 )
     v-card
@@ -14,7 +24,7 @@ v-layout( align-center justify-center )
             
           v-flex( xs12 )
             
-            v-text-field( label="Número Interno" v-model="NumeroInterno" dark )
+            v-text-field( label="Número" v-model="Numero" dark )
             
             v-select( v-bind:items="ItemsEstado"
                       v-model="Estado"
@@ -37,7 +47,14 @@ v-layout( align-center justify-center )
             
             v-text-field( label="Material" v-model="Material" dark )
             
-            v-text-field( label="Capacidad (m³)" v-model="Capacidad" dark )
+            v-select( v-bind:items="ItemsUnidadMedidaCapacidad"
+                      v-model="UnidadMedidaCapacidad"
+                      label="Unidad de Medida"
+                      item-value="text"
+                      autocomplete
+                      dark )
+            
+            v-text-field( label="Capacidad" v-model="Capacidad" dark )
             
             v-select( v-bind:items="ItemsClaseProducto"
                       v-model="ClaseProducto"
@@ -46,7 +63,7 @@ v-layout( align-center justify-center )
                       autocomplete
                       dark )
             
-            v-text-field( label="Número" v-model="Numero" dark )
+            v-text-field( label="Número Interno" v-model="NumeroInterno" dark )
             
             v-text-field( label="Presión (psi)" v-model="Presion" dark )
             
@@ -229,10 +246,17 @@ import ENVASES from '~/queries/Envases.gql'
 
 export default {
   data: () => ({
+    snackbar: {
+      context: 'secondary',
+      mode: '',
+      timeout: 6000,
+      text: 'Cargando'
+    },
     Estado: '',
     Propietario: {Nombre: '', NumeroDocumento: '', Id: -1},
     EnteId: '',
     Material: '',
+    UnidadMedidaCapacidad: '',
     Capacidad: '',
     ClaseProducto: '',
     Numero: '',
@@ -269,6 +293,11 @@ export default {
       {text: 'Helio'},
       {text: 'Nitrógeno'},
       {text: 'Aire Seco'}
+    ],
+    ItemsUnidadMedidaCapacidad: [
+      {text: 'm³'},
+      {text: 'l'},
+      {text: 'kg'}
     ],
     ItemsValvula: [
       {text: 'Si'},
@@ -311,7 +340,7 @@ export default {
       query: ONE_ENVASE,
       variables () {
         return {
-          NumeroInterno: this.NumeroInterno
+          Numero: this.Numero
         }
       },
       loadingKey: 'loading',
@@ -322,9 +351,10 @@ export default {
         this.Propietario = 
           data.OneEnvase ? data.OneEnvase.Propietario : {Nombre: '', NumeroDocumento: '', Id: -1}
         this.Material = data.OneEnvase ? data.OneEnvase.Material : ''
+        this.UnidadMedidaCapacidad = data.OneEnvase ? data.OneEnvase.UnidadMedidaCapacidad : ''
         this.Capacidad = data.OneEnvase ? data.OneEnvase.Capacidad : ''
         this.ClaseProducto = data.OneEnvase ? data.OneEnvase.ClaseProducto : ''
-        this.Numero = data.OneEnvase ? data.OneEnvase.Numero : ''
+        this.NumeroInterno = data.OneEnvase ? data.OneEnvase.NumeroInterno : ''
         this.Presion = data.OneEnvase ? data.OneEnvase.Presion : ''
         this.AlturaConValvula = data.OneEnvase ? data.OneEnvase.AlturaConValvula : ''
         this.PesoConValvula = data.OneEnvase ? data.OneEnvase.PesoConValvula : ''
@@ -367,6 +397,7 @@ export default {
         Estado: this.Estado,
         EnteId: this.Propietario.Id,
         Material: this.Material,
+        UnidadMedidaCapacidad: this.UnidadMedidaCapacidad,
         Capacidad: this.Capacidad,
         ClaseProducto: this.ClaseProducto,
         Numero: this.Numero,
@@ -397,6 +428,7 @@ export default {
           Estado: Envase.Estado,
           EnteId: Envase.EnteId,
           Material: Envase.Material,
+          UnidadMedidaCapacidad: Envase.UnidadMedidaCapacidad,
           Capacidad: Envase.Capacidad,
           ClaseProducto: Envase.ClaseProducto,
           Numero: Envase.Numero,
@@ -425,7 +457,7 @@ export default {
           store.writeQuery({ 
             query: ONE_ENVASE, 
             variables: {
-              NumeroInterno: Envase.NumeroInterno
+              Numero: Envase.Numero
             },
             data: data
           })
@@ -442,9 +474,20 @@ export default {
               query: ENVASES,
               data: data
             })
+            
           } catch (Err) {
+            
+            data.Envases = []
+            
+            data.Envases.push(res.CreateEnvase)
           
-            console.log ('Error controlado: '+ Err)
+            store.writeQuery({
+              query: ENVASES,
+              data: data
+            })
+            
+            console.log("guardado en envases")
+            
           }
         }
       }).then( data => {        
@@ -459,6 +502,7 @@ export default {
         Estado: this.Estado,
         EnteId: this.Propietario.Id,
         Material: this.Material,
+        UnidadMedidaCapacidad: this.UnidadMedidaCapacidad,
         Capacidad: this.Capacidad,
         ClaseProducto: this.ClaseProducto,
         Numero: this.Numero,
@@ -489,6 +533,7 @@ export default {
           Estado: Envase.Estado,
           EnteId: Envase.EnteId,
           Material: Envase.Material,
+          UnidadMedidaCapacidad: Envase.UnidadMedidaCapacidad,
           Capacidad: Envase.Capacidad,
           ClaseProducto: Envase.ClaseProducto,
           Numero: Envase.Numero,
@@ -517,7 +562,7 @@ export default {
           store.writeQuery({ 
             query: ONE_ENVASE, 
             variables: {
-              NumeroInterno: Envase.NumeroInterno
+              Numero: Envase.Numero
             },
             data: data
           })
@@ -540,8 +585,17 @@ export default {
             })
             
           } catch (Err) {
-          
-            console.log ("Error controlado: "+Err)
+            
+            data.Envases = []
+            
+            data.Envases.push(res.UpdateEnvase)
+            
+            store.writeQuery({
+              query: ENVASES,
+              data: data
+            })
+            
+            console.log("actualizado en envases")
           }
           
         }
@@ -556,6 +610,7 @@ export default {
       this.Propietario = {Nombre: '', NumeroDocumento: '', Id: -1};
       this.EnteId = '';
       this.Material = '';
+      this.UnidadMedidaCapacidad = '';
       this.Capacidad = '';
       this.ClaseProducto = '';
       this.Numero = '';

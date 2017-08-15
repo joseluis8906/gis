@@ -169,8 +169,14 @@ var Envase = new GraphQLObjectType({
           return Envase.Material;
         }
       },
-      Capacidad: {
+      UnidadMedidaCapacidad: {
         type: GraphQLString,
+        resolve(Envase) {
+          return Envase.UnidadMedidaCapacidad;
+        }
+      },
+      Capacidad: {
+        type: GraphQLFloat,
         resolve(Envase) {
           return Envase.Capacidad;
         }
@@ -530,6 +536,7 @@ var Query = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
+          UnidadMedidaCapacidad: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
@@ -561,6 +568,7 @@ var Query = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
+          UnidadMedidaCapacidad: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
@@ -734,6 +742,7 @@ var Mutation = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
+          UnidadMedidaCapacidad: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
@@ -759,6 +768,7 @@ var Mutation = new GraphQLObjectType({
             Estado: args.Estado,
             EnteId: args.EnteId,
             Material: args.Material,
+            UnidadMedidaCapacidad: args.UnidadMedidaCapacidad,
             Capacidad: args.Capacidad,
             Numero: args.Numero,
             NumeroInterno: args.NumeroInterno,
@@ -790,6 +800,7 @@ var Mutation = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
+          UnidadMedidaCapacidad: {type: GraphQLString},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
@@ -812,14 +823,15 @@ var Mutation = new GraphQLObjectType({
         },
         resolve(_, args) {
           return Db.models.Envase.findOne({where: {
-                NumeroInterno: args.NumeroInterno
+                Numero: args.Numero
               }
             }).then( R => {
               R.Estado = args.Estado;
               R.EnteId = args.EnteId;
               R.Material = args.Material;
+              R.UnidadMedidaCapacidad = args.UnidadMedidaCapacidad;
               R.Capacidad = args.Capacidad;
-              R.Numero = args.Numero;
+              R.NumeroInterno = args.NumeroInterno;
               R.ClaseProducto = args.ClaseProducto;
               R.Presion = args.Presion;
               R.AlturaConValvula = args.AlturaConValvula;
@@ -957,7 +969,6 @@ var Mutation = new GraphQLObjectType({
             ProduccionId: args.ProduccionId,
             Total: args.Total
           }).then( R => {
-            console.log(R)
             return R;
             
           });

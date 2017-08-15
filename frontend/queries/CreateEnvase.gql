@@ -2,6 +2,7 @@ mutation CreateEnvase (
   $Estado: String, 
   $EnteId: Int!,
   $Material: String,
+  $UnidadMedidaCapacidad: String,
   $Capacidad: Float,
   $ClaseProducto: String,
   $Numero: String,
@@ -26,6 +27,7 @@ mutation CreateEnvase (
     Estado: $Estado,
     EnteId: $EnteId,
     Material: $Material,
+    UnidadMedidaCapacidad: $UnidadMedidaCapacidad
     Capacidad: $Capacidad,
     ClaseProducto: $ClaseProducto,
     Numero: $Numero,
@@ -50,6 +52,7 @@ mutation CreateEnvase (
     Estado
     EnteId
     Material
+    UnidadMedidaCapacidad
     Capacidad
     ClaseProducto
     Numero

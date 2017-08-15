@@ -1,9 +1,19 @@
 <template lang="pug">
 v-layout( align-center justify-center )
-  v-dialog( persistent v-model="loading" )
-    v-card
-      v-card-title( class="headline text-xs-center" ) Cargando
-        v-icon autorenew
+  v-snackbar(
+    :timeout="snackbar.timeout"
+    :success="snackbar.context === 'success'"
+    :info="snackbar.context === 'info'"
+    :warning="snackbar.context === 'warning'"
+    :error="snackbar.context === 'error'"
+    :primary="snackbar.context === 'primary'"
+    :secondary="snackbar.context === 'secondary'"
+    :multi-line="snackbar.mode === 'multi-line'"
+    :vertical="snackbar.mode === 'vertical'"
+    :top="true"
+    v-model="loading" ) 
+      h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
+      v-icon autorenew
   
   v-flex( xs12 md10 lg8 )
     v-card
@@ -144,6 +154,12 @@ import ONE_ENTE from '~/queries/OneEnte.gql'
 
 export default {
   data: () => ({
+    snackbar: {
+      context: 'secondary',
+      mode: '',
+      timeout: 6000,
+      text: 'Cargando'
+    },
     Numero: '',
     Fecha: '',
     Cliente: {
@@ -213,7 +229,8 @@ export default {
           
           this.conjuntoItems.clear()
           this.Fecha = data.Remisions[0].Fecha
-          this.Cliente = data.Remisions[0].Ente
+          this.Cliente.TipoDocumento = data.Remisions[0].Ente.TipoDocumento
+          this.Cliente.NumeroDocumento = data.Remisions[0].Ente.NumeroDocumento
               
           for (let i=0; i<data.Remisions.length; i++) {
           

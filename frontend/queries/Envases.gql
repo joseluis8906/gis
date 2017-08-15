@@ -4,6 +4,7 @@ query Envases {
     Estado
     EnteId
     Material
+    UnidadMedidaCapacidad
     Capacidad
     ClaseProducto
     Numero

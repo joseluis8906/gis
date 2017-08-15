@@ -1,9 +1,10 @@
-query OneEnvase ($NumeroInterno: String!) {
-  OneEnvase(NumeroInterno: $NumeroInterno) {
+query OneEnvase ($Numero: String!) {
+  OneEnvase(Numero: $Numero) {
     Id
     Estado
     EnteId
     Material
+    UnidadMedidaCapacidad
     Capacidad
     ClaseProducto
     Numero
