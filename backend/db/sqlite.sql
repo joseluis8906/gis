@@ -37,16 +37,22 @@ CREATE TABLE IF NOT EXISTS "Ente" (
 );
 
 
+CREATE TABLE IF NOT EXISTS "Producto" (
+  "Id" INTEGER PRIMARY KEY,
+  "Nombre" TEXT UNIQUE,
+  "UnidadDeMedida" TEXT
+);
+
+
 CREATE TABLE IF NOT EXISTS "Envase" (
   "Id" INTEGER PRIMARY KEY,
   "Estado" TEXT,/*value: en uso/nuevo*/
   "EnteId" INTEGER DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "Material" TEXT,
-  "UnidadMedidaCapacidad" TEXT,
+  "ProductoId" INTEGER DEFAULT NULL REFERENCES "Producto"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "Capacidad" DECIMAL,
   "Numero" TEXT  UNIQUE,
   "NumeroInterno" TEXT,
-  "ClaseProducto" TEXT,
   "Presion" DECIMAL,
   "AlturaConValvula" DECIMAL,
   "PesoConValvula" DECIMAL,

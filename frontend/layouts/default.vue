@@ -40,6 +40,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
       },
       items: [
         { icon: 'subtitles', text: 'Ente', to: '/ente'},
+        { icon: 'delete', text: 'Producto', to: '/producto'},
         { icon: 'battery_alert', text: 'Envase', to: '/envase' },
         { icon: 'settings', text: 'Produccion', to: '/produccion' },
         { icon: 'compare_arrows', text: 'Remisión', to: '/remision' },

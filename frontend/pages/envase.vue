@@ -243,6 +243,7 @@ import CREATE_ENVASE from '~/queries/CreateEnvase.gql'
 import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
 import ENTES from '~/queries/Entes.gql'
 import ENVASES from '~/queries/Envases.gql'
+import PRODUCTOS from '~/queries/Productos.gql'
 
 export default {
   data: () => ({
@@ -284,16 +285,7 @@ export default {
     ItemsPropietario: [
       {NitOCc: '123', Nombre: 'Pedro Perez', Id: 1}
     ],
-    ItemsClaseProducto: [
-      {text: 'Oxígeno Medicinal'},
-      {text: 'Oxígeno Industrial'},
-      {text: 'Argón'},
-      {text: 'Acetileno'},
-      {text: 'Dióxido de Carbóno'},
-      {text: 'Helio'},
-      {text: 'Nitrógeno'},
-      {text: 'Aire Seco'}
-    ],
+    ItemsClaseProducto: [],
     ItemsUnidadMedidaCapacidad: [
       {text: 'm³'},
       {text: 'l'},

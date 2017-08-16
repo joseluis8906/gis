@@ -4,9 +4,8 @@ query Envases {
     Estado
     EnteId
     Material
-    UnidadMedidaCapacidad
+    ProductoId
     Capacidad
-    ClaseProducto
     Numero
     NumeroInterno
     Presion
@@ -31,6 +30,11 @@ query Envases {
       Nombre
       Direccion
       Telefono
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
     }
   }
 }

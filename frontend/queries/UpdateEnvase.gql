@@ -2,10 +2,10 @@ mutation UpdateEnvase (
   $Estado: String, 
   $EnteId: Int!,
   $Material: String,
+  $ProductoId: Int,
   $Capacidad: Float,
-  $ClaseProducto: String,
-  $Numero: String,
-  $NumeroInterno: String!,
+  $Numero: String!,
+  $NumeroInterno: String,
   $Presion: Float,
   $AlturaConValvula: Float,
   $PesoConValvula: Float,
@@ -26,8 +26,8 @@ mutation UpdateEnvase (
     Estado: $Estado,
     EnteId: $EnteId,
     Material: $Material,
+    ProductoId: $ProductoId,
     Capacidad: $Capacidad,
-    ClaseProducto: $ClaseProducto,
     Numero: $Numero,
     NumeroInterno: $NumeroInterno,
     Presion: $Presion,
@@ -50,9 +50,8 @@ mutation UpdateEnvase (
     Estado
     EnteId
     Material
-    UnidadMedidaCapacidad
+    ProductoId
     Capacidad
-    ClaseProducto
     Numero
     NumeroInterno
     Presion
@@ -77,6 +76,11 @@ mutation UpdateEnvase (
       Nombre
       Direccion
       Telefono
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
     }
   }
 }

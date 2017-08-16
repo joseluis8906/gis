@@ -60,17 +60,28 @@ const Ente = Db.define('Ente', {
 });
 
 
+//Producto
+const Producto = Db.define('Producto', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  Nombre: Sequelize.STRING,
+  UnidadDeMedida: Sequelize.STRING
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+
 //Envase
 const Envase = Db.define('Envase', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   Estado: Sequelize.STRING,
   EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: 'Id'}},
   Material: Sequelize.STRING,
-  UnidadMedidaCapacidad: Sequelize.STRING,
+  ProductoId: {type: Sequelize.INTEGER, references: {model: Producto, key: 'Id'}},
   Capacidad: Sequelize.DECIMAL,
   Numero: {type: Sequelize.STRING, unique:true},
   NumeroInterno: Sequelize.STRING,
-  ClaseProducto: Sequelize.STRING,
   Presion: Sequelize.DECIMAL,
   AlturaConValvula: Sequelize.DECIMAL,
   PesoConValvula: Sequelize.DECIMAL,
@@ -94,6 +105,9 @@ const Envase = Db.define('Envase', {
 
 Ente.hasMany(Envase);
 Envase.belongsTo(Ente);
+
+Producto.hasMany(Envase);
+Envase.belongsTo(Producto);
 
 
 //produccion

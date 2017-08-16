@@ -2,11 +2,10 @@ mutation CreateEnvase (
   $Estado: String, 
   $EnteId: Int!,
   $Material: String,
-  $UnidadMedidaCapacidad: String,
+  $ProductoId: Int,
   $Capacidad: Float,
-  $ClaseProducto: String,
-  $Numero: String,
-  $NumeroInterno: String!,
+  $Numero: String!,
+  $NumeroInterno: String,
   $Presion: Float,
   $AlturaConValvula: Float,
   $PesoConValvula: Float,
@@ -27,9 +26,8 @@ mutation CreateEnvase (
     Estado: $Estado,
     EnteId: $EnteId,
     Material: $Material,
-    UnidadMedidaCapacidad: $UnidadMedidaCapacidad
+    ProductoId: $ProductoId,
     Capacidad: $Capacidad,
-    ClaseProducto: $ClaseProducto,
     Numero: $Numero,
     NumeroInterno: $NumeroInterno,
     Presion: $Presion,
@@ -52,9 +50,8 @@ mutation CreateEnvase (
     Estado
     EnteId
     Material
-    UnidadMedidaCapacidad
+    ProductoId
     Capacidad
-    ClaseProducto
     Numero
     NumeroInterno
     Presion
@@ -79,6 +76,11 @@ mutation CreateEnvase (
       Nombre
       Direccion
       Telefono
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
     }
   }
 }

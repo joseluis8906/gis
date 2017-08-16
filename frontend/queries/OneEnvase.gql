@@ -4,9 +4,8 @@ query OneEnvase ($Numero: String!) {
     Estado
     EnteId
     Material
-    UnidadMedidaCapacidad
+    ProductoId
     Capacidad
-    ClaseProducto
     Numero
     NumeroInterno
     Presion
@@ -31,6 +30,11 @@ query OneEnvase ($Numero: String!) {
       Nombre
       Direccion
       Telefono
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
     }
   }
 }

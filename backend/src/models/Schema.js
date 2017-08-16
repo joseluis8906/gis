@@ -75,6 +75,34 @@ var Post = new GraphQLObjectType({
 });
 
 
+var Producto = new GraphQLObjectType({
+  name: "Producto",
+  description: "Object representation of Producto",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Producto) {
+          return Producto.Id;
+        }
+      },
+      Nombre: {
+        type: GraphQLString,
+        resolve(Producto) {
+          return Producto.Nombre;
+        }
+      },
+      UnidadDeMedida: {
+        type: GraphQLString,
+        resolve(Producto) {
+          return Producto.UnidadDeMedida;
+        }
+      }
+    }
+  }
+});
+
+
 var Ente = new GraphQLObjectType({
   name: "Ente",
   description: "Object representation of Ente",
@@ -169,10 +197,10 @@ var Envase = new GraphQLObjectType({
           return Envase.Material;
         }
       },
-      UnidadMedidaCapacidad: {
-        type: GraphQLString,
+      ProductoId: {
+        type: GraphQLInt,
         resolve(Envase) {
-          return Envase.UnidadMedidaCapacidad;
+          return Envase.ProductoId;
         }
       },
       Capacidad: {
@@ -191,12 +219,6 @@ var Envase = new GraphQLObjectType({
         type: GraphQLString,
         resolve(Envase) {
           return Envase.NumeroInterno;
-        }
-      },
-      ClaseProducto: {
-        type: GraphQLString,
-        resolve(Envase) {
-          return Envase.ClaseProducto;
         }
       },
       Presion: {
@@ -293,6 +315,12 @@ var Envase = new GraphQLObjectType({
         type: Ente,
         resolve(Envase) {
           return Envase.getEnte();
+        }
+      },
+      Producto: {
+        type: Producto,
+        resolve(Envase) {
+          return Envase.getProducto();
         }
       }
     }
@@ -529,6 +557,28 @@ var Query = new GraphQLObjectType({
           return Db.models.Ente.findOne({where: args});
         }
       },
+      Productos: {
+        type: new GraphQLList(Producto),
+        args: {
+          Id: {type: GraphQLInt},
+          Nombre: {type: GraphQLString},
+          UnidadDeMedida: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Productos.findAll({where: args});
+        }
+      },
+      OneProducto: {
+        type: Producto,
+        args: {
+          Id: {type: GraphQLInt},
+          Nombre: {type: GraphQLString},
+          UnidadDeMedida: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Producto.findOne({where: args});
+        }
+      },
       Envases: {
         type: new GraphQLList(Envase),
         args: {
@@ -536,11 +586,10 @@ var Query = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
-          UnidadMedidaCapacidad: {type: GraphQLString},
+          ProductoId: {type: GraphQLInt},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
-          ClaseProducto: {type: GraphQLString},
           Presion: {type: GraphQLFloat},
           AlturaConValvula: {type: GraphQLFloat},
           PesoConValvula: {type: GraphQLFloat},
@@ -568,11 +617,10 @@ var Query = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
-          UnidadMedidaCapacidad: {type: GraphQLString},
+          ProductoId: {type: GraphQLInt},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
-          ClaseProducto: {type: GraphQLString},
           Presion: {type: GraphQLFloat},
           AlturaConValvula: {type: GraphQLFloat},
           PesoConValvula: {type: GraphQLFloat},
@@ -736,17 +784,47 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
+      CreateProducto: {
+        type: Producto,
+        args: {
+          Nombre: {type: GraphQLString},
+          UnidadDeMedida: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Producto.create({
+            Nombre: args.Nombre,
+            UnidadDeMedida: args.UnidadDeMedida
+          }).then( R => {
+            return R;
+          });
+        }
+      },
+      UpdateProducto: {
+        type: Producto,
+        args: {
+          Nombre: {type: GraphQLString},
+          UnidadDeMedida: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Producto.findOne({where: {
+              Nombre: args.Nombre
+          }}).then( R => {
+            R.UnidadDeMedida = args.UnidadDeMedida;
+            R.save();
+            return R;
+          });
+        }
+      },
       CreateEnvase: {
         type: Envase,
         args: {
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
-          UnidadMedidaCapacidad: {type: GraphQLString},
+          ProductoId: {type: GraphQLInt},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
-          ClaseProducto: {type: GraphQLString},
           Presion: {type: GraphQLFloat},
           AlturaConValvula: {type: GraphQLFloat},
           PesoConValvula: {type: GraphQLFloat},
@@ -768,11 +846,10 @@ var Mutation = new GraphQLObjectType({
             Estado: args.Estado,
             EnteId: args.EnteId,
             Material: args.Material,
-            UnidadMedidaCapacidad: args.UnidadMedidaCapacidad,
+            ProductoId: args.ProductoId,
             Capacidad: args.Capacidad,
             Numero: args.Numero,
             NumeroInterno: args.NumeroInterno,
-            ClaseProducto: args.ClaseProducto,
             Presion: args.Presion,
             AlturaConValvula: args.AlturaConValvula,
             PesoConValvula: args.PesoConValvula,
@@ -790,6 +867,7 @@ var Mutation = new GraphQLObjectType({
             Observaciones: args.Observaciones
           }).then( R => {
             R.Propietario = R.getEnte();
+            R.Producto = R.getProducto();
             return R;
           });
         }
@@ -800,11 +878,10 @@ var Mutation = new GraphQLObjectType({
           Estado: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           Material: {type: GraphQLString},
-          UnidadMedidaCapacidad: {type: GraphQLString},
+          ProductoId: {type: GraphQLInt},
           Capacidad: {type: GraphQLFloat},
           Numero: {type: GraphQLString},
           NumeroInterno: {type: GraphQLString},
-          ClaseProducto: {type: GraphQLString},
           Presion: {type: GraphQLFloat},
           AlturaConValvula: {type: GraphQLFloat},
           PesoConValvula: {type: GraphQLFloat},
@@ -829,10 +906,9 @@ var Mutation = new GraphQLObjectType({
               R.Estado = args.Estado;
               R.EnteId = args.EnteId;
               R.Material = args.Material;
-              R.UnidadMedidaCapacidad = args.UnidadMedidaCapacidad;
+              R.ProductoId = args.ProductoId;
               R.Capacidad = args.Capacidad;
               R.NumeroInterno = args.NumeroInterno;
-              R.ClaseProducto = args.ClaseProducto;
               R.Presion = args.Presion;
               R.AlturaConValvula = args.AlturaConValvula;
               R.PesoConValvula = args.PesoConValvula;
@@ -850,6 +926,7 @@ var Mutation = new GraphQLObjectType({
               R.Observaciones = args.Observaciones;
               R.save();
               R.Propietario = R.getEnte();
+              R.Producto = R.getProducto();
               
               return R;
           });
