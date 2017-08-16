@@ -166,10 +166,18 @@ export default {
             data: data
           })
         } catch (Err) {
-        
-          //console.log ('Error controlado: '+ Err)
-        }
           
+          data.Entes = []
+          
+          data.Entes.push(res.CreateEnte)
+          
+          store.writeQuery({
+            query: ENTES,
+            data: data
+          })
+          
+        }
+        
       },
       }).then( data => {        
         //console.log(data)
@@ -233,7 +241,15 @@ export default {
           
         } catch (Err) {
         
-          //console.log ("Error controlado: "+Err)
+          data.Entes = []
+          
+          data.Entes.push(res.UpdateEnte)
+          
+          store.writeQuery({
+            query: ENTES,
+            data: data
+          })
+          
         }
         
       },

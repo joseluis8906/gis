@@ -340,6 +340,18 @@ var Produccion = new GraphQLObjectType({
           return Produccion.Id;
         }
       },
+      Orden: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.Orden;
+        }
+      },
+      Turno: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.Turno;
+        }
+      },
       Fecha: {
         type: GraphQLString,
         resolve(Produccion) {
@@ -350,6 +362,30 @@ var Produccion = new GraphQLObjectType({
         type: GraphQLString,
         resolve(Produccion) {
           return Produccion.Lote;
+        }
+      },
+      FechaInicial: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.FechaInicial;
+        }
+      },
+      FechaFinal: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.FechaFinal;
+        }
+      },
+      HoraInicial: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.HoraInicial;
+        }
+      },
+      HoraFinal: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.HoraFinal;
         }
       },
       FechaFabricacion: {
@@ -370,10 +406,10 @@ var Produccion = new GraphQLObjectType({
           return Produccion.Cantidad;
         }
       },
-      Producto: {
-        type: GraphQLString,
+      ProductoId: {
+        type: GraphQLInt,
         resolve(Produccion) {
-          return Produccion.Producto;
+          return Produccion.ProductoId;
         }
       },
       EnvaseId: {
@@ -394,10 +430,22 @@ var Produccion = new GraphQLObjectType({
           return Produccion.PresionFinal;
         }
       },
+      Observacion: {
+        type: GraphQLString,
+        resolve(Produccion) {
+          return Produccion.Observacion;
+        }
+      },
       Envase: {
         type: Envase,
         resolve(Produccion) {
           return Produccion.getEnvase();
+        }
+      },
+      Producto: {
+        type: Producto,
+        resolve(Produccion) {
+          return Produccion.getProducto();
         }
       }
     }
@@ -565,7 +613,7 @@ var Query = new GraphQLObjectType({
           UnidadDeMedida: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Productos.findAll({where: args});
+          return Db.models.Producto.findAll({where: args});
         }
       },
       OneProducto: {
@@ -647,15 +695,22 @@ var Query = new GraphQLObjectType({
         type: new GraphQLList(Produccion),
         args: {
           Id: {type: GraphQLInt},
+          Orden: {type: GraphQLString},
+          Turno: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Lote: {type: GraphQLString},
+          FechaInicial: {type: GraphQLString},
+          FechaFinal: {type: GraphQLString},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
           FechaFabricacion: {type: GraphQLString},
           FechaVencimiento: {type: GraphQLString},
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
-          Producto: {type: GraphQLString},
+          ProductoId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
-          PresionFinal: {type: GraphQLFloat}
+          PresionFinal: {type: GraphQLFloat},
+          Observacion: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Produccion.findAll({where: args},);
@@ -665,15 +720,22 @@ var Query = new GraphQLObjectType({
         type: Produccion,
         args: {
           Id: {type: GraphQLInt},
+          Orden: {type: GraphQLString},
+          Turno: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Lote: {type: GraphQLString},
+          FechaInicial: {type: GraphQLString},
+          FechaFinal: {type: GraphQLString},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
           FechaFabricacion: {type: GraphQLString},
           FechaVencimiento: {type: GraphQLString},
           Cantidad: {type: GraphQLFloat},
-          Producto: {type: GraphQLString},
           EnvaseId: {type: GraphQLInt},
+          ProductoId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
-          PresionFinal: {type: GraphQLFloat}
+          PresionFinal: {type: GraphQLFloat},
+          Observacion: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Produccion.findOne({where: args});
@@ -936,27 +998,41 @@ var Mutation = new GraphQLObjectType({
         type: Produccion,
         args: {
           Id: {type: GraphQLInt},
+          Orden: {type: GraphQLString},
+          Turno: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           Lote: {type: GraphQLString},
+          FechaInicial: {type: GraphQLString},
+          FechaFinal: {type: GraphQLString},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
           FechaFabricacion: {type: GraphQLString},
           FechaVencimiento: {type: GraphQLString},
           Cantidad: {type: GraphQLFloat},
-          Producto: {type: GraphQLString},
           EnvaseId: {type: GraphQLInt},
+          ProductoId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
-          PresionFinal: {type: GraphQLFloat}
+          PresionFinal: {type: GraphQLFloat},
+          Observacion: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Produccion.create({
+            Orden: args.Orden,
+            Turno: args.Turno,
             Fecha: args.Fecha,
             Lote: args.Lote,
+            FechaInicial: args.FechaInicial,
+            FechaFinal: args.FechaFinal,
+            HoraInicial: args.HoraInicial,
+            HoraFinal: args.HoraFinal,
             FechaFabricacion: args.FechaFabricacion,
             FechaVencimiento: args.FechaVencimiento,
             Cantidad: args.Cantidad,
-            Producto: args.Producto,
+            ProductoId: args.ProductoId,
             EnvaseId: args.EnvaseId,
             PurezaFinal: args.PurezaFinal,
-            PresionFinal: args.PresionFinal
+            PresionFinal: args.PresionFinal,
+            Observacion: args.Observacion
           }).then( R => {
           
             return R;
@@ -964,37 +1040,64 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
-      UpdateProduccion: {
+      UpdateOneProduccion: {
         type: Produccion,
         args: {
           Id: {type: GraphQLInt},
-          Fecha: {type: GraphQLString},
-          Lote: {type: GraphQLString},
-          FechaFabricacion: {type: GraphQLString},
-          FechaVencimiento: {type: GraphQLString},
+          Orden: {type: GraphQLString},
           Cantidad: {type: GraphQLFloat},
-          Producto: {type: GraphQLString},
           EnvaseId: {type: GraphQLInt},
-          PurezaFinal: {type: GraphQLFloat},
-          PresionFinal: {type: GraphQLFloat}
+          ProductoId: {type: GraphQLInt}
         },
         resolve(_, args) {
           return Db.models.Produccion.findOne({ 
             where: {
-              Fecha: args.Fecha,
-              Lote: args.Lote,
+              Orden: args.Orden,
               EnvaseId: args.EnvaseId
             }
           }).then( R => {
-            
-            R.FechaFabricacion = args.FechaFabricacion;
-            R.FechaVencimiento = args.FechaVencimiento;
             R.Cantidad = args.Cantidad;
-            R.Producto = args.Producto;
-            R.PurezaFinal = args.PurezaFinal;
-            R.PresionFinal = args.PresionFinal;
             R.save();
             return R;
+          });
+        }
+      },
+      UpdateProduccions: {
+        type: Produccion,
+        args: {
+          Id: {type: GraphQLInt},
+          Orden: {type: GraphQLString},
+          Turno: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaInicial: {type: GraphQLString},
+          FechaFinal: {type: GraphQLString},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat},
+          Observacion: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Produccion.update({ 
+            Turno: args.Turno,
+            Fecha: args.Fecha,
+            Lote: args.Lote,
+            FechaInicial: args.FechaInicial,
+            FechaFinal: args.FechaFinal,
+            HoraInicial: args.HoraInicial,
+            HoraFinal: args.HoraFinal,
+            FechaFabricacion: args.FechaFabricacion,
+            FechaVencimiento: args.FechaVencimiento,
+            PurezaFinal: args.PurezaFinal,
+            PresionFinal: args.PresionFinal,
+            Observacion: args.Observacion
+          },{
+            where: {
+              Orden: args.Orden
+            }
           });
         }
       },
@@ -1002,21 +1105,13 @@ var Mutation = new GraphQLObjectType({
         type: Produccion,
         args: {
           Id: {type: GraphQLInt},
-          Fecha: {type: GraphQLString},
-          Lote: {type: GraphQLString},
-          FechaFabricacion: {type: GraphQLString},
-          FechaVencimiento: {type: GraphQLString},
-          Cantidad: {type: GraphQLFloat},
-          Producto: {type: GraphQLString},
-          EnvaseId: {type: GraphQLInt},
-          PurezaFinal: {type: GraphQLFloat},
-          PresionFinal: {type: GraphQLFloat}
+          Orden: {type: GraphQLString},
+          EnvaseId: {type: GraphQLInt}
         },
         resolve(_, args) {
           return Db.models.Produccion.findOne({
             where : {
-              Fecha: args.Fecha,
-              Lote: args.Lote,
+              Orden: args.Orden,
               EnvaseId: args.EnvaseId
             }
           }).then( R => {

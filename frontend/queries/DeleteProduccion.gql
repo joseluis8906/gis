@@ -1,39 +1,65 @@
 mutation DeleteProduccion ( 
-  $Fecha: String!, 
-  $Lote: String!,
-  $FechaFabricacion: String,
-  $FechaVencimiento: String,
-  $Cantidad: Float,
-  $Producto: String,
+  $Orden: String!,
+  $Turno: String, 
+  $Fecha: String, 
+  $Lote: String,
+  $FechaInicial: String,
+  $FechaFinal: String,
+  $HoraInicial: String,
+  $HoraFinal: String,
+  $FechaFabricacion: String!,
+  $FechaVencimiento: String!,
+  $Cantidad: Float!,
+  $ProductoId: Int!,
   $EnvaseId: Int!,
-  $PurezaFinal: Float,
-  $PresionFinal: Float
+  $PurezaFinal: Float!,
+  $PresionFinal: Float!
+  $Observacion: String
 ) {
-  DeleteProduccion (
+  CreateProduccion (
+    Orden: $Orden,
+    Turno: $Turno,
     Fecha: $Fecha,
     Lote: $Lote,
+    FechaInicial: $FechaInicial,
+    FechaFinal: $FechaFinal,
+    HoraInicial: $HoraInicial,
+    HoraFinal: $HoraFinal,
     FechaFabricacion: $FechaFabricacion,
     FechaVencimiento: $FechaVencimiento,
     Cantidad: $Cantidad,
-    Producto: $Producto,
+    ProductoId: $ProductoId,
     EnvaseId: $EnvaseId,
     PurezaFinal: $PurezaFinal,
-    PresionFinal: $PresionFinal
+    PresionFinal: $PresionFinal,
+    Observacion: $Observacion
   ){
     Id
+    Orden
+    Turno
     Fecha
     Lote
+    FechaInicial
+    FechaFinal
+    HoraInicial
+    HoraFinal
     FechaFabricacion
     FechaVencimiento
     Cantidad
-    Producto
+    ProductoId
     EnvaseId
     PurezaFinal
     PresionFinal
+    Observacion
     Envase {
       Id
-      NumeroInterno
+      Numero
       Capacidad
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
     }
   }
 }

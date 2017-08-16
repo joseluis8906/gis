@@ -1,7 +1,7 @@
-mutation CreateProduccion ( 
+mutation UpdateProduccion ( 
   $Orden: String!,
   $Turno: String,
-  $Fecha: String, 
+  $Fecha: String,
   $Lote: String,
   $FechaInicial: String,
   $FechaFinal: String,
@@ -16,9 +16,9 @@ mutation CreateProduccion (
   $PresionFinal: Float!
   $Observacion: String
 ) {
-  CreateProduccion (
+  UpdateProduccion (
     Orden: $Orden,
-    Turno: $Turno
+    Turno; $Turno,
     Fecha: $Fecha,
     Lote: $Lote,
     FechaInicial: $FechaInicial,

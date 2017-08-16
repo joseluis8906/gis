@@ -40,28 +40,26 @@ v-layout( align-center justify-center )
                       item-text="Nombre"
                       autocomplete
                       return-object
-                      :hint="`Nit/C.C: ${Propietario.NumeroDocumento}`"
+                      :hint="`${Propietario.TipoDocumento || ''}: ${Propietario.NumeroDocumento || ''}`"
                       persistent-hint
                       @click.native="ResetPropietario()"
                       dark )
             
             v-text-field( label="Material" v-model="Material" dark )
             
-            v-select( v-bind:items="ItemsUnidadMedidaCapacidad"
-                      v-model="UnidadMedidaCapacidad"
-                      label="Unidad de Medida"
-                      item-value="text"
+            v-select( v-bind:items="ItemsProducto"
+                      v-model="Producto"
+                      label="Clase de Producto"
+                      item-value="Id"
+                      item-text="Nombre"
                       autocomplete
+                      return-object
+                      :hint="`Unidad de Medida: ${Producto.UnidadDeMedida || ''}`"
+                      persistent-hint
+                      @click.native="ResetProducto()"
                       dark )
             
             v-text-field( label="Capacidad" v-model="Capacidad" dark )
-            
-            v-select( v-bind:items="ItemsClaseProducto"
-                      v-model="ClaseProducto"
-                      label="Clase de Producto"
-                      item-value="text"
-                      autocomplete
-                      dark )
             
             v-text-field( label="Número Interno" v-model="NumeroInterno" dark )
             
@@ -257,9 +255,8 @@ export default {
     Propietario: {Nombre: '', NumeroDocumento: '', Id: -1},
     EnteId: '',
     Material: '',
-    UnidadMedidaCapacidad: '',
+    Producto: {Id: null, Nombre: null, UnidadDeMedida: null},
     Capacidad: '',
-    ClaseProducto: '',
     Numero: '',
     NumeroInterno: '',
     Presion: '',
@@ -282,15 +279,8 @@ export default {
       {text: 'Nuevo'},
       {text: 'En Uso'},
     ],
-    ItemsPropietario: [
-      {NitOCc: '123', Nombre: 'Pedro Perez', Id: 1}
-    ],
-    ItemsClaseProducto: [],
-    ItemsUnidadMedidaCapacidad: [
-      {text: 'm³'},
-      {text: 'l'},
-      {text: 'kg'}
-    ],
+    ItemsPropietario: [],
+    ItemsProducto: [],
     ItemsValvula: [
       {text: 'Si'},
       {text: 'No'}
@@ -341,11 +331,10 @@ export default {
         this.Estado = data.OneEnvase ? data.OneEnvase.Estado : ''
         this.EnteId = data.OneEnvase ? data.OneEnvase.EnteId : ''
         this.Propietario = 
-          data.OneEnvase ? data.OneEnvase.Propietario : {Nombre: '', NumeroDocumento: '', Id: -1}
+          data.OneEnvase ? data.OneEnvase.Propietario : {Nombre: null, NumeroDocumento: null, Id: null}
         this.Material = data.OneEnvase ? data.OneEnvase.Material : ''
-        this.UnidadMedidaCapacidad = data.OneEnvase ? data.OneEnvase.UnidadMedidaCapacidad : ''
+        this.Producto = data.OneEnvase ? data.OneEnvase.Producto ? data.OneEnvase.Producto : {Id: null, Nombre: null, UnidadDeMedida: null} : {Id: null, Nombre: null, UnidadDeMedida: null}
         this.Capacidad = data.OneEnvase ? data.OneEnvase.Capacidad : ''
-        this.ClaseProducto = data.OneEnvase ? data.OneEnvase.ClaseProducto : ''
         this.NumeroInterno = data.OneEnvase ? data.OneEnvase.NumeroInterno : ''
         this.Presion = data.OneEnvase ? data.OneEnvase.Presion : ''
         this.AlturaConValvula = data.OneEnvase ? data.OneEnvase.AlturaConValvula : ''
@@ -373,6 +362,14 @@ export default {
         //console.log(data)
         this.ItemsPropietario = data.Entes
       }
+    },
+    Productos: {
+      query: PRODUCTOS,
+      loadingKey: 'loading',
+      update (data) {
+        //console.log(data)
+        this.ItemsProducto = data.Productos
+      }
     }
   },
   methods: {
@@ -389,9 +386,8 @@ export default {
         Estado: this.Estado,
         EnteId: this.Propietario.Id,
         Material: this.Material,
-        UnidadMedidaCapacidad: this.UnidadMedidaCapacidad,
+        ProductoId: this.Producto.Id,
         Capacidad: this.Capacidad,
-        ClaseProducto: this.ClaseProducto,
         Numero: this.Numero,
         NumeroInterno: this.NumeroInterno,
         Presion: this.Presion,
@@ -420,9 +416,8 @@ export default {
           Estado: Envase.Estado,
           EnteId: Envase.EnteId,
           Material: Envase.Material,
-          UnidadMedidaCapacidad: Envase.UnidadMedidaCapacidad,
+          ProductoId: Envase.ProductoId,
           Capacidad: Envase.Capacidad,
-          ClaseProducto: Envase.ClaseProducto,
           Numero: Envase.Numero,
           NumeroInterno: Envase.NumeroInterno,
           Presion: Envase.Presion,
@@ -472,13 +467,11 @@ export default {
             data.Envases = []
             
             data.Envases.push(res.CreateEnvase)
-          
+            
             store.writeQuery({
               query: ENVASES,
               data: data
             })
-            
-            console.log("guardado en envases")
             
           }
         }
@@ -494,9 +487,8 @@ export default {
         Estado: this.Estado,
         EnteId: this.Propietario.Id,
         Material: this.Material,
-        UnidadMedidaCapacidad: this.UnidadMedidaCapacidad,
+        ProductoId: this.Producto.Id,
         Capacidad: this.Capacidad,
-        ClaseProducto: this.ClaseProducto,
         Numero: this.Numero,
         NumeroInterno: this.NumeroInterno,
         Presion: this.Presion,
@@ -525,9 +517,8 @@ export default {
           Estado: Envase.Estado,
           EnteId: Envase.EnteId,
           Material: Envase.Material,
-          UnidadMedidaCapacidad: Envase.UnidadMedidaCapacidad,
+          ProductoId: Envase.ProductoId,
           Capacidad: Envase.Capacidad,
-          ClaseProducto: Envase.ClaseProducto,
           Numero: Envase.Numero,
           NumeroInterno: Envase.NumeroInterno,
           Presion: Envase.Presion,
@@ -587,7 +578,6 @@ export default {
               data: data
             })
             
-            console.log("actualizado en envases")
           }
           
         }
@@ -602,9 +592,8 @@ export default {
       this.Propietario = {Nombre: '', NumeroDocumento: '', Id: -1};
       this.EnteId = '';
       this.Material = '';
-      this.UnidadMedidaCapacidad = '';
+      this.Producto = {Id: null, Nombre: null, UnidadDeMedida: null};
       this.Capacidad = '';
-      this.ClaseProducto = '';
       this.Numero = '';
       this.NumeroInterno = '';
       this.Presion = '';
@@ -624,7 +613,10 @@ export default {
       this.Observaciones = '';
     },
     ResetPropietario () {
-      this.Propietario = {Nombre: '', NumeroDocumento: '', Id: -1}
+      this.Propietario = {Nombre: null, NumeroDocumento: null, Id: null}
+    },
+    ResetProducto () {
+      this.Producto = {Nombre: null, UnidadDeMedida: null, Id: null}
     }
   }
 };

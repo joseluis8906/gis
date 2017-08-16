@@ -113,15 +113,22 @@ Envase.belongsTo(Producto);
 //produccion
 const Produccion = Db.define('Produccion', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  Orden: Sequelize.STRING,
+  Turno: Sequelize.STRING,
   Fecha: Sequelize.DATEONLY,
   Lote: Sequelize.STRING,
+  FechaInicial: Sequelize.DATEONLY,
+  FechaFinal: Sequelize.DATEONLY,
+  HoraInicial: Sequelize.TIME,
+  HoraFinal: Sequelize.TIME,
   FechaFabricacion: Sequelize.DATEONLY,
   FechaVencimiento: Sequelize.DATEONLY,
   Cantidad: Sequelize.DECIMAL,
-  Producto: Sequelize.STRING,
+  ProductoId: {type: Sequelize.INTEGER, references: {model: Producto, key: "Id"}},
   EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
   PurezaFinal: Sequelize.DECIMAL,
-  PresionFinal: Sequelize.DECIMAL
+  PresionFinal: Sequelize.DECIMAL,
+  Observacion: Sequelize.TEXT
 },
 {
   timestamps: false,
@@ -130,6 +137,9 @@ const Produccion = Db.define('Produccion', {
 
 Envase.hasMany(Produccion);
 Produccion.belongsTo(Envase);
+
+Producto.hasMany(Produccion);
+Produccion.belongsTo(Producto)
 
 
 //remision

@@ -73,16 +73,23 @@ CREATE TABLE IF NOT EXISTS "Envase" (
 
 CREATE TABLE IF NOT EXISTS "Produccion" (
   "Id" INTEGER PRIMARY KEY,
+  "Orden" TEXT,
+  "Turno" TEXT,
   "Fecha" DATE,
   "Lote" TEXT,
+  "FechaInicial" DATE,
+  "FechaFinal" DATE,
+  "HoraInicial" DATETIME,
+  "HoraFinal" DATETIME,
   "FechaFabricacion" DATE,
   "FechaVencimiento" DATE,
   "Cantidad" DECIMAL,
-  "Producto" TEXT,
+  "ProductoId" INTEGER DEFAULT NULL REFERENCES "Producto"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "EnvaseId" INTEGER DEFAULT NULL REFERENCES "Envase"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "PurezaFinal" DECIMAL,
   "PresionFinal" DECIMAL,
-  UNIQUE(Fecha, Lote, EnvaseId)
+  "Observacion" TEXT,
+  UNIQUE(Orden, EnvaseId)
 );
 
 

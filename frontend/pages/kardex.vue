@@ -103,7 +103,7 @@ export default {
   }),
   methods: {
     generar() {
-      window.open('/reportekardex');
+      window.open('/reporte/kardex');
       
     }
   },

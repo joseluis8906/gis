@@ -408,7 +408,16 @@ export default {
                 })
                 
               } catch (Err) {
-                //console.log(`Error controlado: ${Err}`)
+                
+                data.Remisions = []
+                  
+                data.Remisions.push(res.CreateRemision)
+                
+                store.writeQuery({
+                  query: REMISIONS,
+                  data: data
+                })
+                
               }
               
             }
@@ -476,7 +485,16 @@ export default {
               })
               
             } catch (Err) {
-              //console.log(`Error controlado: ${Err}`)
+              
+              data.Remisions = []
+              
+              data.Remisions.push(res.UpdateRemision)
+              
+              store.writeQuery({
+                query: REMISIONS,
+                data: data
+              })
+              
             }
             
           }
@@ -524,7 +542,7 @@ export default {
       }
     },
     generar () {
-      window.open('/reporteremision');
+      window.open('/reporte/remision');
     }
   },
   components: {

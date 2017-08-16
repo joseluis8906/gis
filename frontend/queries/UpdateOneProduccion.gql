@@ -1,0 +1,41 @@
+mutation UpdateOneProduccion ( 
+  $Orden: String!,
+  $Cantidad: Float!,
+  $ProductoId: Int!,
+  $EnvaseId: Int!,
+) {
+  UpdateOneProduccion (
+    Orden: $Orden,
+    Cantidad: $Cantidad,
+    ProductoId: $ProductoId,
+    EnvaseId: $EnvaseId,
+  ){
+    Id
+    Orden
+    Turno
+    Fecha
+    Lote
+    FechaInicial
+    FechaFinal
+    HoraInicial
+    HoraFinal
+    FechaFabricacion
+    FechaVencimiento
+    Cantidad
+    ProductoId
+    EnvaseId
+    PurezaFinal
+    PresionFinal
+    Observacion
+    Envase {
+      Id
+      Numero
+      Capacidad
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
+    }
+  }
+}
