@@ -11,9 +11,24 @@
 }*/
 
 // Import Vuetify styling
+//@require '~vuetify/src/stylus/main.styl'
+
+@require '~vuetify/src/stylus/settings/_colors.styl'
+
+$theme := {
+  primary: $teal.lighten-3
+  accent: $blue.accent-2
+  secondary: $grey.darken-3
+  info: $blue.base
+  warning: $amber.base
+  error: $red.base
+  success: $green.base
+}
+
 @require '~vuetify/src/stylus/main.styl'
 
 .page
   @extend .fade-transition
 
-
+.picker--time__clock, .application--dark .btn.btn--icon, .application--dark .btn.btn--floating
+  color black

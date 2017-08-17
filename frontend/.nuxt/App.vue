@@ -10,13 +10,13 @@ import NuxtLoading from './components/nuxt-loading.vue'
 
 let layouts = {
 
-  "_default": () => import('/home/joseluis/Developments/gis/frontend/layouts/default.vue'  /* webpackChunkName: "layouts/default" */),
+  "_default": () => import('/media/joseluis/Datos/Developments/gis/frontend/layouts/default.vue'  /* webpackChunkName: "layouts/default" */),
 
-  "_page": () => import('/home/joseluis/Developments/gis/frontend/layouts/page.vue'  /* webpackChunkName: "layouts/page" */),
+  "_page": () => import('/media/joseluis/Datos/Developments/gis/frontend/layouts/page.vue'  /* webpackChunkName: "layouts/page" */),
 
-  "_plain": () => import('/home/joseluis/Developments/gis/frontend/layouts/plain.vue'  /* webpackChunkName: "layouts/plain" */),
+  "_plain": () => import('/media/joseluis/Datos/Developments/gis/frontend/layouts/plain.vue'  /* webpackChunkName: "layouts/plain" */),
 
-  "_report": () => import('/home/joseluis/Developments/gis/frontend/layouts/report.vue'  /* webpackChunkName: "layouts/report" */)
+  "_report": () => import('/media/joseluis/Datos/Developments/gis/frontend/layouts/report.vue'  /* webpackChunkName: "layouts/report" */)
 
 }
 
