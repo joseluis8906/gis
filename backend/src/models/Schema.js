@@ -716,6 +716,27 @@ var Query = new GraphQLObjectType({
           return Db.models.Produccion.findAll({where: args},);
         }
       },
+      ProduccionsByClient: {
+        type: new GraphQLList(Produccion),
+        args: {
+          Fecha: {type: GraphQLString},
+          FechaInicial: {type: GraphQLString},
+          FechaFinal: {type: GraphQLString},
+          HoraInicial: {type: GraphQLString},
+          HoraFinal: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          EnvaseId: {type: GraphQLInt},
+          ProductoId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat},
+          Observacion: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Produccion.findAll({where: args},);
+        }
+      },
       OneProduccion: {
         type: Produccion,
         args: {

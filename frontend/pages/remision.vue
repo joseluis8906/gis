@@ -90,21 +90,23 @@ v-layout( align-center justify-center )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
                   v-select( v-bind:items="ItemsProduccion"
                             v-model="props.item.Sale"
-                            label="Sale"
                             item-text="Numero"
                             item-value="Id"
                             return-object
                             autocomplete
-                            dark
                             style="width: 64px"
-                            class="input-tab mb-0 mt-0 pb-0" )
+                            class="input-tab mb-0 mt-0 pb-0 select-especial"
+                            light )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
-                  input( v-model="props.item.Entra" 
-                         style="width: 64px" 
-                         class="input-tab mb-0 mt-0 pb-0" 
-                         :readonly="!props.item.EntraEditable"
-                         @click="enableable(props.item, 'Entra')" 
-                         @keypress.enter="disableable(props.item, 'Entra')" )
+                  v-select( v-bind:items="ItemsEnvase"
+                            v-model="props.item.Sale"
+                            item-text="Numero"
+                            item-value="Id"
+                            return-object
+                            autocomplete
+                            style="width: 64px"
+                            class="input-tab mb-0 mt-0 pb-0 select-especial"
+                            light )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Elaboracion }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Vencimiento }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Lote }}
@@ -176,9 +178,9 @@ export default {
     ItemsEnvase: [],
     headers: [
       { text: 'Cant', align: 'left', sortable: false,  value: 'Cantidad' },
-      { text: 'Producto', align: 'left', sortable: false,  value: 'Producto' },
-      { text: 'Sale', align: 'center', sortable: true,  value: 'Sale' },
-      { text: 'Entra', align: 'center', sortable: true,  value: 'Entra' },
+      { text: 'Producto', align: 'left', sortable: true,  value: 'Producto' },
+      { text: 'Sale', align: 'center', sortable: false,  value: 'Sale' },
+      { text: 'Entra', align: 'center', sortable: false,  value: 'Entra' },
       { text: 'F.Elaboración', align: 'center', sortable: false,  value: 'Elaboración' },
       { text: 'F.Vencimiento', align: 'center', sortable: false,  value: 'Vencimiento' },
       { text: 'Lote', align: 'center', sortable: false,  value: 'Lote' },
@@ -251,35 +253,6 @@ export default {
           
         }
       
-      }
-    },
-    Produccions: {
-      query: PRODUCCIONS,
-      loadingKey: 'loading',
-      update (data) {
-        //console.log(data)
-        if (data.Produccions.length>0) {
-          
-          this.ItemsProduccion = []
-          
-          for(let i=0; i<data.Produccions.length; i++) {
-            
-            var tmp = {
-            Id: null,
-            ProduccionId: data.Produccions[i].Id,
-            Cantidad: data.Produccions[i].Cantidad,
-            Producto: data.Produccions[i].Producto,
-            Sale: data.Produccions[i].Envase.Numero, SaleEditable:false,
-            Entra: null, EntraEditable: false,
-            Elaboracion: data.Produccions[i].FechaFabricacion,
-            Vencimiento: data.Produccions[i].FechaVencimiento,
-            Lote: data.Produccions[i].Lote,
-            Total: null, TotalEditable: false, TotalFocus: false}
-            
-            this.ItemsProduccion.push(tmp)
-          }
-          
-        }
       }
     },
     OneEnte: {
@@ -533,6 +506,7 @@ export default {
     generar () {
       window.open('/reporte/remision');
     }
+    
   },
   components: {
     VMoney
@@ -549,5 +523,8 @@ export default {
   text-align center
   outline none
   border-bottom 1px dotted #555555
+  
+.select-especial
+  border-bottom none !important
   
 </style>
