@@ -141,7 +141,6 @@ v-layout( align-center justify-center )
                       item-value="Id"
                       return-object
                       autocomplete
-                      :disabled="!ChangeProducto"
                       dark )
             
             v-menu( lazy
@@ -204,7 +203,7 @@ v-layout( align-center justify-center )
             
             h6(class="grey--text text--lighten-4") Descripción
             
-            v-select( v-bind:items="ItemsEnvase"
+            v-select( v-bind:items="ItemsEnvases"
                       v-model="EnvaseActual"
                       label="Envase"
                       item-text="Numero"
@@ -278,8 +277,6 @@ export default {
     PurezaFinal: null,
     PresionFinal: null,
     Observacion: null,
-    ChangeProducto: true,
-    ChangeProductoCounter: 0,
     headers: [
       { text: 'Envase', align: 'left', sortable: true,  value: 'Numero' },
       { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
@@ -291,9 +288,8 @@ export default {
     pagination: {
       sortBy: 'Numero'
     },
-    ItemsProducto: [], 
-    ItemsAllEnvase: [],
-    ItemsEnvase: [],
+    ItemsProducto: [],
+    ItemsEnvases: [],
     EnvaseActual: {Numero: null, Cantidad: null, Capacidad: null, UnidadDeMedida: null},
     Conjunto: new Set(),
     months: [
@@ -325,18 +321,16 @@ export default {
       query: ENVASES,
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
         if (data.Envases) {
-          this.ItemsAllEnvase = []
+          this.ItemsEnvases = []
           for (let i=0; i<data.Envases.length; i++) {
             var tmp = {}
             tmp.Id = data.Envases[i].Id
             tmp.Numero = data.Envases[i].Numero
             tmp.Capacidad = data.Envases[i].Capacidad
             tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida
-            tmp.ProductoId = data.Envases[i].Producto.Id
             tmp.Cantidad = null
-            this.ItemsAllEnvase.push(tmp)
+            this.ItemsEnvases.push(tmp)
           }
         }
       }
@@ -350,7 +344,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
+        console.log(data)
         if (data.Produccions.length > 0) {
           this.Turno = data.Produccions[0].Turno
           this.Fecha = data.Produccions[0].Fecha
@@ -373,15 +367,14 @@ export default {
             tmp.Capacidad = data.Produccions[i].Envase.Capacidad
             tmp.Cantidad = data.Produccions[i].Cantidad
             tmp.UnidadDeMedida = data.Produccions[i].Producto.UnidadDeMedida
-            for (let j=0; j<this.ItemsAllEnvase.length; j++) {
-              if ( data.Produccions[i].Envase.Id === this.ItemsAllEnvase[j].Id ) {
-                this.ItemsAllEnvase[j].Cantidad = data.Produccions[i].Cantidad
-                this.Conjunto.add(this.ItemsAllEnvase[j])
+            for (let j=0; j<this.ItemsEnvases.length; j++) {
+              if ( data.Produccions[i].Envase.Id === this.ItemsEnvases[j].Id ) {
+                this.ItemsEnvases[j].Cantidad = data.Produccions[i].Cantidad
+                this.Conjunto.add(this.ItemsEnvases[j])
                 this.items = Array.from(this.Conjunto)
               }
             }
           }
-          
         } else {
           this.reset ()
         }
@@ -459,8 +452,8 @@ export default {
               },
               loadingKey: 'loading',
               update (store, {data: res}) {
-                //console.log ('guardar')
-                //console.log ({store: store, res: res})
+                console.log('guardar')
+                console.log ({store: store, res: res})
                 
                 try{
                   const data = store.readQuery({
@@ -539,8 +532,8 @@ export default {
               },
               loadingKey: 'loading',
               update (store, {data: res}) {
-                //console.log('actualizar')
-                //console.log ({store: store, res: res})
+                console.log('actualizar')
+                console.log ({store: store, res: res})
                 
                 try{
                   const data = store.readQuery({
@@ -637,7 +630,7 @@ export default {
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
-          //console.log ({store: store, res: res})
+          console.log ({store: store, res: res})
           
           try{
             const data = store.readQuery({
@@ -662,22 +655,21 @@ export default {
             })
             
           } catch (Err) {
-            //console.log("`Error controlado: ${Err}`")
+            console.log("`Error controlado: ${Err}`")
           }
           
         }
       })
       
-      for (let j=0; j<this.ItemsEnvase.length; j++) {
-        if ( this.ItemsEnvase[j].Id === item.Id ) {
-          this.ItemsEnvase[j].Cantidad = null
+      for (let j=0; j<this.ItemsEnvases.length; j++) {
+        if ( this.ItemsEnvases[j].Id === item.Id ) {
+          this.ItemsEnvases[j].Cantidad = null
         }
       }
       
       this.EnvaseActual = {Id: null, Numero: null, Cantidad: null, Capacidad: null, UnidadDeMedida: null}
     },
     reset () {
-      this.ChangeProducto=true
       this.Fecha = null,
       this.Turno = null,
       this.Lote = '01',
@@ -687,34 +679,23 @@ export default {
       this.HoraFinal = null,
       this.FechaFabricacion = null,
       this.FechaVencimiento = null,
-      this.Producto = {Id: null, Nombre: null},
+      this.Producto = null,
       this.PurezaFinal = null,
       this.PresionFinal = null,
       this.Observacion = null,
       this.EnvaseActual = {Cantidad: null, Capacidad: null, UnidadDeMedida: null}
-      for (let j=0; j<this.ItemsEnvase.length; j++) {
-        this.ItemsEnvase[j].Cantidad = null
-      }
-      this.ItemsEnvase = []
       this.Conjunto.clear ()
       this.items = Array.from(this.Conjunto)
-      this.ChangeProductoCounter=0
+      for (let j=0; j<this.ItemsEnvases.length; j++) {
+        this.ItemsEnvases[j].Cantidad = null
+      }
+      
     },
     hardReset () {
       this.Orden = null
-      this.reset ()
     },
     filtrarEnvases () {
-      this.ChangeProductoCounter++
-      if( this.ChangeProductoCounter === 2 ) {
-        this.ChangeProducto=false
-        this.ItemsEnvase = []
-        for (let i=0; i<this.ItemsAllEnvase.length; i++) {
-          if ( this.Producto.Id === this.ItemsAllEnvase[i].ProductoId ) {
-            this.ItemsEnvase.push(this.ItemsAllEnvase[i])
-          }
-        }
-      }
+      
     }
   }
 };

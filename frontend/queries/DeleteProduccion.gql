@@ -1,38 +1,10 @@
 mutation DeleteProduccion ( 
   $Orden: String!,
-  $Turno: String, 
-  $Fecha: String, 
-  $Lote: String,
-  $FechaInicial: String,
-  $FechaFinal: String,
-  $HoraInicial: String,
-  $HoraFinal: String,
-  $FechaFabricacion: String!,
-  $FechaVencimiento: String!,
-  $Cantidad: Float!,
-  $ProductoId: Int!,
-  $EnvaseId: Int!,
-  $PurezaFinal: Float!,
-  $PresionFinal: Float!
-  $Observacion: String
+  $EnvaseId: Int!
 ) {
-  CreateProduccion (
+  DeleteProduccion (
     Orden: $Orden,
-    Turno: $Turno,
-    Fecha: $Fecha,
-    Lote: $Lote,
-    FechaInicial: $FechaInicial,
-    FechaFinal: $FechaFinal,
-    HoraInicial: $HoraInicial,
-    HoraFinal: $HoraFinal,
-    FechaFabricacion: $FechaFabricacion,
-    FechaVencimiento: $FechaVencimiento,
-    Cantidad: $Cantidad,
-    ProductoId: $ProductoId,
-    EnvaseId: $EnvaseId,
-    PurezaFinal: $PurezaFinal,
-    PresionFinal: $PresionFinal,
-    Observacion: $Observacion
+    EnvaseId: $EnvaseId
   ){
     Id
     Orden
