@@ -202,49 +202,48 @@ v-layout( align-center justify-center )
             
             v-text-field( label="Observacion" v-model="Observacion" multi-line dark )
             
+            h6(class="grey--text text--lighten-4") Descripción
+            
+            v-select( v-bind:items="ItemsEnvase"
+                      v-model="EnvaseActual"
+                      label="Envase"
+                      item-text="Numero"
+                      item-value="Id"
+                      return-object
+                      autocomplete
+                      :hint="`Capacidad: ${EnvaseActual.Capacidad || ''} ${EnvaseActual.UnidadDeMedida || ''}`"
+                      persistent-hint
+                      dark )
+            
+            v-text-field( :label="`Cantidad ${EnvaseActual.UnidadDeMedida || ''}`" v-model="EnvaseActual.Cantidad" dark )
+            
+            v-btn(fab dark class="indigo mb-5" @click.native="agregar")
+              v-icon(dark) add
+            
             v-data-table( v-bind:headers="headers"
                           v-bind:items="items"
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
               
               template(slot="items" scope="props")
-                td( class="text-xs-center subheading" ) {{ props.item.Envase.UnidadDeMedida }}
-                td( class="text-xs-center subheading" 
-                    style="border-left: 1px solid #999999" ) {{ props.item.Envase.Capacidad }}
-                td( style="border-left: 1px solid #999999" )
-                   v-select( v-bind:items="ItemsFilteredEnvase"
-                             v-model="props.item.Envase"
-                             item-text="Numero"
-                             item-value="Id"
-                             return-object
-                             autocomplete
-                             light
-                             class="input-tab mb-0 mt-0 pb-0"
-                             style="width: 96px; font-size: 90%" )
-                td( style="border-left: 1px solid #999999" )
-                    v-text-field( v-model="props.item.Cantidad"
-                                  light 
-                                  @keyup.native="controlCantidad(props.item)"
-                                  style="width: 48px; height:31px; text-align-last: center" 
-                                  class="pt-0 pb-0 mt-0 mb-0 " )
+                td( class="text-xs-center " ) {{ props.item.UnidadDeMedida }}
+                td( class="text-xs-center" 
+                    style="border-left: 1px solid #999999" ) {{ props.item.Capacidad }}
+                td( style="border-left: 1px solid #999999" ) {{ props.item.Numero}}
+                td( class="text-xs-right " 
+                    style="border-left: 1px solid #999999"
+                    ) {{ props.item.Cantidad }}
                 td( style="border-left: 1px solid #999999" class="pt-0 pb-0")
                   v-select( v-bind:items="ItemsCliente"
-                      v-model="props.item.Cliente"
+                      v-model="Cliente"
                       item-value="Id"
                       item-text="Nombre"
                       autocomplete
                       return-object
+                      @click.native="ResetCliente()"
                       light
                       class="input-tab mb-0 mt-0 pb-0"
                       style="width: 148px" )
-                td(style="width:24px; border-left: 1px solid #999999" class="pl-1 pr-1")
-                  v-btn( fab
-                         dark
-                         small
-                         success
-                         style="width: 24px; height:24px"
-                         @click.native="guardar(props.item)")
-                    v-icon(dark) save
-                    
+                td(style="width:24px; border-left: 1px solid #999999")
                   v-btn( fab
                          dark
                          small
@@ -252,9 +251,6 @@ v-layout( align-center justify-center )
                          style="width: 24px; height:24px"
                          @click.native="eliminar(props.item)")
                     v-icon(dark) remove
-                    
-            v-btn(fab dark class="indigo" @click.native="agregar")
-              v-icon(dark) add
       v-card-actions
         v-spacer
         v-btn( dark warning @click.native="hardReset" ) Limpiar
@@ -309,8 +305,16 @@ export default {
     },
     ItemsProducto: [], 
     ItemsAllEnvase: [],
-    ItemsFilteredEnvase: [],
+    ItemsEnvase: [],
     ItemsCliente: [],
+    EnvaseActual: {
+      Numero: null, 
+      Cantidad: null, 
+      Capacidad: null, 
+      UnidadDeMedida: null, 
+      Cliente: {Nombre: '', NumeroDocumento: '', Id: -1}  
+    },
+    Conjunto: new Set(),
     months: [
       'Enero',
       'Febrero', 
@@ -350,6 +354,7 @@ export default {
             tmp.Capacidad = data.Envases[i].Capacidad
             tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida
             tmp.ProductoId = data.Envases[i].Producto.Id
+            tmp.Cantidad = null
             this.ItemsAllEnvase.push(tmp)
           }
         }
@@ -380,22 +385,23 @@ export default {
           this.PresionFinal = data.Produccions[0].PresionFinal
           this.Observacion = data.Produccions[0].Observacion
           this.items = []
-          for ( let i=0; i<data.Produccions.length; i++ ) {
-            var tmp = {
-              Id: data.Produccions[i].Id,
-              Envase: {
-                Id: data.Produccions[i].Envase.Id,
-                Numero: data.Produccions[i].Envase.Numero,
-                Capacidad: data.Produccions[i].Envase.Capacidad,
-                UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
-              },
-              Cliente: {
-                Id: data.Produccions[i].Cliente.Id,
-                Nombre: data.Produccions[i].Cliente.Nombre
-              },
-              Cantidad: data.Produccions[i].Cantidad
+          for (let i=0; i<data.Produccions.length; i++) {
+            var tmp = {}
+            tmp.Id = data.Produccions[i].EnvaseId
+            tmp.Numero = data.Produccions[i].Envase.Numero
+            tmp.Capacidad = data.Produccions[i].Envase.Capacidad
+            tmp.Cantidad = data.Produccions[i].Cantidad
+            tmp.UnidadDeMedida = data.Produccions[i].Producto.UnidadDeMedida
+            for (let j=0; j<this.ItemsAllEnvase.length; j++) {
+              if ( data.Produccions[i].Envase.Id === this.ItemsAllEnvase[j].Id ) {
+                this.ItemsAllEnvase[j].Cantidad = data.Produccions[i].Cantidad
+                this.Conjunto.add(this.ItemsAllEnvase[j])
+                this.items = Array.from(this.Conjunto)
+              }
             }
-            this.items.push(tmp)
+            for (let k=0; k<this.ItemsCliente.length; k++) {
+              if ( data.Produccions[i].Cliente.Id == this.ItemsCliente )
+            }
           }
           
         } else {
@@ -421,6 +427,12 @@ export default {
     }
   },
   watch: {
+    EnvaseActual: {
+      handler: function () {
+        this.controlCantidad ()
+      },
+      deep: true
+    },
     Producto: {
       handler: function () {
         this.filtrarEnvases ()
@@ -430,216 +442,195 @@ export default {
   },
   methods: {
     agregar () {
-      var tmp = {
-        Id: null,
-        Envase: {
-          Id: null,
-          Numero: null,
-          Capacidad: null,
-          UnidadDeMedida: null
-        },
-        Cliente: {
-          Id: null,
-          Nombre: null
-        },
-        Cantidad: null
-      }
-      this.items.push(tmp)
-    },
-    guardar (item) {
-      //console.log(item)
-      if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' && item.Cliente.Id !== null ) {
-        
-        if ( item.Id === null ) {
-          
-          const Produccion = {
-            Orden: this.Orden,
-            Turno: this.Turno,
-            Fecha: this.Fecha,
-            Lote: this.Lote,
-            FechaInicial: this.FechaInicial,
-            FechaFinal: this.FechaFinal,
-            HoraInicial: this.HoraInicial,
-            HoraFinal: this.HoraFinal,
-            FechaFabricacion: this.FechaFabricacion,
-            FechaVencimiento: this.FechaVencimiento,
-            Cantidad: item.Cantidad,
-            ProductoId: this.Producto.Id,
-            EnvaseId: item.Envase.Id,
-            ClienteId: item.Cliente.Id,
-            PurezaFinal: this.PurezaFinal,
-            PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion
-          }
-          
-          this.$apollo.mutate ({
-            mutation: CREATE_PRODUCCION,
-            variables: {
-              Orden: Produccion.Orden,
-              Turno: Produccion.Turno,
-              Fecha: Produccion.Fecha,
-              Lote: Produccion.Lote,
-              FechaInicial: Produccion.FechaInicial,
-              FechaFinal: Produccion.FechaFinal,
-              HoraInicial: Produccion.HoraInicial,
-              HoraFinal: Produccion.HoraFinal,
-              FechaFabricacion: Produccion.FechaFabricacion,
-              FechaVencimiento: Produccion.FechaVencimiento,
-              Cantidad: Produccion.Cantidad,
-              ProductoId: Produccion.ProductoId,
-              EnvaseId: Produccion.EnvaseId,
-              ClienteId: Produccion.ClienteId,
-              PurezaFinal: Produccion.PurezaFinal,
-              PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion
-            },
-            loadingKey: 'loading',
-            update (store, {data: res}) {
-              //console.log ('guardar')
-              //console.log ({store: store, res: res})
-              
-              try{
-                const data = store.readQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  }
-                })
-                
-                data.Produccions.push(res.CreateProduccion)
-                
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  },
-                  data
-                })
-                
-              } catch (Err) {
-                
-                data.Produccions = []
-                
-                data.Produccions.push(res.CreateProduccion)
-                
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  data: data
-                })
-                
-              }
-              
-            }
-          })
-          
-        } else {
-        
-          const Produccion = {
-            Id: item.Id,
-            Orden: this.Orden,
-            Turno: this.Turno,
-            Fecha: this.Fecha,
-            Lote: this.Lote,
-            FechaInicial: this.FechaInicial,
-            FechaFinal: this.FechaFinal,
-            HoraInicial: this.HoraInicial,
-            HoraFinal: this.HoraFinal,
-            FechaFabricacion: this.FechaFabricacion,
-            FechaVencimiento: this.FechaVencimiento,
-            Cantidad: item.Cantidad,
-            ProductoId: this.Producto.Id,
-            EnvaseId: item.Envase.Id,
-            ClienteId: item.Cliente.Id,
-            PurezaFinal: this.PurezaFinal,
-            PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion
-          }
-          
-          this.$apollo.mutate ({
-            mutation: UPDATE_ONE_PRODUCCION,
-            variables: {
-              Id: Produccion.Id,
-              Orden: Produccion.Orden,
-              Turno: Produccion.Turno,
-              Fecha: Produccion.Fecha,
-              Lote: Produccion.Lote,
-              FechaInicial: Produccion.FechaInicial,
-              FechaFinal: Produccion.FechaFinal,
-              HoraInicial: Produccion.HoraInicial,
-              HoraFinal: Produccion.HoraFinal,
-              FechaFabricacion: Produccion.FechaFabricacion,
-              FechaVencimiento: Produccion.FechaVencimiento,
-              Cantidad: Produccion.Cantidad,
-              ProductoId: Produccion.ProductoId,
-              EnvaseId: Produccion.EnvaseId,
-              ClienteId: Produccion.ClienteId,
-              PurezaFinal: Produccion.PurezaFinal,
-              PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion
-            },
-            loadingKey: 'loading',
-            update (store, {data: res}) {
-              //console.log('actualizar')
-              //console.log ({store: store, res: res})
-              
-              try{
-                const data = store.readQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  }
-                })
-                
-                for (let i=0; i<data.Produccions.length; i++) {
-                  if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
-                    data.Produccions[i] = res.UpdateOneProduccion
-                  }
-                }
-                
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  },
-                  data
-                })
-                
-              } catch (Err) {
-                
-                data.Produccions = []
-                
-                data.Produccions.push(res.UpdateProduccion)
-                
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  data: data
-                })
-                
-              }
-              
+      if (this.EnvaseActual.Cantidad !== '' && this.EnvaseActual.Capacidad !== '') {
+        if (this.EnvaseActual.Capacidad >= Number(this.EnvaseActual.Cantidad)) {
+          if (!this.Conjunto.has(this.EnvaseActual)) {
+            this.Conjunto.add(this.EnvaseActual)
+            this.items = Array.from(this.Conjunto)
+            
+            const Produccion = {
+              Orden: this.Orden,
+              Turno: this.Turno,
+              Fecha: this.Fecha,
+              Lote: this.Lote,
+              FechaInicial: this.FechaInicial,
+              FechaFinal: this.FechaFinal,
+              HoraInicial: this.HoraInicial,
+              HoraFinal: this.HoraFinal,
+              FechaFabricacion: this.FechaFabricacion,
+              FechaVencimiento: this.FechaVencimiento,
+              Cantidad: this.EnvaseActual.Cantidad,
+              ProductoId: this.Producto.Id,
+              EnvaseId: this.EnvaseActual.Id,
+              ClienteId: this.Cliente.Id,
+              PurezaFinal: this.PurezaFinal,
+              PresionFinal: this.PresionFinal,
+              Observacion: this.Observacion
             }
             
-          })
+            this.$apollo.mutate ({
+              mutation: CREATE_PRODUCCION,
+              variables: {
+                Orden: Produccion.Orden,
+                Turno: Produccion.Turno,
+                Fecha: Produccion.Fecha,
+                Lote: Produccion.Lote,
+                FechaInicial: Produccion.FechaInicial,
+                FechaFinal: Produccion.FechaFinal,
+                HoraInicial: Produccion.HoraInicial,
+                HoraFinal: Produccion.HoraFinal,
+                FechaFabricacion: Produccion.FechaFabricacion,
+                FechaVencimiento: Produccion.FechaVencimiento,
+                Cantidad: Produccion.Cantidad,
+                ProductoId: Produccion.ProductoId,
+                EnvaseId: Produccion.EnvaseId,
+                ClienteId: Produccion.ClienteId,
+                PurezaFinal: Produccion.PurezaFinal,
+                PresionFinal: Produccion.PresionFinal,
+                Observacion: Produccion.Observacion
+              },
+              loadingKey: 'loading',
+              update (store, {data: res}) {
+                //console.log ('guardar')
+                //console.log ({store: store, res: res})
+                
+                try{
+                  const data = store.readQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Orden: Produccion.Orden,
+                    }
+                  })
+                  
+                  data.Produccions.push(res.CreateProduccion)
+                  
+                  store.writeQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Orden: Produccion.Orden,
+                    },
+                    data
+                  })
+                  
+                } catch (Err) {
+                  
+                  data.Produccions = []
+                  
+                  data.Produccions.push(res.CreateProduccion)
+                  
+                  store.writeQuery({
+                    query: PRODUCCIONS,
+                    data: data
+                  })
+                  
+                }
+                
+              }
+            })
+            
+          } else {
           
+            const Produccion = {
+              Orden: this.Orden,
+              Turno: this.Turno,
+              Fecha: this.Fecha,
+              Lote: this.Lote,
+              FechaInicial: this.FechaInicial,
+              FechaFinal: this.FechaFinal,
+              HoraInicial: this.HoraInicial,
+              HoraFinal: this.HoraFinal,
+              FechaFabricacion: this.FechaFabricacion,
+              FechaVencimiento: this.FechaVencimiento,
+              Cantidad: this.EnvaseActual.Cantidad,
+              ProductoId: this.Producto.Id,
+              EnvaseId: this.EnvaseActual.Id,
+              ClienteId: this.Cliente.Id,
+              PurezaFinal: this.PurezaFinal,
+              PresionFinal: this.PresionFinal,
+              Observacion: this.Observacion
+            }
+            
+            this.$apollo.mutate ({
+              mutation: UPDATE_ONE_PRODUCCION,
+              variables: {
+                Orden: Produccion.Orden,
+                Turno: Produccion.Turno,
+                Fecha: Produccion.Fecha,
+                Lote: Produccion.Lote,
+                FechaInicial: Produccion.FechaInicial,
+                FechaFinal: Produccion.FechaFinal,
+                HoraInicial: Produccion.HoraInicial,
+                HoraFinal: Produccion.HoraFinal,
+                FechaFabricacion: Produccion.FechaFabricacion,
+                FechaVencimiento: Produccion.FechaVencimiento,
+                Cantidad: Produccion.Cantidad,
+                ProductoId: Produccion.ProductoId,
+                EnvaseId: Produccion.EnvaseId,
+                ClienteId: Produccion.ClienteId,
+                PurezaFinal: Produccion.PurezaFinal,
+                PresionFinal: Produccion.PresionFinal,
+                Observacion: Produccion.Observacion
+              },
+              loadingKey: 'loading',
+              update (store, {data: res}) {
+                //console.log('actualizar')
+                //console.log ({store: store, res: res})
+                
+                try{
+                  const data = store.readQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Orden: Produccion.Orden,
+                    }
+                  })
+                  
+                  for (let i=0; i<data.Produccions.length; i++) {
+                    if (data.Produccions[i].EnvaseId === res.UpdateOneProduccion.EnvaseId) {
+                      data.Produccions[i] = res.UpdateOneProduccion
+                    }
+                  }
+                  
+                  store.writeQuery({
+                    query: PRODUCCIONS,
+                    variables: {
+                      Orden: Produccion.Orden,
+                    },
+                    data
+                  })
+                  
+                } catch (Err) {
+                  
+                  data.Produccions = []
+                  
+                  data.Produccions.push(res.UpdateProduccion)
+                  
+                  store.writeQuery({
+                    query: PRODUCCIONS,
+                    data: data
+                  })
+                  
+                }
+                
+              }
+              
+            })
+            
+          }
+          
+          this.EnvaseActual = {Cantidad: '', Capacidad: ''}
         }
-      
       }
     },
-    controlCantidad (item) {
-      if (Number(item.Cantidad) >= item.Envase.Capacidad) {
-        item.Cantidad = item.Envase.Capacidad
+    controlCantidad () {
+      if (Number(this.EnvaseActual.Cantidad) >= this.EnvaseActual.Capacidad) {
+        this.EnvaseActual.Cantidad = this.EnvaseActual.Capacidad
       }
     },
     eliminar (item) {
-      
-      for (let i=0; i<this.items.length; i++) {
-        if ( item.Id === this.items[i].Id ) {
-          this.items.splice(i,1)
-        }
-      }
+      this.Conjunto.delete(item)
+      this.items = Array.from(this.Conjunto)
       
       const Produccion = {
-        Id: item.Id,
         Orden: this.Orden,
         Turno: this.Turno,
         Fecha: this.Fecha,
@@ -652,8 +643,8 @@ export default {
         FechaVencimiento: this.FechaVencimiento,
         Cantidad: item.Cantidad,
         ProductoId: this.Producto.Id,
-        EnvaseId: item.Envase.Id,
-        ClienteId: item.Cliente.Id,
+        EnvaseId: item.Id,
+        ClienteId: item.
         PurezaFinal: this.PurezaFinal,
         PresionFinal: this.PresionFinal,
         Observacion: this.Observacion
@@ -662,7 +653,6 @@ export default {
       this.$apollo.mutate ({
         mutation: DELETE_PRODUCCION,
         variables: {
-          Id: Produccion.Id,
           Orden: Produccion.Orden,
           Turno: Produccion.Turno,
           Fecha: Produccion.Fecha,
@@ -693,7 +683,7 @@ export default {
             })
             
             for (let i=0; i<data.Produccions.length; i++) {
-              if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
+              if (data.Produccions[i].EnvaseId === res.DeleteProduccion.EnvaseId) {
                 data.Produccions.splice(i, 1)
               }
             }
@@ -713,9 +703,16 @@ export default {
         }
       })
       
+      for (let j=0; j<this.ItemsEnvase.length; j++) {
+        if ( this.ItemsEnvase[j].Id === item.Id ) {
+          this.ItemsEnvase[j].Cantidad = null
+        }
+      }
+      
+      this.EnvaseActual = {Id: null, Numero: null, Cantidad: null, Capacidad: null, UnidadDeMedida: null}
     },
     reset () {
-      /*this.ChangeProducto=true
+      this.ChangeProducto=true
       this.Fecha = null,
       this.Turno = null,
       this.Lote = '01',
@@ -736,7 +733,7 @@ export default {
       this.ItemsEnvase = []
       this.Conjunto.clear ()
       this.items = Array.from(this.Conjunto)
-      this.ChangeProductoCounter=0*/
+      this.ChangeProductoCounter=0
     },
     hardReset () {
       this.Orden = null
@@ -744,15 +741,18 @@ export default {
     },
     filtrarEnvases () {
       this.ChangeProductoCounter++
-      if( this.ChangeProductoCounter === 1 ) {
+      if( this.ChangeProductoCounter === 2 ) {
         this.ChangeProducto=false
-        this.ItemsFilteredEnvase = []
+        this.ItemsEnvase = []
         for (let i=0; i<this.ItemsAllEnvase.length; i++) {
           if ( this.Producto.Id === this.ItemsAllEnvase[i].ProductoId ) {
-            this.ItemsFilteredEnvase.push(this.ItemsAllEnvase[i])
+            this.ItemsEnvase.push(this.ItemsAllEnvase[i])
           }
         }
       }
+    },
+    ResetCliente () {
+      this.Cliente = {Nombre: null, NumeroDocumento: null, Id: null}
     }
   }
 };
@@ -766,5 +766,5 @@ export default {
   
 .input-group--select
   height: 31px
-
+  
 </style>

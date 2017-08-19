@@ -421,7 +421,7 @@ var Produccion = new GraphQLObjectType({
       ClienteId: {
         type: GraphQLInt,
         resolve(Produccion) {
-          return Produccion.EnteId;
+          return Produccion.ClienteId;
         }
       },
       PurezaFinal: {
@@ -720,7 +720,6 @@ var Query = new GraphQLObjectType({
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
           ProductoId: {type: GraphQLInt},
-          ClienteId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat},
           Observacion: {type: GraphQLString}
@@ -742,7 +741,6 @@ var Query = new GraphQLObjectType({
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
           ProductoId: {type: GraphQLInt},
-          ClienteId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat},
           Observacion: {type: GraphQLString}
@@ -768,7 +766,6 @@ var Query = new GraphQLObjectType({
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
           ProductoId: {type: GraphQLInt},
-          ClienteId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat},
           Observacion: {type: GraphQLString}
@@ -1047,7 +1044,6 @@ var Mutation = new GraphQLObjectType({
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
           ProductoId: {type: GraphQLInt},
-          ClienteId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat},
           Observacion: {type: GraphQLString}
@@ -1067,7 +1063,6 @@ var Mutation = new GraphQLObjectType({
             Cantidad: args.Cantidad,
             ProductoId: args.ProductoId,
             EnvaseId: args.EnvaseId,
-            EnteId: args.ClienteId,
             PurezaFinal: args.PurezaFinal,
             PresionFinal: args.PresionFinal,
             Observacion: args.Observacion
@@ -1085,17 +1080,16 @@ var Mutation = new GraphQLObjectType({
           Orden: {type: GraphQLString},
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
-          ClienteId: {type: GraphQLInt}
+          ProductoId: {type: GraphQLInt}
         },
         resolve(_, args) {
           return Db.models.Produccion.findOne({ 
             where: {
-              Id: args.Id
+              Orden: args.Orden,
+              EnvaseId: args.EnvaseId
             }
           }).then( R => {
             R.Cantidad = args.Cantidad;
-            R.EnvaseId = args.EnvaseId;
-            R.EnteId = args.ClienteId;
             R.save();
             return R;
           });
@@ -1143,12 +1137,15 @@ var Mutation = new GraphQLObjectType({
       DeleteProduccion: {
         type: Produccion,
         args: {
-          Id: {type: GraphQLInt}
+          Id: {type: GraphQLInt},
+          Orden: {type: GraphQLString},
+          EnvaseId: {type: GraphQLInt}
         },
         resolve(_, args) {
           return Db.models.Produccion.findOne({
             where : {
-              Id: args.Id
+              Orden: args.Orden,
+              EnvaseId: args.EnvaseId
             }
           }).then( R => {
             return R.destroy();

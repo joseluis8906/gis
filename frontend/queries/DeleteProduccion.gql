@@ -1,10 +1,8 @@
 mutation DeleteProduccion ( 
-  $Orden: String!,
-  $EnvaseId: Int!
+  $Id: Int!
 ) {
   DeleteProduccion (
-    Orden: $Orden,
-    EnvaseId: $EnvaseId
+    Id: $Id
   ){
     Id
     Orden
@@ -32,6 +30,10 @@ mutation DeleteProduccion (
       Id
       Nombre
       UnidadDeMedida
+    }
+    Cliente {
+      Id
+      Nombre
     }
   }
 }

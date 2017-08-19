@@ -126,6 +126,7 @@ const Produccion = Db.define('Produccion', {
   Cantidad: Sequelize.DECIMAL,
   ProductoId: {type: Sequelize.INTEGER, references: {model: Producto, key: "Id"}},
   EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
   PurezaFinal: Sequelize.DECIMAL,
   PresionFinal: Sequelize.DECIMAL,
   Observacion: Sequelize.TEXT
@@ -139,7 +140,10 @@ Envase.hasMany(Produccion);
 Produccion.belongsTo(Envase);
 
 Producto.hasMany(Produccion);
-Produccion.belongsTo(Producto)
+Produccion.belongsTo(Producto);
+
+Ente.hasMany(Produccion);
+Produccion.belongsTo(Ente);
 
 
 //remision
