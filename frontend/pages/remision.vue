@@ -259,6 +259,7 @@ export default {
                 }
               },
               Total: data.Remisions[i].Total,
+              SaveUpdate: 'update'
             }
             
             this.items.push(tmp)
@@ -303,27 +304,27 @@ export default {
         if (data.Produccions.length > 0) {
           for ( let i=0; i<data.Produccions.length; i++ ) {
             var tmp = {
-              Id: data.Produccion[i].Id,
-              Cantidad: data.Produccion[i].Cantidad,
-              FechaFabricacion: data.Produccion[i].FechaFabricacion,
-              FechaVencimiento: data.Produccion[i].FechaVencimiento,
-              Lote: data.Produccion[i].Lote,
+              Id: data.Produccions[i].Id,
+              Cantidad: data.Produccions[i].Cantidad,
+              FechaFabricacion: data.Produccions[i].FechaFabricacion,
+              FechaVencimiento: data.Produccions[i].FechaVencimiento,
+              Lote: data.Produccions[i].Lote,
               Envase: {
-                Id: data.Produccion[i].Envase.Id,
-                Numero: data.Produccion[i].Envase.Numero
+                Id: data.Produccions[i].Envase.Id,
+                Numero: data.Produccions[i].Envase.Numero
               },
               Producto: {
-                Id: data.Produccion[i].Producto.Id,
-                Nombre: data.Produccion[i].Producto.Nombre,
-                UnidadDeMedida: data.Produccion[i].Producto.UnidadDeMedida
+                Id: data.Produccions[i].Producto.Id,
+                Nombre: data.Produccions[i].Producto.Nombre,
+                UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
               },
               Cliente: {
-                Id: data.Produccion[i].Cliente.Id,
-                Nombre: data.Produccion[i].Cliente.Nombre
+                Id: data.Produccions[i].Cliente.Id,
+                Nombre: data.Produccions[i].Cliente.Nombre
               }
             }
             
-            this.items.push(tmp)
+            this.ItemsProduccion.push(tmp)
             
           }
           
@@ -360,6 +361,7 @@ export default {
           }
         },
         Total: null,
+        SaveUpdate: 'save'
       }
 
       this.items.push(tmp)
