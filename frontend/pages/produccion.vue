@@ -236,7 +236,7 @@ v-layout( align-center justify-center )
                       light
                       class="input-tab mb-0 mt-0 pb-0"
                       style="width: 148px" )
-                td(style="width:24px; border-left: 1px solid #999999" class="pl-1 pr-1")
+                td(style="width:64px; border-left: 1px solid #999999" class="pl-1 pr-1")
                   v-btn( fab
                          dark
                          small
@@ -301,7 +301,7 @@ export default {
       { text: 'Envase', align: 'left', sortable: true,  value: 'Numero' },
       { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
       { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
-      { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+      { text: 'Acción', align: 'center', sortable: false,  value: 'Acción' }
     ],
     items: [],
     pagination: {
@@ -446,6 +446,7 @@ export default {
         Cantidad: null,
         SaveUpdate: 'save'
       }
+      
       this.items.push(tmp)
     },
     guardar (item) {

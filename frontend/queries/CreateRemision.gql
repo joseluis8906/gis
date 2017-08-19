@@ -2,27 +2,24 @@ mutation CreateRemision (
   $Numero: String!
   $Fecha: String!
   $EnteId: Int!
-  $Sale: String
-  $Entra: String
   $ProduccionId: Int!
+  $EnvaseId: Int!
   $Total: Float
 ) {
   CreateRemision (
     Numero: $Numero
     Fecha: $Fecha
     EnteId: $EnteId
-    Sale: $Sale
-    Entra: $Entra
     ProduccionId: $ProduccionId
+    EnvaseId: $EnvaseId
     Total: $Total
   ){
     Id
     Numero
     Fecha
     EnteId
-    Sale
-    Entra
     ProduccionId
+    EnvaseId
     Total
     Ente {
       Id
@@ -38,7 +35,11 @@ mutation CreateRemision (
       Fecha
       Lote
       Cantidad
-      Producto
+      Producto {
+        Id
+        Nombre
+        UnidadDeMedida
+      }
       FechaFabricacion
       FechaVencimiento
       Envase {
@@ -46,6 +47,10 @@ mutation CreateRemision (
         NumeroInterno
         Capacidad
       }
+    }
+    Envase {
+      Id
+      NumeroInterno
     }
   }
 }

@@ -495,22 +495,16 @@ var Remision = new GraphQLObjectType({
           return Remision.EnteId;
         }
       },
-      Sale: {
-        type: GraphQLString,
-        resolve(Remision) {
-          return Remision.Sale;
-        }
-      },
-      Entra: {
-        type: GraphQLString,
-        resolve(Remision) {
-          return Remision.Entra;
-        }
-      },
       ProduccionId: {
         type: GraphQLInt,
         resolve(Remision) {
           return Remision.ProduccionId;
+        }
+      },
+      EnvaseId: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.EnvaseId;
         }
       },
       Total: {
@@ -529,6 +523,12 @@ var Remision = new GraphQLObjectType({
         type: Produccion,
         resolve(Remision) {
           return Remision.getProduccion();
+        }
+      },
+      Envase: {
+        type: Envase,
+        resolve(Remision) {
+          return Remision.getEnvase();
         }
       }
     }
@@ -720,7 +720,7 @@ var Query = new GraphQLObjectType({
           Cantidad: {type: GraphQLFloat},
           EnvaseId: {type: GraphQLInt},
           ProductoId: {type: GraphQLInt},
-          ClienteId: {type: GraphQLInt},
+          EnteId: {type: GraphQLInt},
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat},
           Observacion: {type: GraphQLString}
@@ -784,6 +784,9 @@ var Query = new GraphQLObjectType({
           Numero: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
+          ProduccionId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
         },
         resolve(root, args) {
           return Db.models.Remision.findAll({where: args})
@@ -796,6 +799,9 @@ var Query = new GraphQLObjectType({
           Numero: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
+          ProduccionId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
         },
         resolve(root, args) {
           return Db.models.Remision.findOne({where: args})
@@ -1162,9 +1168,8 @@ var Mutation = new GraphQLObjectType({
           Numero: {type: GraphQLString},
           Fecha: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
-          Sale: {type: GraphQLString},
-          Entra: {type: GraphQLString},
           ProduccionId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
           Total: {type: GraphQLFloat}
         },
         resolve(_, args) {
@@ -1172,9 +1177,8 @@ var Mutation = new GraphQLObjectType({
             Numero: args.Numero,
             Fecha: args.Fecha,
             EnteId: args.EnteId,
-            Sale: args.Sale,
-            Entra: args.Entra,
             ProduccionId: args.ProduccionId,
+            EnvaseId: args.EnvaseId,
             Total: args.Total
           }).then( R => {
             return R;
@@ -1185,20 +1189,12 @@ var Mutation = new GraphQLObjectType({
       DeleteRemision: {
         type: Remision,
         args: {
-          Id: {type: GraphQLInt},
-          Numero: {type: GraphQLString},
-          Fecha: {type: GraphQLString},
-          EnteId: {type: GraphQLInt},
-          Sale: {type: GraphQLString},
-          Entra: {type: GraphQLString},
-          ProduccionId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
+          Id: {type: GraphQLInt}
         },
         resolve(_, args) {
           return Db.models.Remision.findOne({
             where: {
-              Numero: args.Numero,
-              ProduccionId: args.ProduccionId
+              Id: args.Id
             }
           }).then( R => {
             return R.destroy();

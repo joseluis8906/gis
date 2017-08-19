@@ -1,5 +1,5 @@
 query Produccions ( 
-  $Orden: String!,
+  $Orden: String,
   $Turno: String,
   $Fecha: String, 
   $Lote: String,
@@ -31,7 +31,7 @@ query Produccions (
     Cantidad: $Cantidad,
     ProductoId: $ProductoId,
     EnvaseId: $EnvaseId,
-    ClienteId: $ClienteId,
+    EnteId: $ClienteId,
     PurezaFinal: $PurezaFinal,
     PresionFinal: $PresionFinal,
     Observacion: $Observacion

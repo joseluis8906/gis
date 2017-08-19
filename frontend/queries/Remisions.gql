@@ -1,20 +1,19 @@
 query Remisions ( 
-  $Numero: String, 
+  $Numero: String,
   $Fecha: String,
-  $EnteId: Int,
+  $EnteId: Int
 ) {
   Remisions (
     Numero: $Numero, 
     Fecha: $Fecha,
-    EnteId: $EnteId,
+    EnteId: $EnteId
   ){
     Id
     Numero
     Fecha
     EnteId
-    Sale
-    Entra
     ProduccionId
+    EnvaseId
     Total
     Ente {
       Id
@@ -30,7 +29,11 @@ query Remisions (
       Fecha
       Lote
       Cantidad
-      Producto
+      Producto {
+        Id
+        Nombre
+        UnidadDeMedida
+      }
       FechaFabricacion
       FechaVencimiento
       Envase {
@@ -38,6 +41,10 @@ query Remisions (
         NumeroInterno
         Capacidad
       }
+    }
+    Envase {
+      Id
+      NumeroInterno
     }
   }
 }

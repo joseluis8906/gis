@@ -85,11 +85,11 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
             
               template(slot="items" scope="props")
-                td(class="text-xs-center") {{ props.item.Cantidad }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Producto }}
+                td(class="text-xs-center") {{ props.item.Produccion.Cantidad }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
                   v-select( v-bind:items="ItemsProduccion"
-                            v-model="props.item.Sale"
+                            v-model="props.item.Produccion"
                             item-text="Numero"
                             item-value="Id"
                             return-object
@@ -97,9 +97,12 @@ v-layout( align-center justify-center )
                             style="width: 64px"
                             class="input-tab mb-0 mt-0 pb-0 select-especial"
                             light )
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
                   v-select( v-bind:items="ItemsEnvase"
-                            v-model="props.item.Sale"
+                            v-model="props.item.Envase"
                             item-text="Numero"
                             item-value="Id"
                             return-object
@@ -107,9 +110,6 @@ v-layout( align-center justify-center )
                             style="width: 64px"
                             class="input-tab mb-0 mt-0 pb-0 select-especial"
                             light )
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Elaboracion }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Vencimiento }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Lote }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
                   v-money( v-model="props.item.Total" 
                            style="width: 96px" 
@@ -120,7 +120,15 @@ v-layout( align-center justify-center )
                            mask-type="currency"
                            :focused="props.item.TotalFocus" 
                            maxlength=11)
-                td(style="width:24px; border-left: 1px solid #999999")
+                td(style="width:64px; border-left: 1px solid #999999" class="pl-1 pr-1")
+                  v-btn( fab
+                         dark
+                         small
+                         success
+                         style="width: 24px; height:24px"
+                         @click.native="guardar(props.item)")
+                    v-icon(dark) {{ props.item.SaveUpdate }}
+                    
                   v-btn( fab
                          dark
                          small
@@ -180,15 +188,14 @@ export default {
       { text: 'Cant', align: 'left', sortable: false,  value: 'Cantidad' },
       { text: 'Producto', align: 'left', sortable: true,  value: 'Producto' },
       { text: 'Sale', align: 'center', sortable: false,  value: 'Sale' },
-      { text: 'Entra', align: 'center', sortable: false,  value: 'Entra' },
       { text: 'F.Elaboración', align: 'center', sortable: false,  value: 'Elaboración' },
       { text: 'F.Vencimiento', align: 'center', sortable: false,  value: 'Vencimiento' },
       { text: 'Lote', align: 'center', sortable: false,  value: 'Lote' },
+      { text: 'Entra', align: 'center', sortable: false,  value: 'Entra' },
       { text: 'Total', align: 'center', sortable: false,  value: 'Total' },
       { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
     ],
     items: [],
-    conjuntoItems: new Set(),
     
     months: [
       'Enero',
@@ -223,36 +230,46 @@ export default {
         
         if (data.Remisions.length > 0) {
           
-          this.conjuntoItems.clear()
           this.Fecha = data.Remisions[0].Fecha
           this.Cliente.TipoDocumento = data.Remisions[0].Ente.TipoDocumento
           this.Cliente.NumeroDocumento = data.Remisions[0].Ente.NumeroDocumento
-              
-          for (let i=0; i<data.Remisions.length; i++) {
           
+          for (let i=0; i<data.Remisions.length; i++) {
+            
             var tmp = {
-              Id: data.Remisions[i].Id ? data.Remisions[i].Id : null,
-              ProduccionId: data.Remisions[i].Produccion.Id,
-              Cantidad: data.Remisions[i].Produccion.Cantidad,
-              Producto: data.Remisions[i].Produccion.Producto,
-              Sale: data.Remisions[i].Produccion.Envase.Numero, SaleEditable:false,
-              Entra: data.Remisions[i].Entra, EntraEditable: false,
-              Elaboracion: data.Remisions[i].Produccion.FechaFabricacion,
-              Vencimiento: data.Remisions[i].Produccion.FechaVencimiento,
-              Lote: data.Remisions[i].Produccion.Lote,
-              Total: data.Remisions[i].Total, TotalEditable: false, TotalFocus: false}
-            this.conjuntoItems.add(tmp)
+              Id: data.Remisions[i].Id,
+              Produccion: {
+                Id: data.Remisions[i].Produccion.Id,
+                Cantidad: data.Remisions[i].Produccion.Cantidad,
+                FechaFabricacion: data.Remisions[i].Produccion.FechaFabricacion,
+                FechaVencimiento: data.Remisions[i].Produccion.FechaVencimiento,
+                Lote: data.Remisions[i].Produccion.Lote,
+                Envase: {
+                  Id: data.Remisions[i].Produccion.Envase.Id,
+                  Numero: data.Remisions[i].Produccion.Envase.Numero
+                },
+                Producto: {
+                  Id: data.Remisions[i].Produccion.Producto.Id,
+                  Nombre: data.Remisions[i].Produccion.Producto.Nombre,
+                  UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
+                },
+                Cliente: {
+                  Id: data.Remisions[i].Cliente.Id,
+                  Nombre: data.Remisions[i].Cliente.Nombre
+                }
+              },
+              Total: data.Remisions[i].Total,
+            }
+            
+            this.items.push(tmp)
             
           }
-          
-          this.items = Array.from(this.conjuntoItems)
           
         } else {
         
           this.reset()
           
         }
-      
       }
     },
     OneEnte: {
@@ -265,13 +282,56 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        
         this.Cliente.Id = data.OneEnte ? data.OneEnte.Id : null
-        this.Cliente.Nombre = data.OneEnte ? data.OneEnte.Nombre : ''
-        this.Cliente.Ciudad = data.OneEnte ? data.OneEnte.Ciudad : ''
-        this.Cliente.Direccion = data.OneEnte ? data.OneEnte.Direccion : ''
-        this.Cliente.Telefono = data.OneEnte ? data.OneEnte.Telefono : ''
+        this.Cliente.Nombre = data.OneEnte ? data.OneEnte.Nombre : null
+        this.Cliente.Ciudad = data.OneEnte ? data.OneEnte.Ciudad : null
+        this.Cliente.Direccion = data.OneEnte ? data.OneEnte.Direccion : null
+        this.Cliente.Telefono = data.OneEnte ? data.OneEnte.Telefono : null
         
+      }
+    },
+    Produccions: {
+      query: PRODUCCIONS,
+      variables () {
+        return {
+          ClienteId: this.Cliente.Id !== null ? this.Cliente.Id : 0,
+        }
+      },
+      loadingKey: 'loading',
+      update (data) {
+        console.log(data)
+        if (data.Produccions.length > 0) {
+          for ( let i=0; i<data.Produccions.length; i++ ) {
+            var tmp = {
+              Id: data.Produccion[i].Id,
+              Cantidad: data.Produccion[i].Cantidad,
+              FechaFabricacion: data.Produccion[i].FechaFabricacion,
+              FechaVencimiento: data.Produccion[i].FechaVencimiento,
+              Lote: data.Produccion[i].Lote,
+              Envase: {
+                Id: data.Produccion[i].Envase.Id,
+                Numero: data.Produccion[i].Envase.Numero
+              },
+              Producto: {
+                Id: data.Produccion[i].Producto.Id,
+                Nombre: data.Produccion[i].Producto.Nombre,
+                UnidadDeMedida: data.Produccion[i].Producto.UnidadDeMedida
+              },
+              Cliente: {
+                Id: data.Produccion[i].Cliente.Id,
+                Nombre: data.Produccion[i].Cliente.Nombre
+              }
+            }
+            
+            this.items.push(tmp)
+            
+          }
+          
+        } else {
+          
+          this.ItemsProduccion = []
+          
+        }
       }
     }
   },
@@ -279,39 +339,35 @@ export default {
     agregar () {
       var tmp = {
         Id: null,
-        ProduccionId: null,
-        Cantidad: null,
-        Producto: null,
-        Sale: null, SaleEditable: false,
-        Entra: null, EntraEditable: false,
-        Elaboracion: null,
-        Vencimiento: null,
-        Lote: null,
-        Total: null, TotalEditable: false, TotalFocus: false}
-        
-      this.conjuntoItems.add(tmp)
-      this.items = Array.from(this.conjuntoItems)
-    },
-    enableable (item, editable) {
-      editable === 'Sale' ? item.SaleEditable = true : null
-      editable === 'Entra' ? item.EntraEditable = true : null
-      editable === 'Total' ? item.TotalEditable = true : null
-      editable === 'Total' ? item.TotalFocus = true : null
-    },
-    disableable (item, editable) {
-      if (editable === 'Sale') {
-        item.EnvaseEditable = false 
-        this.loadProduccion(item)
-      } 
-      editable === 'Entra' ? item.EntraEditable = false : null
-      editable === 'Total' ? item.TotalEditable = false : null
-      editable === 'Total' ? item.TotalFocus = false : null
-      this.CreateOrUpdate(item)
+        Produccion: {
+          Id: null,
+          Cantidad: null,
+          FechaFabricacion: null,
+          FechaVencimiento: null,
+          Lote: null,
+          Envase: {
+            Id: null,
+            Numero: null
+          },
+          Producto: {
+            Id: null,
+            Nombre: null,
+            UnidadDeMedida: null
+          },
+          Cliente: {
+            Id: null,
+            Nombre: null
+          }
+        },
+        Total: null,
+      }
+
+      this.items.push(tmp)
     },
     CreateOrUpdate (item) {
       //console.log('Entrando a crear')
       //console.log(item);
-      if (
+     /* if (
         this.Numero !== null && 
         this.Cliente.Id !== null &&
         item.ProduccionId !== null &&
@@ -397,10 +453,10 @@ export default {
         //console.log('no se guarda en bd por parametros')
       
       }
-      
+      */
     },
     eliminar (item) {
-      
+      /*
       const Remision = {
         Numero: this.Numero,
         ProduccionId: item.ProduccionId
@@ -466,14 +522,14 @@ export default {
       
       this.conjuntoItems.delete(item)
       this.items = Array.from(this.conjuntoItems)
-      
+      */
     },
     hardReset () {
       this.Numero = null
     },
     reset () {
       
-      this.Fecha = null,
+      /*this.Fecha = null,
       
       this.Cliente = {
         TipoDocumento: null,
@@ -485,11 +541,11 @@ export default {
       }
       
       this.conjuntoItems.clear()
-      this.items = Array.from(this.conjuntoItems)
+      this.items = Array.from(this.conjuntoItems)*/
     },
     loadProduccion (item) {
       //console.log (item)
-      for (let i=0; i<this.ItemsProduccion.length; i++) {
+      /*for (let i=0; i<this.ItemsProduccion.length; i++) {
         if (item.Sale === this.ItemsProduccion[i].Numero) {
           //console.log('loaded')
           //console.log(this.ItemsProduccion[i])
@@ -501,7 +557,7 @@ export default {
           item.Lote = this.ItemsProduccion[i].Lote
           break
         }
-      }
+      }*/
     },
     generar () {
       window.open('/reporte/remision');

@@ -10,9 +10,8 @@ mutation DeleteRemision (
     Numero
     Fecha
     EnteId
-    Sale
-    Entra
     ProduccionId
+    EnvaseId
     Total
     Ente {
       Id
@@ -28,7 +27,11 @@ mutation DeleteRemision (
       Fecha
       Lote
       Cantidad
-      Producto
+      Producto {
+        Id
+        Nombre
+        UnidadDeMedida
+      }
       FechaFabricacion
       FechaVencimiento
       Envase {
@@ -36,6 +39,10 @@ mutation DeleteRemision (
         NumeroInterno
         Capacidad
       }
+    }
+    Envase {
+      Id
+      NumeroInterno
     }
   }
 }
