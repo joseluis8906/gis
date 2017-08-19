@@ -243,7 +243,7 @@ v-layout( align-center justify-center )
                          success
                          style="width: 24px; height:24px"
                          @click.native="guardar(props.item)")
-                    v-icon(dark) save
+                    v-icon(dark) {{ props.item.SaveUpdate }}
                     
                   v-btn( fab
                          dark
@@ -292,7 +292,7 @@ export default {
     PurezaFinal: null,
     PresionFinal: null,
     Observacion: null,
-    
+    saveUpdate: 'save',
     ChangeProducto: true,
     ChangeProductoCounter: 0,
     headers: [
@@ -393,7 +393,8 @@ export default {
                 Id: data.Produccions[i].Cliente.Id,
                 Nombre: data.Produccions[i].Cliente.Nombre
               },
-              Cantidad: data.Produccions[i].Cantidad
+              Cantidad: data.Produccions[i].Cantidad,
+              SaveUpdate: 'update'
             }
             this.items.push(tmp)
           }
@@ -442,7 +443,8 @@ export default {
           Id: null,
           Nombre: null
         },
-        Cantidad: null
+        Cantidad: null,
+        SaveUpdate: 'save'
       }
       this.items.push(tmp)
     },
@@ -451,6 +453,8 @@ export default {
       if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' && item.Cliente.Id !== null ) {
         
         if ( item.Id === null ) {
+          
+          item.SaveUpdate = 'update'
           
           const Produccion = {
             Orden: this.Orden,
@@ -632,88 +636,100 @@ export default {
     },
     eliminar (item) {
       
-      for (let i=0; i<this.items.length; i++) {
-        if ( item.Id === this.items[i].Id ) {
-          this.items.splice(i,1)
-        }
-      }
-      
-      const Produccion = {
-        Id: item.Id,
-        Orden: this.Orden,
-        Turno: this.Turno,
-        Fecha: this.Fecha,
-        Lote: this.Lote,
-        FechaInicial: this.FechaInicial,
-        FechaFinal: this.FechaFinal,
-        HoraInicial: this.HoraInicial,
-        HoraFinal: this.HoraFinal,
-        FechaFabricacion: this.FechaFabricacion,
-        FechaVencimiento: this.FechaVencimiento,
-        Cantidad: item.Cantidad,
-        ProductoId: this.Producto.Id,
-        EnvaseId: item.Envase.Id,
-        ClienteId: item.Cliente.Id,
-        PurezaFinal: this.PurezaFinal,
-        PresionFinal: this.PresionFinal,
-        Observacion: this.Observacion
-      }
-      
-      this.$apollo.mutate ({
-        mutation: DELETE_PRODUCCION,
-        variables: {
-          Id: Produccion.Id,
-          Orden: Produccion.Orden,
-          Turno: Produccion.Turno,
-          Fecha: Produccion.Fecha,
-          Lote: Produccion.Lote,
-          FechaInicial: Produccion.FechaInicial,
-          FechaFinal: Produccion.FechaFinal,
-          HoraInicial: Produccion.HoraInicial,
-          HoraFinal: Produccion.HoraFinal,
-          FechaFabricacion: Produccion.FechaFabricacion,
-          FechaVencimiento: Produccion.FechaVencimiento,
-          Cantidad: Produccion.Cantidad,
-          ProductoId: Produccion.ProductoId,
-          EnvaseId: Produccion.EnvaseId,
-          PurezaFinal: Produccion.PurezaFinal,
-          PresionFinal: Produccion.PresionFinal,
-          Observacion: Produccion.Observacion
-        },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-          //console.log ({store: store, res: res})
-          
-          try{
-            const data = store.readQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: Produccion.Orden
-              }
-            })
-            
-            for (let i=0; i<data.Produccions.length; i++) {
-              if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
-                data.Produccions.splice(i, 1)
-              }
-            }
-            
-            store.writeQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: Produccion.Orden
-              },
-              data
-            })
-            
-          } catch (Err) {
-            //console.log("`Error controlado: ${Err}`")
+      if ( item.Id === null ) { 
+        
+        for (let i=0; i<this.items.length; i++) {
+          if ( item.Envase.Id === this.items[i].Envase.Id ) {
+            this.items.splice(i,1)
           }
-          
         }
-      })
+        
+      } else {
+        
+        for (let i=0; i<this.items.length; i++) {
+          if ( item.Id === this.items[i].Id ) {
+            this.items.splice(i,1)
+          }
+        }
+        
+        const Produccion = {
+          Id: item.Id,
+          Orden: this.Orden,
+          Turno: this.Turno,
+          Fecha: this.Fecha,
+          Lote: this.Lote,
+          FechaInicial: this.FechaInicial,
+          FechaFinal: this.FechaFinal,
+          HoraInicial: this.HoraInicial,
+          HoraFinal: this.HoraFinal,
+          FechaFabricacion: this.FechaFabricacion,
+          FechaVencimiento: this.FechaVencimiento,
+          Cantidad: item.Cantidad,
+          ProductoId: this.Producto.Id,
+          EnvaseId: item.Envase.Id,
+          ClienteId: item.Cliente.Id,
+          PurezaFinal: this.PurezaFinal,
+          PresionFinal: this.PresionFinal,
+          Observacion: this.Observacion
+        }
+        
+        this.$apollo.mutate ({
+          mutation: DELETE_PRODUCCION,
+          variables: {
+            Id: Produccion.Id,
+            Orden: Produccion.Orden,
+            Turno: Produccion.Turno,
+            Fecha: Produccion.Fecha,
+            Lote: Produccion.Lote,
+            FechaInicial: Produccion.FechaInicial,
+            FechaFinal: Produccion.FechaFinal,
+            HoraInicial: Produccion.HoraInicial,
+            HoraFinal: Produccion.HoraFinal,
+            FechaFabricacion: Produccion.FechaFabricacion,
+            FechaVencimiento: Produccion.FechaVencimiento,
+            Cantidad: Produccion.Cantidad,
+            ProductoId: Produccion.ProductoId,
+            EnvaseId: Produccion.EnvaseId,
+            PurezaFinal: Produccion.PurezaFinal,
+            PresionFinal: Produccion.PresionFinal,
+            Observacion: Produccion.Observacion
+          },
+           loadingKey: 'loading',
+           update (store, {data: res}) {
+             //console.log ({store: store, res: res})
+             
+             try{
+               const data = store.readQuery({
+                 query: PRODUCCIONS,
+                 variables: {
+                   Orden: Produccion.Orden
+                 }
+               })
+               
+               for (let i=0; i<data.Produccions.length; i++) {
+                 if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
+                   data.Produccions.splice(i, 1)
+                 }
+               }
+               
+               store.writeQuery({
+                 query: PRODUCCIONS,
+                 variables: {
+                   Orden: Produccion.Orden
+                 },
+                 data
+               })
+               
+             } catch (Err) {
+               //console.log("`Error controlado: ${Err}`")
+             }
+             
+           }
+         })
+        
+      }
       
-    },
+     },
     reset () {
       /*this.ChangeProducto=true
       this.Fecha = null,
