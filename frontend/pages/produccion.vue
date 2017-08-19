@@ -225,15 +225,24 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
               
               template(slot="items" scope="props")
-                td {{ props.item.Numero}}
-                td( class="text-xs-right " 
+                td( class="text-xs-center " ) {{ props.item.UnidadDeMedida }}
+                td( class="text-xs-center" 
                     style="border-left: 1px solid #999999" ) {{ props.item.Capacidad }}
+                td( style="border-left: 1px solid #999999" ) {{ props.item.Numero}}
                 td( class="text-xs-right " 
                     style="border-left: 1px solid #999999"
                     ) {{ props.item.Cantidad }}
-                td( class="text-xs-right " 
-                    style="border-left: 1px solid #999999"
-                    ) {{ props.item.UnidadDeMedida }}
+                td( style="border-left: 1px solid #999999" class="pt-0 pb-0")
+                  v-select( v-bind:items="ItemsCliente"
+                      v-model="Cliente"
+                      item-value="Id"
+                      item-text="Nombre"
+                      autocomplete
+                      return-object
+                      @click.native="ResetCliente()"
+                      light
+                      class="input-tab mb-0 mt-0 pb-0"
+                      style="width: 148px" )
                 td(style="width:24px; border-left: 1px solid #999999")
                   v-btn( fab
                          dark
@@ -255,6 +264,7 @@ import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql'
 import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
 import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql'
 import PRODUCTOS from '~/queries/Productos.gql'
+import ENTES from '~/queries/Entes.gql'
 
 export default {
   data: () => ({
@@ -278,13 +288,15 @@ export default {
     PurezaFinal: null,
     PresionFinal: null,
     Observacion: null,
+    Cliente: {Nombre: '', NumeroDocumento: '', Id: -1},
     ChangeProducto: true,
     ChangeProductoCounter: 0,
     headers: [
-      { text: 'Envase', align: 'left', sortable: true,  value: 'Numero' },
-      { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
-      { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
       { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
+      { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
+      { text: 'Envase', align: 'left', sortable: true,  value: 'Numero' },
+      { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
+      { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
       { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
     ],
     items: [],
@@ -294,6 +306,7 @@ export default {
     ItemsProducto: [], 
     ItemsAllEnvase: [],
     ItemsEnvase: [],
+    ItemsCliente: [],
     EnvaseActual: {Numero: null, Cantidad: null, Capacidad: null, UnidadDeMedida: null},
     Conjunto: new Set(),
     months: [
@@ -393,6 +406,14 @@ export default {
       update (data) {
         //console.log(data)
         this.ItemsProducto = data.Productos
+      }
+    },
+    Entes: {
+      query: ENTES,
+      loadingKey: 'loading',
+      update (data) {
+        //console.log(data)
+        this.ItemsCliente = data.Entes
       }
     }
   },
@@ -715,6 +736,9 @@ export default {
           }
         }
       }
+    },
+    ResetCliente () {
+      this.Cliente = {Nombre: null, NumeroDocumento: null, Id: null}
     }
   }
 };
@@ -724,4 +748,6 @@ export default {
 <style lang="stylus" scoped>
 .alert-especial
   position absolute
+  
+
 </style>

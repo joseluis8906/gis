@@ -275,7 +275,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .alert-especial
-    position absolute
+.alert-especial
+  position absolute
     
 </style>
