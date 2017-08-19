@@ -516,6 +516,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
 .alert-especial
   position absolute
 
@@ -526,5 +527,8 @@ export default {
   
 .select-especial
   border-bottom none !important
+  
+.input-group--select
+  height: 32px
   
 </style>

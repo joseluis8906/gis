@@ -288,7 +288,7 @@ export default {
     PurezaFinal: null,
     PresionFinal: null,
     Observacion: null,
-    Cliente: {Nombre: '', NumeroDocumento: '', Id: -1},
+    
     ChangeProducto: true,
     ChangeProductoCounter: 0,
     headers: [
@@ -307,7 +307,13 @@ export default {
     ItemsAllEnvase: [],
     ItemsEnvase: [],
     ItemsCliente: [],
-    EnvaseActual: {Numero: null, Cantidad: null, Capacidad: null, UnidadDeMedida: null},
+    EnvaseActual: {
+      Numero: null, 
+      Cantidad: null, 
+      Capacidad: null, 
+      UnidadDeMedida: null, 
+      Cliente: {Nombre: '', NumeroDocumento: '', Id: -1}  
+    },
     Conjunto: new Set(),
     months: [
       'Enero',
@@ -393,6 +399,9 @@ export default {
                 this.items = Array.from(this.Conjunto)
               }
             }
+            for (let k=0; k<this.ItemsCliente.length; k++) {
+              if ( data.Produccions[i].Cliente.Id == this.ItemsCliente )
+            }
           }
           
         } else {
@@ -453,6 +462,7 @@ export default {
               Cantidad: this.EnvaseActual.Cantidad,
               ProductoId: this.Producto.Id,
               EnvaseId: this.EnvaseActual.Id,
+              ClienteId: this.Cliente.Id,
               PurezaFinal: this.PurezaFinal,
               PresionFinal: this.PresionFinal,
               Observacion: this.Observacion
@@ -474,6 +484,7 @@ export default {
                 Cantidad: Produccion.Cantidad,
                 ProductoId: Produccion.ProductoId,
                 EnvaseId: Produccion.EnvaseId,
+                ClienteId: Produccion.ClienteId,
                 PurezaFinal: Produccion.PurezaFinal,
                 PresionFinal: Produccion.PresionFinal,
                 Observacion: Produccion.Observacion
@@ -533,6 +544,7 @@ export default {
               Cantidad: this.EnvaseActual.Cantidad,
               ProductoId: this.Producto.Id,
               EnvaseId: this.EnvaseActual.Id,
+              ClienteId: this.Cliente.Id,
               PurezaFinal: this.PurezaFinal,
               PresionFinal: this.PresionFinal,
               Observacion: this.Observacion
@@ -554,6 +566,7 @@ export default {
                 Cantidad: Produccion.Cantidad,
                 ProductoId: Produccion.ProductoId,
                 EnvaseId: Produccion.EnvaseId,
+                ClienteId: Produccion.ClienteId,
                 PurezaFinal: Produccion.PurezaFinal,
                 PresionFinal: Produccion.PresionFinal,
                 Observacion: Produccion.Observacion
@@ -631,6 +644,7 @@ export default {
         Cantidad: item.Cantidad,
         ProductoId: this.Producto.Id,
         EnvaseId: item.Id,
+        ClienteId: item.
         PurezaFinal: this.PurezaFinal,
         PresionFinal: this.PresionFinal,
         Observacion: this.Observacion
@@ -746,8 +760,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
 .alert-especial
   position absolute
   
-
+.input-group--select
+  height: 31px
+  
 </style>
