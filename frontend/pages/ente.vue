@@ -167,15 +167,6 @@ export default {
           })
         } catch (Err) {
           
-          data.Entes = []
-          
-          data.Entes.push(res.CreateEnte)
-          
-          store.writeQuery({
-            query: ENTES,
-            data: data
-          })
-          
         }
         
       },

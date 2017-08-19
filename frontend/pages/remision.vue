@@ -87,20 +87,20 @@ v-layout( align-center justify-center )
               template(slot="items" scope="props")
                 td(class="text-xs-center") {{ props.item.Produccion.Cantidad }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") 
+                td(class="text-xs-left" style="border-left: 1px solid #999999") 
                   v-select( v-bind:items="ItemsProduccion"
                             v-model="props.item.Produccion"
-                            item-text="Numero"
+                            item-text="NumeroEnvase"
                             item-value="Id"
                             return-object
                             autocomplete
                             style="width: 64px"
-                            class="input-tab mb-0 mt-0 pb-0 select-especial"
+                            class="mb-0 mt-0 pb-0 select-especial"
                             light )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") 
+                td(class="text-xs-left" style="border-left: 1px solid #999999") 
                   v-select( v-bind:items="ItemsEnvase"
                             v-model="props.item.Envase"
                             item-text="Numero"
@@ -108,15 +108,12 @@ v-layout( align-center justify-center )
                             return-object
                             autocomplete
                             style="width: 64px"
-                            class="input-tab mb-0 mt-0 pb-0 select-especial"
+                            class="mb-0 mt-0 pb-0 select-especial"
                             light )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
                   v-money( v-model="props.item.Total" 
                            style="width: 96px" 
                            class="input-tab mb-0 mt-0 pb-0" 
-                           :readonly="!props.item.TotalEditable"
-                           @click.native="enableable(props.item, 'Total')" 
-                           @keypress.native.enter="disableable(props.item, 'Total')"
                            mask-type="currency"
                            :focused="props.item.TotalFocus" 
                            maxlength=11)
@@ -156,8 +153,10 @@ import VMoney from '~/components/MonetaryInput.vue'
 import REMISIONS from '~/queries/Remisions.gql'
 import PRODUCCIONS from '~/queries/Produccions.gql'
 import CREATE_REMISION from '~/queries/CreateRemision.gql'
+import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
 import DELETE_REMISION from '~/queries/DeleteRemision.gql'
 import ONE_ENTE from '~/queries/OneEnte.gql'
+import ENVASES from '~/queries/Envases.gql'
 
 export default {
   data: () => ({
@@ -196,6 +195,7 @@ export default {
       { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
     ],
     items: [],
+    ItemsEnvase: [],
     
     months: [
       'Enero',
@@ -254,9 +254,13 @@ export default {
                   UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
                 },
                 Cliente: {
-                  Id: data.Remisions[i].Cliente.Id,
-                  Nombre: data.Remisions[i].Cliente.Nombre
+                  Id: data.Remisions[i].Ente.Id,
+                  Nombre: data.Remisions[i].Ente.Nombre
                 }
+              },
+              Envase: {
+                Id: data.Remisions[i].Envase.Id,
+                Numero: data.Remisions[i].Envase.Numero
               },
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update'
@@ -300,7 +304,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
+        
         if (data.Produccions.length > 0) {
           for ( let i=0; i<data.Produccions.length; i++ ) {
             var tmp = {
@@ -309,6 +313,7 @@ export default {
               FechaFabricacion: data.Produccions[i].FechaFabricacion,
               FechaVencimiento: data.Produccions[i].FechaVencimiento,
               Lote: data.Produccions[i].Lote,
+              NumeroEnvase: data.Produccions[i].Envase.Numero,
               Envase: {
                 Id: data.Produccions[i].Envase.Id,
                 Numero: data.Produccions[i].Envase.Numero
@@ -328,10 +333,30 @@ export default {
             
           }
           
+          //console.log(this.ItemsProduccion)
+          
         } else {
           
           this.ItemsProduccion = []
           
+        }
+      }
+    },
+    Envases: {
+      query: ENVASES,
+      loadingKey: 'loading',
+      update (data) {
+        //console.log(data)
+        this.ItemsEnvase = []
+        if (data.Envases.length>0) {
+          for (let i=0; i<data.Envases.length; i++) {
+            var tmp = {
+              Id: data.Envases[i].Id,
+              Numero: data.Envases[i].Numero
+            }
+            
+            this.ItemsEnvase.push(tmp)
+          }
         }
       }
     }
@@ -366,100 +391,139 @@ export default {
 
       this.items.push(tmp)
     },
-    CreateOrUpdate (item) {
+    guardar (item) {
       //console.log('Entrando a crear')
       //console.log(item);
-     /* if (
-        this.Numero !== null && 
-        this.Cliente.Id !== null &&
-        item.ProduccionId !== null &&
-        item.Total !== null && 
-        item.Total !== 0 && 
-        item.Total !== '$' ) {
+      if( item.Id === null && 
+          this.Fecha !== null &&
+          this.Cliente.Id !== null &&
+          item.Produccion.Id !== null &&
+          item.Envase.Id !== null && 
+          item.Total !== null && 
+          item.Total !== '') {
         
         const Remision = {
           Numero: this.Numero,
           Fecha: this.Fecha,
           EnteId: this.Cliente.Id,
-          Sale: item.Sale,
-          Entra: item.Entra,
-          ProduccionId: item.ProduccionId,
+          ProduccionId: item.Produccion.Id,
+          EnvaseId: item.Envase.Id,
           Total: item.Total
         }
         
-        //console.log('revisar la id para guardar')
         //console.log(item)
-        
-        if (item.Id === null) {
-          
-          this.$apollo.mutate ({
-            mutation: CREATE_REMISION,
-            variables: {
-              Numero: Remision.Numero,
-              Fecha: Remision.Fecha,
-              EnteId: Remision.EnteId,
-              Sale: Remision.Sale,
-              Entra: Remision.Entra,
-              ProduccionId: Remision.ProduccionId,
-              Total: Remision.Total
-            },
-            loadingKey: 'loading',
-            update (store, {data: res}) {
+        this.$apollo.mutate ({
+          mutation: CREATE_REMISION,
+          variables: {
+            Numero: Remision.Numero,
+            Fecha: Remision.Fecha,
+            EnteId: Remision.EnteId,
+            ProduccionId: Remision.ProduccionId,
+            EnvaseId: Remision.EnvaseId,
+            Total: Remision.Total
+          },
+          loadingKey: 'loading',
+          update (store, {data: res}) {
+            
+            //console.log ({store: store, res: res})
+            
+            try{
+              var data = store.readQuery({
+                query: REMISIONS,
+                variables: {
+                  Numero: Remision.Numero
+                }
+              })
               
-              //console.log('guardar en cache')
-              //console.log ({store: store, res: res})
+              data.Remisions.push(res.CreateRemision)
               
-              try{
-                const data = store.readQuery({
-                  query: REMISIONS,
-                  variables: {
-                    Numero: Remision.Numero
-                  }
-                })
-                
-                data.Remisions.push(res.CreateRemision)
-                
-                store.writeQuery({
-                  query: REMISIONS,
-                  variables: {
-                    Numero: Remision.Numero
-                  },
-                  data
-                })
-                
-              } catch (Err) {
-                
-                data.Remisions = []
-                  
-                data.Remisions.push(res.CreateRemision)
-                
-                store.writeQuery({
-                  query: REMISIONS,
-                  data: data
-                })
-                
-              }
+              store.writeQuery({
+                query: REMISIONS,
+                variables: {
+                  Numero: Remision.Numero
+                },
+                data
+              })
+              
+            } catch (Err) {
               
             }
-          })
-          
-        } else {
-          
-          //console.log('no se guarda en db por id')
-          
-        }
-        
+            
+          }
+        })
         
       } else {
+        
+        if( this.Fecha !== null &&
+            this.Cliente.Id !== null &&
+            item.ProduccionId !== null &&
+            item.EnvaseId !== null && 
+            item.Total !== null && 
+            item.Total !== '') { 
+            
+            const Remision = {
+              Id: item.Id,
+              EnteId: this.Cliente.Id,
+              ProduccionId: item.Produccion.Id,
+              EnvaseId: item.Envase.Id,
+              Total: item.Total
+            }
+        
+            //console.log(item)
+            this.$apollo.mutate ({
+              mutation: UPDATE_REMISION,
+              variables: {
+                Id: Remision.Id,
+                EnteId: Remision.EnteId,
+                ProduccionId: Remision.ProduccionId,
+                EnvaseId: Remision.EnvaseId,
+                Total: Remision.Total
+              },
+              loadingKey: 'loading',
+              update (store, {data: res}) {
+                
+                //console.log ({store: store, res: res})
+                
+                try{
+                  
+                  var data = store.readQuery({
+                    query: REMISIONS,
+                    variables: {
+                      Numero: Remision.Numero
+                    }
+                  })
+                  
+                  console.log(data)
+                  
+                  for (let i=0; i<data.Remisions.length; i++){
+                    if ( res.UpdateRemision.Id === data.Remisions[i].Id ) {
+                      data.Remisions[i] = res.UpdateRemision
+                    }
+                  }
+                  
+                  store.writeQuery({
+                    query: REMISIONS,
+                    variables: {
+                      Numero: Remision.Numero
+                    },
+                    data: data
+                  })
+                  
+                } catch (Err) {
+                  
+                }
+                
+              }
+            })
+           
+          }
+        }
       
-        //console.log('no se guarda en bd por parametros')
-      
-      }
-      */
     },
     eliminar (item) {
-      /*
+      
       const Remision = {
+        Id: item.Id,
         Numero: this.Numero,
         ProduccionId: item.ProduccionId
       }
@@ -469,8 +533,7 @@ export default {
         this.$apollo.mutate ({
           mutation: DELETE_REMISION,
           variables: {
-            Numero: Remision.Numero,
-            ProduccionId: Remision.ProduccionId
+            Id: Remision.Id
           },
           loadingKey: 'loading',
           update (store, {data: res}) {
@@ -479,7 +542,7 @@ export default {
             //console.log ({store: store, res: res})
             
             try{
-              const data = store.readQuery({
+              var data = store.readQuery({
                 query: REMISIONS,
                 variables: {
                   Numero: Remision.Numero,
@@ -506,32 +569,29 @@ export default {
               
             } catch (Err) {
               
-              data.Remisions = []
-              
-              data.Remisions.push(res.UpdateRemision)
-              
-              store.writeQuery({
-                query: REMISIONS,
-                data: data
-              })
-              
             }
             
           }
         })
         
+      } else {
+      
+        for (let i=0; i<this.items.length; i++) {
+          if (item.ProduccionId === this.items[i].ProduccionId) {
+            //console.log('Eliminado de cache')
+            this.items.splice(i, 1)
+          }
+        }
+      
       }
       
-      this.conjuntoItems.delete(item)
-      this.items = Array.from(this.conjuntoItems)
-      */
     },
     hardReset () {
       this.Numero = null
     },
     reset () {
       
-      /*this.Fecha = null,
+      this.Fecha = null,
       
       this.Cliente = {
         TipoDocumento: null,
@@ -542,24 +602,7 @@ export default {
         Telefono: null
       }
       
-      this.conjuntoItems.clear()
-      this.items = Array.from(this.conjuntoItems)*/
-    },
-    loadProduccion (item) {
-      //console.log (item)
-      /*for (let i=0; i<this.ItemsProduccion.length; i++) {
-        if (item.Sale === this.ItemsProduccion[i].Numero) {
-          //console.log('loaded')
-          //console.log(this.ItemsProduccion[i])
-          item.ProduccionId = this.ItemsProduccion[i].ProduccionId
-          item.Cantidad = this.ItemsProduccion[i].Cantidad
-          item.Producto = this.ItemsProduccion[i].Producto
-          item.Elaboracion = this.ItemsProduccion[i].Elaboracion
-          item.Vencimiento = this.ItemsProduccion[i].Vencimiento
-          item.Lote = this.ItemsProduccion[i].Lote
-          break
-        }
-      }*/
+      this.items = []
     },
     generar () {
       window.open('/reporte/remision');

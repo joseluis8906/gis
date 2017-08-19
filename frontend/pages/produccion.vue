@@ -523,15 +523,6 @@ export default {
                 
               } catch (Err) {
                 
-                data.Produccions = []
-                
-                data.Produccions.push(res.CreateProduccion)
-                
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  data: data
-                })
-                
               }
               
             }
@@ -610,15 +601,6 @@ export default {
                 })
                 
               } catch (Err) {
-                
-                data.Produccions = []
-                
-                data.Produccions.push(res.UpdateProduccion)
-                
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  data: data
-                })
                 
               }
               

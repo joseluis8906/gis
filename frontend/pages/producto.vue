@@ -127,15 +127,6 @@ export default {
             })
           } catch (Err) {
             
-            data.Productos = []
-            
-            data.Productos.push(res.CreateProducto)
-          
-            store.writeQuery({
-              query: PRODUCTOS,
-              data: data
-            })
-            
           }
             
         },
@@ -189,15 +180,6 @@ export default {
             })
             
           } catch (Err) {
-          
-            data.Productos = []
-            
-            data.Productos.push(res.UpdateProducto)
-          
-            store.writeQuery({
-              query: PRODUCTOS,
-              data: data
-            })
             
           }
           

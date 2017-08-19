@@ -1,12 +1,16 @@
-query Remisions ( 
-  $Numero: String,
-  $Fecha: String,
+mutation UpdateRemision ( 
+  $Id: Int!
   $EnteId: Int
+  $ProduccionId: Int
+  $EnvaseId: Int
+  $Total: Float
 ) {
-  Remisions (
-    Numero: $Numero, 
-    Fecha: $Fecha,
+  UpdateRemision (
+    Id: $Id
     EnteId: $EnteId
+    ProduccionId: $ProduccionId
+    EnvaseId: $EnvaseId
+    Total: $Total
   ){
     Id
     Numero

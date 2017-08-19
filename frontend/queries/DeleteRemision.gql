@@ -1,10 +1,8 @@
 mutation DeleteRemision ( 
-  $Numero: String!, 
-  $ProduccionId: Int! 
+  $Id: Int!
 ) {
   DeleteRemision (
-    Numero: $Numero, 
-    ProduccionId: $ProduccionId
+    Id: $Id
   ){
     Id
     Numero
@@ -36,13 +34,13 @@ mutation DeleteRemision (
       FechaVencimiento
       Envase {
         Id
-        NumeroInterno
+        Numero
         Capacidad
       }
     }
     Envase {
       Id
-      NumeroInterno
+      Numero
     }
   }
 }

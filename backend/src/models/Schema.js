@@ -1186,6 +1186,32 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
+      UpdateRemision: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          EnteId: {type: GraphQLInt},
+          ProduccionId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+          return Db.models.Remision.findOne({
+            where: {
+              Id: args.Id
+            }
+          }).then( R => {
+            
+            R.EnteId = args.EnteId;
+            R.ProduccionId = args.ProduccionId;
+            R.EnvaseId = args.EnvaseId;
+            R.Total = args.Total;
+            R.save();
+            return R;
+            
+          });
+        }
+      },
       DeleteRemision: {
         type: Remision,
         args: {

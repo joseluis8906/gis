@@ -464,14 +464,7 @@ export default {
             
           } catch (Err) {
             
-            data.Envases = []
             
-            data.Envases.push(res.CreateEnvase)
-            
-            store.writeQuery({
-              query: ENVASES,
-              data: data
-            })
             
           }
         }
@@ -569,14 +562,7 @@ export default {
             
           } catch (Err) {
             
-            data.Envases = []
             
-            data.Envases.push(res.UpdateEnvase)
-            
-            store.writeQuery({
-              query: ENVASES,
-              data: data
-            })
             
           }
           
