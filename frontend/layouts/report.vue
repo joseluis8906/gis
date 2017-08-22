@@ -62,6 +62,11 @@ page
   margin-bottom 0.5cm
   box-shadow 0 0 0.5cm rgba(0,0,0,0.5)
   
+page[size="MidLetter"][layout="Landscape"]
+  width 215.9mm
+  height 139.7mm
+  padding 6mm
+  
 page[size="Letter"][layout="Portrait"]
   width 215.9mm
   height 279.4mm

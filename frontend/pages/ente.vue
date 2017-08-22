@@ -165,7 +165,18 @@ export default {
             query: ENTES,
             data: data
           })
+          
         } catch (Err) {
+          
+          
+          data = {Entes: []}
+        
+          data.Entes.push(res.CreateEnte)
+        
+          store.writeQuery({
+            query: ENTES,
+            data: data
+          })
           
         }
         
@@ -232,7 +243,7 @@ export default {
           
         } catch (Err) {
         
-          data.Entes = []
+          data = {Entes: []}
           
           data.Entes.push(res.UpdateEnte)
           

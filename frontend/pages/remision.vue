@@ -122,7 +122,7 @@ v-layout( align-center justify-center )
                          dark
                          small
                          success
-                         style="width: 24px; height:24px"
+                         style="width: 16px; height:16px"
                          @click.native="guardar(props.item)")
                     v-icon(dark) {{ props.item.SaveUpdate }}
                     
@@ -130,7 +130,7 @@ v-layout( align-center justify-center )
                          dark
                          small
                          error
-                         style="width: 24px; height:24px"
+                         style="width: 16px; height:16px"
                          @click.native="eliminar(props.item)")
                     v-icon(dark) remove
             
@@ -233,7 +233,7 @@ export default {
           this.Fecha = data.Remisions[0].Fecha
           this.Cliente.TipoDocumento = data.Remisions[0].Ente.TipoDocumento
           this.Cliente.NumeroDocumento = data.Remisions[0].Ente.NumeroDocumento
-          
+          this.items = []
           for (let i=0; i<data.Remisions.length; i++) {
             
             var tmp = {
@@ -255,6 +255,8 @@ export default {
                 },
                 Cliente: {
                   Id: data.Remisions[i].Ente.Id,
+                  TipoDocumento: data.Remisions[i].TipoDocumento,
+                  NumeroDocumento: data.Remisions[i].NumeroDocumento,
                   Nombre: data.Remisions[i].Ente.Nombre
                 }
               },
@@ -298,6 +300,7 @@ export default {
     Produccions: {
       query: PRODUCCIONS,
       variables () {
+        //console.log(this.Cliente)
         return {
           ClienteId: this.Cliente.Id !== null ? this.Cliente.Id : 0,
         }
@@ -447,6 +450,15 @@ export default {
               
             } catch (Err) {
               
+              data = {Remisions: []}
+                
+              data.Remisions.push(res.CreateRemision)
+              
+              store.writeQuery({
+                query: REMISIONS,
+                data: data
+              })
+              
             }
             
           }
@@ -482,36 +494,52 @@ export default {
               loadingKey: 'loading',
               update (store, {data: res}) {
                 
-                //console.log ({store: store, res: res})
-                
                 try{
                   
                   var data = store.readQuery({
                     query: REMISIONS,
                     variables: {
-                      Numero: Remision.Numero
+                      Numero: res.UpdateRemision.Numero
                     }
                   })
-                  
-                  console.log(data)
                   
                   for (let i=0; i<data.Remisions.length; i++){
                     if ( res.UpdateRemision.Id === data.Remisions[i].Id ) {
                       data.Remisions[i] = res.UpdateRemision
+                      break
                     }
                   }
                   
                   store.writeQuery({
                     query: REMISIONS,
                     variables: {
-                      Numero: Remision.Numero
+                      Numero: res.UpdateRemision.Numero
                     },
                     data: data
                   })
                   
                 } catch (Err) {
                   
+                  console.log (`Error encontrado: ${Err}`)
+                  
+                  data = {Remisions: []}
+                  
+                  data.Remisions.push(res.UpdateRemision)
+                  
+                  store.writeQuery({
+                    query: REMISIONS,
+                    data: data
+                  })
+                  
                 }
+                
+                var newData = store.readQuery({
+                  query: REMISIONS,
+                  variables: {
+                    Numero: res.UpdateRemision.Numero
+                  }
+                })
+                
                 
               }
             })
@@ -594,6 +622,7 @@ export default {
       this.Fecha = null,
       
       this.Cliente = {
+        Id: null,
         TipoDocumento: null,
         NumeroDocumento: null,
         Nombre: null,
@@ -605,7 +634,8 @@ export default {
       this.items = []
     },
     generar () {
-      window.open('/reporte/remision');
+      this.$store.commit('reports/changeNumero', this.Numero)
+      this.$router.push('/reporte/remision');
     }
     
   },

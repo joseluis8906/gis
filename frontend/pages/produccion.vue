@@ -236,12 +236,12 @@ v-layout( align-center justify-center )
                       light
                       class="input-tab mb-0 mt-0 pb-0"
                       style="width: 148px" )
-                td(style="width:64px; border-left: 1px solid #999999" class="pl-1 pr-1")
+                td(style="width: 64px; border-left: 1px solid #999999" class="pl-1 pr-1")
                   v-btn( fab
                          dark
                          small
                          success
-                         style="width: 24px; height:24px"
+                         style="width: 16px; height:16px"
                          @click.native="guardar(props.item)")
                     v-icon(dark) {{ props.item.SaveUpdate }}
                     
@@ -249,7 +249,7 @@ v-layout( align-center justify-center )
                          dark
                          small
                          error
-                         style="width: 24px; height:24px"
+                         style="width: 16px; height:16px"
                          @click.native="eliminar(props.item)")
                     v-icon(dark) remove
                     
@@ -523,6 +523,15 @@ export default {
                 
               } catch (Err) {
                 
+                data = {Produccions: []}
+                
+                data.Produccions.push(res.CreateProduccion)
+                
+                store.writeQuery({
+                  query: PRODUCCIONS,
+                  data: data
+                })
+                
               }
               
             }
@@ -601,6 +610,15 @@ export default {
                 })
                 
               } catch (Err) {
+                
+                data = {Produccions: []}
+                
+                data.Produccions.push(res.UpdateOneProduccion)
+                
+                store.writeQuery({
+                  query: PRODUCCIONS,
+                  data: data
+                })
                 
               }
               
@@ -714,7 +732,8 @@ export default {
       
      },
     reset () {
-      /*this.ChangeProducto=true
+      
+      this.ChangeProducto=true
       this.Fecha = null,
       this.Turno = null,
       this.Lote = '01',
@@ -728,14 +747,10 @@ export default {
       this.PurezaFinal = null,
       this.PresionFinal = null,
       this.Observacion = null,
-      this.EnvaseActual = {Cantidad: null, Capacidad: null, UnidadDeMedida: null}
-      for (let j=0; j<this.ItemsEnvase.length; j++) {
-        this.ItemsEnvase[j].Cantidad = null
-      }
+      
       this.ItemsEnvase = []
-      this.Conjunto.clear ()
-      this.items = Array.from(this.Conjunto)
-      this.ChangeProductoCounter=0*/
+      this.items = []
+      this.ChangeProductoCounter=0
     },
     hardReset () {
       this.Orden = null
@@ -743,7 +758,7 @@ export default {
     },
     filtrarEnvases () {
       this.ChangeProductoCounter++
-      if( this.ChangeProductoCounter === 1 ) {
+      if( this.ChangeProductoCounter === 2 ) {
         this.ChangeProducto=false
         this.ItemsFilteredEnvase = []
         for (let i=0; i<this.ItemsAllEnvase.length; i++) {
