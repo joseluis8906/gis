@@ -1335,7 +1335,7 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
-      Createkardex: {
+      CreatekardexSale: {
         type: Kardex,
         args: {
           Cantidad: {type: GraphQLFloat},
@@ -1361,8 +1361,8 @@ var Mutation = new GraphQLObjectType({
             EnteId: args.EnteId,
             FechaSale: args.FechaSale,
             NumeroFacturaSale: args.NumeroFacturaSale,
-            FechaEntra: args.FechaEntra,
-            NumeroFacturaEntra: args.NumeroFacturaEntra
+            FechaEntra: null,
+            NumeroFacturaEntra: null
           }).then( R => {
             return R;
           });
