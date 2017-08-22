@@ -269,7 +269,9 @@ export default {
                 Numero: data.Remisions[i].Envase.Numero
               },
               Total: data.Remisions[i].Total,
-              SaveUpdate: 'update'
+              SaveUpdate: 'update',
+              ProduccionDisable: true,
+              EnvaseDisable: data.Remisions[i].Envase.Id ? true : false
             }
             
             this.items.push(tmp)
@@ -298,7 +300,6 @@ export default {
         this.Cliente.Ciudad = data.OneEnte ? data.OneEnte.Ciudad : null
         this.Cliente.Direccion = data.OneEnte ? data.OneEnte.Direccion : null
         this.Cliente.Telefono = data.OneEnte ? data.OneEnte.Telefono : null
-        
       }
     },
     Produccions: {
@@ -612,6 +613,8 @@ export default {
           }
         })
         
+        this.EliminarKardex(item)
+        
       } else {
       
         for (let i=0; i<this.items.length; i++) {
@@ -700,6 +703,53 @@ export default {
           console.log(res)
         }
       })
+    },
+    EliminarKardex (item) {
+      
+      var kardex1 = {
+        EnvaseId: item.Produccion.Envase.Id,
+        EnteId: this.Cliente.Id,
+        FechaEntra: this.Fecha,
+        NumeroFacturaEntra: this.Numero
+      }
+      
+      this.$apollo.mutate({
+        mutation: DELETE_KARDEX_SALE,
+        variables: {
+          EnvaseId: kardex1.EnvaseId,
+          EnteId: kardex1.EnteId,
+          FechaEntra: kardex1.FechaEntra,
+          NumeroFacturaEntra: kardex1.NumeroFacturaEntra
+        },
+        loadingKey: 'loading',
+        update (store, {data: res}) {
+          console.log(res)
+        }
+      })
+      
+      if (item.Envase.Id) {
+        var kardex2 = {
+          EnvaseId: item.Envase.Id,
+          EnteId: this.Cliente.Id,
+          FechaEntra: this.Fecha,
+          NumeroFacturaEntra: this.Numero
+        }
+        
+        this.$apollo.mutate({
+        mutation: DELETE_KARDEX_ENTRA,
+        variables: {
+          EnvaseId: kardex2.EnvaseId,
+          EnteId: kardex2.EnteId,
+          FechaEntra: kardex2.FechaEntra,
+          NumeroFacturaEntra: kardex2.NumeroFacturaEntra
+        },
+        loadingKey: 'loading',
+        update (store, {data: res}) {
+          console.log(res)
+        }
+      })
+      }
+      
     },
   },
   components: {
