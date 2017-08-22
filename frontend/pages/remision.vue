@@ -95,6 +95,7 @@ v-layout( align-center justify-center )
                             return-object
                             autocomplete
                             style="width: 64px"
+                            :disabled="props.item.ProduccionDisable"
                             class="mb-0 mt-0 pb-0 select-especial"
                             light )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
@@ -108,6 +109,7 @@ v-layout( align-center justify-center )
                             return-object
                             autocomplete
                             style="width: 64px"
+                            :disabled="props.item.EnvaseDisable"
                             class="mb-0 mt-0 pb-0 select-especial"
                             light )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") 
@@ -157,6 +159,8 @@ import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
 import DELETE_REMISION from '~/queries/DeleteRemision.gql'
 import ONE_ENTE from '~/queries/OneEnte.gql'
 import ENVASES from '~/queries/Envases.gql'
+import CREATE_KARDEX_SALE from '~/queries/CreateKardexSale.gql'
+import CREATE_KARDEX_ENTRA from '~/queries/CreateKardexEntra.gql'
 
 export default {
   data: () => ({
@@ -405,6 +409,9 @@ export default {
           item.Total !== null && 
           item.Total !== '') {
         
+        item.ProduccionDisable = true
+        item.EnvaseDisable = true
+        
         const Remision = {
           Numero: this.Numero,
           Fecha: this.Fecha,
@@ -463,6 +470,9 @@ export default {
             
           }
         })
+        
+        this.CreateKardexSale (item)
+        this.CreateKardexEntra (item)
         
       } else {
         
@@ -636,8 +646,61 @@ export default {
     generar () {
       this.$store.commit('remision/changeNumero', this.Numero)
       this.$router.push('/reporte/remision');
-    }
-    
+    },
+    CreateKardexSale (item) {
+      var kardex = {
+        Cantidad: item.Produccion.Cantidad,
+        ProductoId: item.Produccion.Producto.Id,
+        EnvaseId: item.Produccion.Envase.Id,
+        FechaElaboracion: item.Produccion.FechaFabricacion,
+        Lote: item.Produccion.Lote,
+        FechaVencimiento: item.Produccion.FechaVencimiento,
+        EnteId: this.Cliente.Id,
+        FechaSale: this.Fecha,
+        NumeroFacturaSale: this.Numero
+      }
+      
+      this.$apollo.mutate({
+        mutation: CREATE_KARDEX_SALE,
+        variables: {
+          Cantidad: kardex.Cantidad,
+          ProductoId: kardex.ProductoId,
+          EnvaseId: kardex.EnvaseId,
+          FechaElaboracion: kardex.FechaElaboracion,
+          Lote: kardex.Lote,
+          FechaVencimiento: kardex.FechaVencimiento,
+          EnteId: kardex.EnteId,
+          FechaSale: kardex.FechaSale,
+          NumeroFacturaSale: kardex.NumeroFacturaSale
+        },
+        loadingKey: 'loading',
+        update (store, {data: res}) {
+          console.log(res)
+        }
+      })
+    },
+    CreateKardexEntra (item) {
+      var kardex = {
+        EnvaseId: item.Envase.Id,
+        EnteId: this.Cliente.Id,
+        FechaEntra: this.Fecha,
+        NumeroFacturaEntra: this.Numero
+      }
+      
+      this.$apollo.mutate({
+        mutation: CREATE_KARDEX_ENTRA,
+        variables: {
+          EnvaseId: kardex.EnvaseId,
+          EnteId: kardex.EnteId,
+          FechaEntra: kardex.FechaEntra,
+          NumeroFacturaEntra: kardex.NumeroFacturaEntra
+        },
+        loadingKey: 'loading',
+        update (store, {data: res}) {
+          console.log(res)
+        }
+      })
+    },
   },
   components: {
     VMoney

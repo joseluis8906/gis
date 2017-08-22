@@ -1335,27 +1335,25 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
-      CreatekardexSale: {
+      CreateKardexSale: {
         type: Kardex,
         args: {
           Cantidad: {type: GraphQLFloat},
           ProductoId: {type: GraphQLInt},
           EnvaseId: {type: GraphQLInt},
-          FechaFabricacion: {type: GraphQLString},
+          FechaElaboracion: {type: GraphQLString},
           Lote: {type: GraphQLString},
           FechaVencimiento: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           FechaSale: {type: GraphQLString},
-          NumeroFacturaSale: {type: GraphQLString},
-          FechaEntra: {type: GraphQLString},
-          NumeroFacturaEntra: {type: GraphQLString}
+          NumeroFacturaSale: {type: GraphQLString}
         },
         resolve(_, args) {
-          return Db.models.kardex.create({
+          return Db.models.Kardex.create({
             Cantidad: args.Cantidad,
             ProductoId: args.ProductoId,
             EnvaseId: args.EnvaseId,
-            FechaFabricacion: args.FechaFabricacion,
+            FechaElaboracion: args.FechaElaboracion,
             Lote: args.Lote,
             FechaVencimiento: args.FechaVencimiento,
             EnteId: args.EnteId,
@@ -1365,6 +1363,34 @@ var Mutation = new GraphQLObjectType({
             NumeroFacturaEntra: null
           }).then( R => {
             return R;
+          });
+        }
+      },
+      CreateKardexEntra: {
+        type: Kardex,
+        args: {
+          EnvaseId: {type: GraphQLInt},
+          EnteId: {type: GraphQLInt},
+          FechaEntra: {type: GraphQLString},
+          NumeroFacturaEntra: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseId,
+              EnteId: args.EnteId,
+              FechaEntra: null, 
+              NumeroFacturaEntra: null
+            }
+          }).then( R => {
+            if (R) {
+              R.FechaEntra = args.FechaEntra;
+              R.NumeroFacturaEntra = args.NumeroFacturaEntra;
+              R.save();
+            }
+            
+            return R;
+            
           });
         }
       },
