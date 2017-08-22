@@ -171,6 +171,37 @@ Envase.hasMany(Remision)
 Remision.belongsTo(Envase)
 
 
+
+//kardex
+const Kardex = Db.define('Kardex', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  Cantidad: Sequelize.DECIMAL,
+  ProductoId: {type: Sequelize.INTEGER, references: {model: Producto, key: 'Id'}},
+  EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
+  FechaElaboracion: Sequelize.DATEONLY,
+  Lote: Sequelize.STRING,
+  FechaVencimiento: Sequelize.DATEONLY,
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
+  FechaSale: Sequelize.DATEONLY,
+  NumeroFacturaSale: Sequelize.TEXT,
+  FechaEntra: Sequelize.DATEONLY,
+  NumeroFacturaEntra: Sequelize.TEXT
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+Ente.hasMany(Kardex)
+Kardex.belongsTo(Ente)
+
+Producto.hasMany(Kardex)
+Kardex.belongsTo(Producto)
+
+Envase.hasMany(Kardex)
+Kardex.belongsTo(Envase)
+
+
 //open connection
 Db.authenticate().then(() => {
   console.log('Db conection success');

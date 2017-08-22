@@ -104,3 +104,18 @@ CREATE TABLE IF NOT EXISTS "Remision" (
   "Total" DECIMAL
 );
 
+
+CREATE TABLE IF NOT EXISTS "Kardex" (
+  "Id" INTEGER PRIMARY KEY,
+  "Cantidad" DECIMAL,
+  "ProductoId" INTEGER DEFAULT NULL REFERENCES "Producto"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "EnvaseId" INTEGER DEFAULT NULL REFERENCES "Envase"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "FechaElaboracion" DATE,
+  "Lote" TEXT,
+  "FechaVencimiento" DATE,
+  "EnteId" INTEGER DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "FechaSale" DATE,
+  "NumeroFacturaSale" TEXT,
+  "FechaEntra" DATE,
+  "NumeroFacturaEntra" TEXT
+);

@@ -634,7 +634,7 @@ export default {
       this.items = []
     },
     generar () {
-      this.$store.commit('reports/changeNumero', this.Numero)
+      this.$store.commit('remision/changeNumero', this.Numero)
       this.$router.push('/reporte/remision');
     }
     

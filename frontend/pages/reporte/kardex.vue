@@ -19,12 +19,12 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(class="lado") 01
         tr
           td(class="lado") Fecha
-          td(class="lado") 2017-01-01
+          td(class="lado") {{ Fecha }}
             
     table(style="width: 100%; height: auto" class="table-kardex" )
       thead
         tr(class="green lighten-3")
-          th(style="width: 5%") Cant (m³)
+          th(style="width: 5%") Cant
           th(style="width: 12%") Producto
           th(style="width: 6%") Número
           th(style="width: 8%") Fecha
@@ -72,17 +72,18 @@ export default {
   data () {
     return {
       pages: [
-        {rows: 34},
-        {rows: 34},
-        {rows: 34},
-        {rows: 34},
         {rows: 34}
       ]
     }
   },
+  computed: {
+    Fecha () {
+      return this.$store.state.kardex.Fecha
+    }
+  },
   layout: 'report',
   fetch ({ store }) {
-    store.commit('reports/change', 'Kardex')
+    store.commit('reports/changeTitle', 'Kardex')
   }
 }
 </script>
@@ -112,5 +113,7 @@ td
 .lado
   height 4mm
   font-size 8pt
-  padding 0
+  padding-left 1mm
+  padding-right 1mm
+  text-align right
 </style>

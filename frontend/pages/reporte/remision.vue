@@ -98,7 +98,7 @@ export default {
   },
   computed: {
     Numero () {
-      return this.$store.state.reports.Numero
+      return this.$store.state.remision.Numero
     }
   },
   layout: 'report',

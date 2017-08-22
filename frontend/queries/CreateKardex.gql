@@ -1,0 +1,59 @@
+mutation CreateKardex ( 
+  $Cantidad: Float!
+  $ProductoId: Int!
+  $EnvaseId: Int!
+  $FechaElaboracion: String!
+  $Lote: String!
+  $FechaVencimiento: String!
+  $EnteId: Int!
+  $FechaSale: String
+  $NumeroFacturaSale: String
+  $FechaEntra: String
+  $NumeroFacturaEntra: String
+) {
+  CreateKardex (
+    Cantidad: $Cantidad
+    ProductoId: $ProductoId
+    EnvaseId: $EnvaseId
+    FechaElaboracion: $FechaElaboracion
+    Lote: $Lote
+    FechaVencimiento: $FechaVencimiento
+    EnteId: $EnteId
+    FechaSale: $FechaSale
+    NumeroFacturaSale: $NumeroFacturaSale
+    FechaEntra: $FechaEntra
+    NumeroFacturaEntra: $NumeroFacturaEntra
+  ){
+    Id
+    Cantidad
+    ProductoId
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
+    }
+    EnvaseId
+    Envase {
+      Id
+      NumeroInterno
+      Capacidad
+    }
+    FechaElaboracion
+    Lote
+    FechaVencimiento
+    EnteId
+    Ente {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Ciudad
+      Direccion
+      Telefono
+    }
+    FechaSale
+    NumeroFacturaSale
+    FechaEntra
+    NumeroFacturaEntra
+  }
+}

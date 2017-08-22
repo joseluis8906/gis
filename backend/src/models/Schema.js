@@ -536,6 +536,107 @@ var Remision = new GraphQLObjectType({
 })
 
 
+//Kardex
+var Kardex = new GraphQLObjectType({
+  name: "Kardex",
+  description: "Object representation of Kardex",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Kardex) {
+          return Kardex.Id;
+        }
+      },
+      Cantidad: {
+        type: GraphQLFloat,
+        resolve(Kardex) {
+          return Kardex.Cantidad;
+        }
+      },
+      ProductoId: {
+        type: GraphQLInt,
+        resolve(Kardex) {
+          return Kardex.ProductoId;
+        }
+      },
+      EnvaseId: {
+        type: GraphQLInt,
+        resolve(Kardex) {
+          return Kardex.EnvaseId;
+        }
+      },
+      FechaElaboracion: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.FechaElaboracion;
+        }
+      },
+      Lote: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.Lote;
+        }
+      },
+      FechaVencimiento: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.FechaVencimiento;
+        }
+      },
+      EnteId: {
+        type: GraphQLInt,
+        resolve(Kardex) {
+          return Kardex.EnteId;
+        }
+      },
+      FechaSale: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.FechaSale;
+        }
+      },
+      NumeroFacturaSale: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.NumeroFacturaSale;
+        }
+      },
+      FechaEntra: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.FechaEntra;
+        }
+      },
+      NumeroFacturaEntra: {
+        type: GraphQLString,
+        resolve(Kardex) {
+          return Kardex.NumeroFacturaEntra;
+        }
+      },
+      Producto: {
+        type: Producto,
+        resolve(Kardex) {
+          return Kardex.getProducto();
+        }
+      },
+      Envase: {
+        type: Envase,
+        resolve(Kardex) {
+          return Kardex.getEnvase();
+        }
+      },
+      Ente: {
+        type: Ente,
+        resolve(Kardex) {
+          return Kardex.getEnte();
+        }
+      }
+    }
+  }
+})
+
+
 //Query
 var Query = new GraphQLObjectType({
   name: "Query",
@@ -805,6 +906,13 @@ var Query = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.Remision.findOne({where: args})
+        }
+      },
+      Kardexs: {
+        type: new GraphQLList(Kardex),
+        args: {},
+        resolve(root, args) {
+          return Db.models.Kardex.findAll({where: args})
         }
       }
     };
@@ -1226,7 +1334,40 @@ var Mutation = new GraphQLObjectType({
             return R.destroy();
           });
         }
-      }
+      },
+      Createkardex: {
+        type: Kardex,
+        args: {
+          Cantidad: {type: GraphQLFloat},
+          ProductoId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          FechaFabricacion: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          FechaSale: {type: GraphQLString},
+          NumeroFacturaSale: {type: GraphQLString},
+          FechaEntra: {type: GraphQLString},
+          NumeroFacturaEntra: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.kardex.create({
+            Cantidad: args.Cantidad,
+            ProductoId: args.ProductoId,
+            EnvaseId: args.EnvaseId,
+            FechaFabricacion: args.FechaFabricacion,
+            Lote: args.Lote,
+            FechaVencimiento: args.FechaVencimiento,
+            EnteId: args.EnteId,
+            FechaSale: args.FechaSale,
+            NumeroFacturaSale: args.NumeroFacturaSale,
+            FechaEntra: args.FechaEntra,
+            NumeroFacturaEntra: args.NumeroFacturaEntra
+          }).then( R => {
+            return R;
+          });
+        }
+      },
     };
   }
 });
