@@ -161,6 +161,8 @@ import ONE_ENTE from '~/queries/OneEnte.gql'
 import ENVASES from '~/queries/Envases.gql'
 import CREATE_KARDEX_SALE from '~/queries/CreateKardexSale.gql'
 import CREATE_KARDEX_ENTRA from '~/queries/CreateKardexEntra.gql'
+import DELETE_KARDEX_SALE from '~/queries/DeleteKardexSale.gql'
+import DELETE_KARDEX_ENTRA from '~/queries/DeleteKardexEntra.gql'
 
 export default {
   data: () => ({
@@ -708,18 +710,14 @@ export default {
       
       var kardex1 = {
         EnvaseId: item.Produccion.Envase.Id,
-        EnteId: this.Cliente.Id,
-        FechaEntra: this.Fecha,
-        NumeroFacturaEntra: this.Numero
+        NumeroFacturaSale: this.Numero
       }
       
       this.$apollo.mutate({
         mutation: DELETE_KARDEX_SALE,
         variables: {
           EnvaseId: kardex1.EnvaseId,
-          EnteId: kardex1.EnteId,
-          FechaEntra: kardex1.FechaEntra,
-          NumeroFacturaEntra: kardex1.NumeroFacturaEntra
+          NumeroFacturaSale: kardex1.NumeroFacturaSale
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
@@ -728,10 +726,9 @@ export default {
       })
       
       if (item.Envase.Id) {
+        
         var kardex2 = {
           EnvaseId: item.Envase.Id,
-          EnteId: this.Cliente.Id,
-          FechaEntra: this.Fecha,
           NumeroFacturaEntra: this.Numero
         }
         
@@ -739,8 +736,6 @@ export default {
         mutation: DELETE_KARDEX_ENTRA,
         variables: {
           EnvaseId: kardex2.EnvaseId,
-          EnteId: kardex2.EnteId,
-          FechaEntra: kardex2.FechaEntra,
           NumeroFacturaEntra: kardex2.NumeroFacturaEntra
         },
         loadingKey: 'loading',

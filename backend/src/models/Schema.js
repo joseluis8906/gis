@@ -1394,6 +1394,48 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
+      DeleteKardexSale: {
+        type: Kardex,
+        args: {
+          EnvaseId: {type: GraphQLInt},
+          NumeroFacturaSale: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseId,
+              NumeroFacturaSale: args.NumeroFacturaSale
+            }
+          }).then( R => {
+            if (R) {
+              R.destroy();
+            }
+            return R;
+          });
+        }
+      },
+      DeleteKardexEntra: {
+        type: Kardex,
+        args: {
+          EnvaseId: {type: GraphQLInt},
+          NumeroFacturaEntra: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseId,
+              NumeroFacturaEntra: args.NumeroFacturaEntra
+            }
+          }).then( R => {
+            if (R) {
+              R.FechaEntra = null;
+              R.NumeroFacturaEntra = null;
+              R.save();
+            }
+            return R;
+          });
+        }
+      }
     };
   }
 });
