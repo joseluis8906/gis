@@ -721,7 +721,7 @@ export default {
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
-          console.log(res)
+          //console.log(res)
         }
       })
       
@@ -740,7 +740,7 @@ export default {
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
-          console.log(res)
+          //console.log(res)
         }
       })
       }

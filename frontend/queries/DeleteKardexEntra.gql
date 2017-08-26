@@ -2,7 +2,7 @@ mutation DeleteKardexEntra (
   $EnvaseId: Int!
   $NumeroFacturaEntra: String
 ) {
-  DeleteKardexEntra (
+  DeleteKardexEntra ( 
     EnvaseId: $EnvaseId
     NumeroFacturaEntra: $NumeroFacturaEntra
   ){

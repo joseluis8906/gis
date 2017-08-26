@@ -2,7 +2,7 @@ mutation DeleteKardexSale (
   $EnvaseId: Int!
   $NumeroFacturaSale: String!
 ) {
-  CreateKardexSale (
+  DeleteKardexSale ( 
     EnvaseId: $EnvaseId
     NumeroFacturaSale: $NumeroFacturaSale
   ){
