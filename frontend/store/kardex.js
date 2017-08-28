@@ -1,5 +1,5 @@
 export const state = {
-  Tipo: 'Todos',
+  Tipo: null,
   Fecha: null,
   Cliente: null,
   Envase: null,

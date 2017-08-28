@@ -244,13 +244,13 @@ export default {
   },
   methods: {
     generar() {
-      this.$store.commit('kardex/changeTipo', this.Tipo)
+      this.$store.commit('kardex/changeTipo', this.TipoKardex)
       this.$store.commit('kardex/changeFecha', this.Fecha)
-      this.$store.commit('kardex/changeCliente', this.Cliente.Id)
-      this.$store.commit('kardex/changeEnvase', this.Envase.Id)
+      this.$store.commit('kardex/changeCliente', this.Cliente)
+      this.$store.commit('kardex/changeEnvase', this.Envase)
       this.$store.commit('kardex/changeFechaInicial', this.FechaInicial)
       this.$store.commit('kardex/changeFechaFinal', this.FechaFinal)
-      this.$router.push('/reporte/kardex');
+      this.$router.push('/reporte/kardex')
     },
     ResetCliente () {
       this.Cliente = {

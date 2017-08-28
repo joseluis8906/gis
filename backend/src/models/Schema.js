@@ -910,9 +910,45 @@ var Query = new GraphQLObjectType({
       },
       Kardexs: {
         type: new GraphQLList(Kardex),
-        args: {},
+        args: {
+          Tipo: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          FechaInicial: {type: GraphQLString},
+          FechaFinal: {type: GraphQLString}
+        },
         resolve(root, args) {
-          return Db.models.Kardex.findAll({where: args})
+          console.log(args)
+          if(args.Tipo === "Único") {
+            return Db.models.Kardex.findAll({
+              where: {
+                EnvaseId: args.EnvaseId,
+                $or: [
+                  {FechaEntra: {$between: [args.FechaInicial, args.FechaFinal]}},
+                  {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
+                ]
+              }
+            })
+          } else if(args.Tipo === "Por Cliente") {
+            return Db.models.Kardex.findAll({
+              where: {
+                EnteId: args.EnteId,
+                $or: [
+                  {FechaEntra: {$between: [args.FechaInicial, args.FechaFinal]}},
+                  {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
+                ]
+              }
+            })
+          } else {
+            return Db.models.Kardex.findAll({
+              where: {
+                $or: [
+                  {FechaEntra: {$between: [args.FechaInicial, args.FechaFinal]}},
+                  {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
+                ]
+              }
+            })
+          }
         }
       }
     };

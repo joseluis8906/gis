@@ -125,7 +125,7 @@ v-layout( align-center justify-center )
                          small
                          success
                          style="width: 16px; height:16px"
-                         @click.native="guardar(props.item)")
+                         @click.native="guardar(props.item);")
                     v-icon(dark) {{ props.item.SaveUpdate }}
                     
                   v-btn( fab
@@ -474,8 +474,8 @@ export default {
           }
         })
         
-        this.CreateKardexSale (item)
-        this.CreateKardexEntra (item)
+        this.CreateKardexEntra(item)
+        this.CreateKardexSale(item)
         
       } else {
         
@@ -653,6 +653,7 @@ export default {
       this.$router.push('/reporte/remision');
     },
     CreateKardexSale (item) {
+      
       var kardex = {
         Cantidad: item.Produccion.Cantidad,
         ProductoId: item.Produccion.Producto.Id,
@@ -680,7 +681,7 @@ export default {
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
-          console.log(res)
+          //console.log(res)
         }
       })
     },
@@ -702,7 +703,7 @@ export default {
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
-          console.log(res)
+          //console.log(res)
         }
       })
     },

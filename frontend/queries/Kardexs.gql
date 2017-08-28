@@ -1,5 +1,17 @@
-query Kardexs {
-  Kardexs {
+query Kardexs (
+  $Tipo: String,
+  $EnteId: Int,
+  $EnvaseId: Int,
+  $FechaInicial: String,
+  $FechaFinal: String
+  ) {
+  Kardexs (
+    Tipo: $Tipo,
+    EnteId: $EnteId,
+    EnvaseId: $EnvaseId,
+    FechaInicial: $FechaInicial,
+    FechaFinal: $FechaFinal
+  ) {
     Id
     Cantidad
     ProductoId
@@ -11,7 +23,7 @@ query Kardexs {
     EnvaseId
     Envase {
       Id
-      NumeroInterno
+      Numero
       Capacidad
     }
     FechaElaboracion

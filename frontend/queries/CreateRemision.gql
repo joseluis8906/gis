@@ -44,13 +44,13 @@ mutation CreateRemision (
       FechaVencimiento
       Envase {
         Id
-        NumeroInterno
+        Numero
         Capacidad
       }
     }
     Envase {
       Id
-      NumeroInterno
+      Numero
     }
   }
 }
