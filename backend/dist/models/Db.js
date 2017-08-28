@@ -66,16 +66,26 @@ var Ente = Db.define('Ente', {
   freezeTableName: true
 });
 
+//Producto
+var Producto = Db.define('Producto', {
+  Id: { type: _sequelize2.default.INTEGER, primaryKey: true, autoIncrement: true },
+  Nombre: _sequelize2.default.STRING,
+  UnidadDeMedida: _sequelize2.default.STRING
+}, {
+  timestamps: false,
+  freezeTableName: true
+});
+
 //Envase
 var Envase = Db.define('Envase', {
   Id: { type: _sequelize2.default.INTEGER, primaryKey: true, autoIncrement: true },
   Estado: _sequelize2.default.STRING,
   EnteId: { type: _sequelize2.default.INTEGER, references: { model: Ente, key: 'Id' } },
   Material: _sequelize2.default.STRING,
+  ProductoId: { type: _sequelize2.default.INTEGER, references: { model: Producto, key: 'Id' } },
   Capacidad: _sequelize2.default.DECIMAL,
   Numero: { type: _sequelize2.default.STRING, unique: true },
-  NumeroInterno: { type: _sequelize2.default.STRING, unique: true },
-  ClaseProducto: _sequelize2.default.STRING,
+  NumeroInterno: _sequelize2.default.STRING,
   Presion: _sequelize2.default.DECIMAL,
   AlturaConValvula: _sequelize2.default.DECIMAL,
   PesoConValvula: _sequelize2.default.DECIMAL,
@@ -99,18 +109,29 @@ var Envase = Db.define('Envase', {
 Ente.hasMany(Envase);
 Envase.belongsTo(Ente);
 
+Producto.hasMany(Envase);
+Envase.belongsTo(Producto);
+
 //produccion
 var Produccion = Db.define('Produccion', {
   Id: { type: _sequelize2.default.INTEGER, primaryKey: true, autoIncrement: true },
+  Orden: _sequelize2.default.STRING,
+  Turno: _sequelize2.default.STRING,
   Fecha: _sequelize2.default.DATEONLY,
   Lote: _sequelize2.default.STRING,
+  FechaInicial: _sequelize2.default.DATEONLY,
+  FechaFinal: _sequelize2.default.DATEONLY,
+  HoraInicial: _sequelize2.default.TIME,
+  HoraFinal: _sequelize2.default.TIME,
   FechaFabricacion: _sequelize2.default.DATEONLY,
   FechaVencimiento: _sequelize2.default.DATEONLY,
   Cantidad: _sequelize2.default.DECIMAL,
-  Producto: _sequelize2.default.STRING,
+  ProductoId: { type: _sequelize2.default.INTEGER, references: { model: Producto, key: "Id" } },
   EnvaseId: { type: _sequelize2.default.INTEGER, references: { model: Envase, key: "Id" } },
+  EnteId: { type: _sequelize2.default.INTEGER, references: { model: Ente, key: "Id" } },
   PurezaFinal: _sequelize2.default.DECIMAL,
-  PresionFinal: _sequelize2.default.DECIMAL
+  PresionFinal: _sequelize2.default.DECIMAL,
+  Observacion: _sequelize2.default.TEXT
 }, {
   timestamps: false,
   freezeTableName: true
@@ -119,15 +140,20 @@ var Produccion = Db.define('Produccion', {
 Envase.hasMany(Produccion);
 Produccion.belongsTo(Envase);
 
+Producto.hasMany(Produccion);
+Produccion.belongsTo(Producto);
+
+Ente.hasMany(Produccion);
+Produccion.belongsTo(Ente);
+
 //remision
 var Remision = Db.define('Remision', {
   Id: { type: _sequelize2.default.INTEGER, primaryKey: true, autoIncrement: true },
   Numero: _sequelize2.default.STRING,
   Fecha: _sequelize2.default.DATEONLY,
   EnteId: { type: _sequelize2.default.INTEGER, references: { model: Ente, key: "Id" } },
-  Sale: _sequelize2.default.STRING,
-  Entra: _sequelize2.default.STRING,
   ProduccionId: { type: _sequelize2.default.INTEGER, references: { model: Produccion, key: "Id" } },
+  EnvaseId: { type: _sequelize2.default.INTEGER, references: { model: Envase, key: "Id" } },
   Total: _sequelize2.default.DECIMAL
 }, {
   timestamps: false,
@@ -139,6 +165,37 @@ Remision.belongsTo(Ente);
 
 Produccion.hasMany(Remision);
 Remision.belongsTo(Produccion);
+
+Envase.hasMany(Remision);
+Remision.belongsTo(Envase);
+
+//kardex
+var Kardex = Db.define('Kardex', {
+  Id: { type: _sequelize2.default.INTEGER, primaryKey: true, autoIncrement: true },
+  Cantidad: _sequelize2.default.DECIMAL,
+  ProductoId: { type: _sequelize2.default.INTEGER, references: { model: Producto, key: 'Id' } },
+  EnvaseId: { type: _sequelize2.default.INTEGER, references: { model: Envase, key: "Id" } },
+  FechaElaboracion: _sequelize2.default.DATEONLY,
+  Lote: _sequelize2.default.STRING,
+  FechaVencimiento: _sequelize2.default.DATEONLY,
+  EnteId: { type: _sequelize2.default.INTEGER, references: { model: Ente, key: "Id" } },
+  FechaSale: _sequelize2.default.DATEONLY,
+  NumeroFacturaSale: _sequelize2.default.TEXT,
+  FechaEntra: _sequelize2.default.DATEONLY,
+  NumeroFacturaEntra: _sequelize2.default.TEXT
+}, {
+  timestamps: false,
+  freezeTableName: true
+});
+
+Ente.hasMany(Kardex);
+Kardex.belongsTo(Ente);
+
+Producto.hasMany(Kardex);
+Kardex.belongsTo(Producto);
+
+Envase.hasMany(Kardex);
+Kardex.belongsTo(Envase);
 
 //open connection
 Db.authenticate().then(function () {

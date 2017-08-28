@@ -78,6 +78,33 @@ var Post = new _graphql.GraphQLObjectType({
   }
 });
 
+var Producto = new _graphql.GraphQLObjectType({
+  name: "Producto",
+  description: "Object representation of Producto",
+  fields: function fields() {
+    return {
+      Id: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Producto) {
+          return Producto.Id;
+        }
+      },
+      Nombre: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Producto) {
+          return Producto.Nombre;
+        }
+      },
+      UnidadDeMedida: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Producto) {
+          return Producto.UnidadDeMedida;
+        }
+      }
+    };
+  }
+});
+
 var Ente = new _graphql.GraphQLObjectType({
   name: "Ente",
   description: "Object representation of Ente",
@@ -171,8 +198,14 @@ var Envase = new _graphql.GraphQLObjectType({
           return Envase.Material;
         }
       },
+      ProductoId: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Envase) {
+          return Envase.ProductoId;
+        }
+      },
       Capacidad: {
-        type: _graphql.GraphQLString,
+        type: _graphql.GraphQLFloat,
         resolve: function resolve(Envase) {
           return Envase.Capacidad;
         }
@@ -187,12 +220,6 @@ var Envase = new _graphql.GraphQLObjectType({
         type: _graphql.GraphQLString,
         resolve: function resolve(Envase) {
           return Envase.NumeroInterno;
-        }
-      },
-      ClaseProducto: {
-        type: _graphql.GraphQLString,
-        resolve: function resolve(Envase) {
-          return Envase.ClaseProducto;
         }
       },
       Presion: {
@@ -290,6 +317,12 @@ var Envase = new _graphql.GraphQLObjectType({
         resolve: function resolve(Envase) {
           return Envase.getEnte();
         }
+      },
+      Producto: {
+        type: Producto,
+        resolve: function resolve(Envase) {
+          return Envase.getProducto();
+        }
       }
     };
   }
@@ -307,6 +340,18 @@ var Produccion = new _graphql.GraphQLObjectType({
           return Produccion.Id;
         }
       },
+      Orden: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.Orden;
+        }
+      },
+      Turno: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.Turno;
+        }
+      },
       Fecha: {
         type: _graphql.GraphQLString,
         resolve: function resolve(Produccion) {
@@ -317,6 +362,30 @@ var Produccion = new _graphql.GraphQLObjectType({
         type: _graphql.GraphQLString,
         resolve: function resolve(Produccion) {
           return Produccion.Lote;
+        }
+      },
+      FechaInicial: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.FechaInicial;
+        }
+      },
+      FechaFinal: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.FechaFinal;
+        }
+      },
+      HoraInicial: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.HoraInicial;
+        }
+      },
+      HoraFinal: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.HoraFinal;
         }
       },
       FechaFabricacion: {
@@ -337,16 +406,22 @@ var Produccion = new _graphql.GraphQLObjectType({
           return Produccion.Cantidad;
         }
       },
-      Producto: {
-        type: _graphql.GraphQLString,
+      ProductoId: {
+        type: _graphql.GraphQLInt,
         resolve: function resolve(Produccion) {
-          return Produccion.Producto;
+          return Produccion.ProductoId;
         }
       },
       EnvaseId: {
         type: _graphql.GraphQLInt,
         resolve: function resolve(Produccion) {
           return Produccion.EnvaseId;
+        }
+      },
+      ClienteId: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Produccion) {
+          return Produccion.EnteId;
         }
       },
       PurezaFinal: {
@@ -361,10 +436,28 @@ var Produccion = new _graphql.GraphQLObjectType({
           return Produccion.PresionFinal;
         }
       },
+      Observacion: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Produccion) {
+          return Produccion.Observacion;
+        }
+      },
       Envase: {
         type: Envase,
         resolve: function resolve(Produccion) {
           return Produccion.getEnvase();
+        }
+      },
+      Producto: {
+        type: Producto,
+        resolve: function resolve(Produccion) {
+          return Produccion.getProducto();
+        }
+      },
+      Cliente: {
+        type: Ente,
+        resolve: function resolve(Produccion) {
+          return Produccion.getEnte();
         }
       }
     };
@@ -401,22 +494,16 @@ var Remision = new _graphql.GraphQLObjectType({
           return Remision.EnteId;
         }
       },
-      Sale: {
-        type: _graphql.GraphQLString,
-        resolve: function resolve(Remision) {
-          return Remision.Sale;
-        }
-      },
-      Entra: {
-        type: _graphql.GraphQLString,
-        resolve: function resolve(Remision) {
-          return Remision.Entra;
-        }
-      },
       ProduccionId: {
         type: _graphql.GraphQLInt,
         resolve: function resolve(Remision) {
           return Remision.ProduccionId;
+        }
+      },
+      EnvaseId: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Remision) {
+          return Remision.EnvaseId;
         }
       },
       Total: {
@@ -435,6 +522,112 @@ var Remision = new _graphql.GraphQLObjectType({
         type: Produccion,
         resolve: function resolve(Remision) {
           return Remision.getProduccion();
+        }
+      },
+      Envase: {
+        type: Envase,
+        resolve: function resolve(Remision) {
+          return Remision.getEnvase();
+        }
+      }
+    };
+  }
+});
+
+//Kardex
+var Kardex = new _graphql.GraphQLObjectType({
+  name: "Kardex",
+  description: "Object representation of Kardex",
+  fields: function fields() {
+    return {
+      Id: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Kardex) {
+          return Kardex.Id;
+        }
+      },
+      Cantidad: {
+        type: _graphql.GraphQLFloat,
+        resolve: function resolve(Kardex) {
+          return Kardex.Cantidad;
+        }
+      },
+      ProductoId: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Kardex) {
+          return Kardex.ProductoId;
+        }
+      },
+      EnvaseId: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Kardex) {
+          return Kardex.EnvaseId;
+        }
+      },
+      FechaElaboracion: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.FechaElaboracion;
+        }
+      },
+      Lote: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.Lote;
+        }
+      },
+      FechaVencimiento: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.FechaVencimiento;
+        }
+      },
+      EnteId: {
+        type: _graphql.GraphQLInt,
+        resolve: function resolve(Kardex) {
+          return Kardex.EnteId;
+        }
+      },
+      FechaSale: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.FechaSale;
+        }
+      },
+      NumeroFacturaSale: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.NumeroFacturaSale;
+        }
+      },
+      FechaEntra: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.FechaEntra;
+        }
+      },
+      NumeroFacturaEntra: {
+        type: _graphql.GraphQLString,
+        resolve: function resolve(Kardex) {
+          return Kardex.NumeroFacturaEntra;
+        }
+      },
+      Producto: {
+        type: Producto,
+        resolve: function resolve(Kardex) {
+          return Kardex.getProducto();
+        }
+      },
+      Envase: {
+        type: Envase,
+        resolve: function resolve(Kardex) {
+          return Kardex.getEnvase();
+        }
+      },
+      Ente: {
+        type: Ente,
+        resolve: function resolve(Kardex) {
+          return Kardex.getEnte();
         }
       }
     };
@@ -522,6 +715,28 @@ var Query = new _graphql.GraphQLObjectType({
           return _Db2.default.models.Ente.findOne({ where: args });
         }
       },
+      Productos: {
+        type: new _graphql.GraphQLList(Producto),
+        args: {
+          Id: { type: _graphql.GraphQLInt },
+          Nombre: { type: _graphql.GraphQLString },
+          UnidadDeMedida: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(root, args) {
+          return _Db2.default.models.Producto.findAll({ where: args });
+        }
+      },
+      OneProducto: {
+        type: Producto,
+        args: {
+          Id: { type: _graphql.GraphQLInt },
+          Nombre: { type: _graphql.GraphQLString },
+          UnidadDeMedida: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(root, args) {
+          return _Db2.default.models.Producto.findOne({ where: args });
+        }
+      },
       Envases: {
         type: new _graphql.GraphQLList(Envase),
         args: {
@@ -529,10 +744,10 @@ var Query = new _graphql.GraphQLObjectType({
           Estado: { type: _graphql.GraphQLString },
           EnteId: { type: _graphql.GraphQLInt },
           Material: { type: _graphql.GraphQLString },
+          ProductoId: { type: _graphql.GraphQLInt },
           Capacidad: { type: _graphql.GraphQLFloat },
           Numero: { type: _graphql.GraphQLString },
           NumeroInterno: { type: _graphql.GraphQLString },
-          ClaseProducto: { type: _graphql.GraphQLString },
           Presion: { type: _graphql.GraphQLFloat },
           AlturaConValvula: { type: _graphql.GraphQLFloat },
           PesoConValvula: { type: _graphql.GraphQLFloat },
@@ -560,10 +775,10 @@ var Query = new _graphql.GraphQLObjectType({
           Estado: { type: _graphql.GraphQLString },
           EnteId: { type: _graphql.GraphQLInt },
           Material: { type: _graphql.GraphQLString },
+          ProductoId: { type: _graphql.GraphQLInt },
           Capacidad: { type: _graphql.GraphQLFloat },
           Numero: { type: _graphql.GraphQLString },
           NumeroInterno: { type: _graphql.GraphQLString },
-          ClaseProducto: { type: _graphql.GraphQLString },
           Presion: { type: _graphql.GraphQLFloat },
           AlturaConValvula: { type: _graphql.GraphQLFloat },
           PesoConValvula: { type: _graphql.GraphQLFloat },
@@ -590,15 +805,45 @@ var Query = new _graphql.GraphQLObjectType({
         type: new _graphql.GraphQLList(Produccion),
         args: {
           Id: { type: _graphql.GraphQLInt },
+          Orden: { type: _graphql.GraphQLString },
+          Turno: { type: _graphql.GraphQLString },
           Fecha: { type: _graphql.GraphQLString },
           Lote: { type: _graphql.GraphQLString },
+          FechaInicial: { type: _graphql.GraphQLString },
+          FechaFinal: { type: _graphql.GraphQLString },
+          HoraInicial: { type: _graphql.GraphQLString },
+          HoraFinal: { type: _graphql.GraphQLString },
           FechaFabricacion: { type: _graphql.GraphQLString },
           FechaVencimiento: { type: _graphql.GraphQLString },
           Cantidad: { type: _graphql.GraphQLFloat },
           EnvaseId: { type: _graphql.GraphQLInt },
-          Producto: { type: _graphql.GraphQLString },
+          ProductoId: { type: _graphql.GraphQLInt },
+          EnteId: { type: _graphql.GraphQLInt },
           PurezaFinal: { type: _graphql.GraphQLFloat },
-          PresionFinal: { type: _graphql.GraphQLFloat }
+          PresionFinal: { type: _graphql.GraphQLFloat },
+          Observacion: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(root, args) {
+          return _Db2.default.models.Produccion.findAll({ where: args });
+        }
+      },
+      ProduccionsByClient: {
+        type: new _graphql.GraphQLList(Produccion),
+        args: {
+          Fecha: { type: _graphql.GraphQLString },
+          FechaInicial: { type: _graphql.GraphQLString },
+          FechaFinal: { type: _graphql.GraphQLString },
+          HoraInicial: { type: _graphql.GraphQLString },
+          HoraFinal: { type: _graphql.GraphQLString },
+          FechaFabricacion: { type: _graphql.GraphQLString },
+          FechaVencimiento: { type: _graphql.GraphQLString },
+          Cantidad: { type: _graphql.GraphQLFloat },
+          EnvaseId: { type: _graphql.GraphQLInt },
+          ProductoId: { type: _graphql.GraphQLInt },
+          ClienteId: { type: _graphql.GraphQLInt },
+          PurezaFinal: { type: _graphql.GraphQLFloat },
+          PresionFinal: { type: _graphql.GraphQLFloat },
+          Observacion: { type: _graphql.GraphQLString }
         },
         resolve: function resolve(root, args) {
           return _Db2.default.models.Produccion.findAll({ where: args });
@@ -608,15 +853,23 @@ var Query = new _graphql.GraphQLObjectType({
         type: Produccion,
         args: {
           Id: { type: _graphql.GraphQLInt },
+          Orden: { type: _graphql.GraphQLString },
+          Turno: { type: _graphql.GraphQLString },
           Fecha: { type: _graphql.GraphQLString },
           Lote: { type: _graphql.GraphQLString },
+          FechaInicial: { type: _graphql.GraphQLString },
+          FechaFinal: { type: _graphql.GraphQLString },
+          HoraInicial: { type: _graphql.GraphQLString },
+          HoraFinal: { type: _graphql.GraphQLString },
           FechaFabricacion: { type: _graphql.GraphQLString },
           FechaVencimiento: { type: _graphql.GraphQLString },
           Cantidad: { type: _graphql.GraphQLFloat },
-          Producto: { type: _graphql.GraphQLString },
           EnvaseId: { type: _graphql.GraphQLInt },
+          ProductoId: { type: _graphql.GraphQLInt },
+          ClienteId: { type: _graphql.GraphQLInt },
           PurezaFinal: { type: _graphql.GraphQLFloat },
-          PresionFinal: { type: _graphql.GraphQLFloat }
+          PresionFinal: { type: _graphql.GraphQLFloat },
+          Observacion: { type: _graphql.GraphQLString }
         },
         resolve: function resolve(root, args) {
           return _Db2.default.models.Produccion.findOne({ where: args });
@@ -628,7 +881,10 @@ var Query = new _graphql.GraphQLObjectType({
           Id: { type: _graphql.GraphQLInt },
           Numero: { type: _graphql.GraphQLString },
           Fecha: { type: _graphql.GraphQLString },
-          EnteId: { type: _graphql.GraphQLInt }
+          EnteId: { type: _graphql.GraphQLInt },
+          ProduccionId: { type: _graphql.GraphQLInt },
+          EnvaseId: { type: _graphql.GraphQLInt },
+          Total: { type: _graphql.GraphQLFloat }
         },
         resolve: function resolve(root, args) {
           return _Db2.default.models.Remision.findAll({ where: args });
@@ -640,10 +896,47 @@ var Query = new _graphql.GraphQLObjectType({
           Id: { type: _graphql.GraphQLInt },
           Numero: { type: _graphql.GraphQLString },
           Fecha: { type: _graphql.GraphQLString },
-          EnteId: { type: _graphql.GraphQLInt }
+          EnteId: { type: _graphql.GraphQLInt },
+          ProduccionId: { type: _graphql.GraphQLInt },
+          EnvaseId: { type: _graphql.GraphQLInt },
+          Total: { type: _graphql.GraphQLFloat }
         },
         resolve: function resolve(root, args) {
           return _Db2.default.models.Remision.findOne({ where: args });
+        }
+      },
+      Kardexs: {
+        type: new _graphql.GraphQLList(Kardex),
+        args: {
+          Tipo: { type: _graphql.GraphQLString },
+          EnteId: { type: _graphql.GraphQLInt },
+          EnvaseId: { type: _graphql.GraphQLInt },
+          FechaInicial: { type: _graphql.GraphQLString },
+          FechaFinal: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(root, args) {
+          console.log(args);
+          if (args.Tipo === "Único") {
+            return _Db2.default.models.Kardex.findAll({
+              where: {
+                EnvaseId: args.EnvaseId,
+                $or: [{ FechaEntra: { $between: [args.FechaInicial, args.FechaFinal] } }, { FechaSale: { $between: [args.FechaInicial, args.FechaFinal] } }]
+              }
+            });
+          } else if (args.Tipo === "Por Cliente") {
+            return _Db2.default.models.Kardex.findAll({
+              where: {
+                EnteId: args.EnteId,
+                $or: [{ FechaEntra: { $between: [args.FechaInicial, args.FechaFinal] } }, { FechaSale: { $between: [args.FechaInicial, args.FechaFinal] } }]
+              }
+            });
+          } else {
+            return _Db2.default.models.Kardex.findAll({
+              where: {
+                $or: [{ FechaEntra: { $between: [args.FechaInicial, args.FechaFinal] } }, { FechaSale: { $between: [args.FechaInicial, args.FechaFinal] } }]
+              }
+            });
+          }
         }
       }
     };
@@ -725,16 +1018,47 @@ var Mutation = new _graphql.GraphQLObjectType({
           });
         }
       },
+      CreateProducto: {
+        type: Producto,
+        args: {
+          Nombre: { type: _graphql.GraphQLString },
+          UnidadDeMedida: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Producto.create({
+            Nombre: args.Nombre,
+            UnidadDeMedida: args.UnidadDeMedida
+          }).then(function (R) {
+            return R;
+          });
+        }
+      },
+      UpdateProducto: {
+        type: Producto,
+        args: {
+          Nombre: { type: _graphql.GraphQLString },
+          UnidadDeMedida: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Producto.findOne({ where: {
+              Nombre: args.Nombre
+            } }).then(function (R) {
+            R.UnidadDeMedida = args.UnidadDeMedida;
+            R.save();
+            return R;
+          });
+        }
+      },
       CreateEnvase: {
         type: Envase,
         args: {
           Estado: { type: _graphql.GraphQLString },
           EnteId: { type: _graphql.GraphQLInt },
           Material: { type: _graphql.GraphQLString },
+          ProductoId: { type: _graphql.GraphQLInt },
           Capacidad: { type: _graphql.GraphQLFloat },
           Numero: { type: _graphql.GraphQLString },
           NumeroInterno: { type: _graphql.GraphQLString },
-          ClaseProducto: { type: _graphql.GraphQLString },
           Presion: { type: _graphql.GraphQLFloat },
           AlturaConValvula: { type: _graphql.GraphQLFloat },
           PesoConValvula: { type: _graphql.GraphQLFloat },
@@ -756,10 +1080,10 @@ var Mutation = new _graphql.GraphQLObjectType({
             Estado: args.Estado,
             EnteId: args.EnteId,
             Material: args.Material,
+            ProductoId: args.ProductoId,
             Capacidad: args.Capacidad,
             Numero: args.Numero,
             NumeroInterno: args.NumeroInterno,
-            ClaseProducto: args.ClaseProducto,
             Presion: args.Presion,
             AlturaConValvula: args.AlturaConValvula,
             PesoConValvula: args.PesoConValvula,
@@ -777,6 +1101,7 @@ var Mutation = new _graphql.GraphQLObjectType({
             Observaciones: args.Observaciones
           }).then(function (R) {
             R.Propietario = R.getEnte();
+            R.Producto = R.getProducto();
             return R;
           });
         }
@@ -787,10 +1112,10 @@ var Mutation = new _graphql.GraphQLObjectType({
           Estado: { type: _graphql.GraphQLString },
           EnteId: { type: _graphql.GraphQLInt },
           Material: { type: _graphql.GraphQLString },
+          ProductoId: { type: _graphql.GraphQLInt },
           Capacidad: { type: _graphql.GraphQLFloat },
           Numero: { type: _graphql.GraphQLString },
           NumeroInterno: { type: _graphql.GraphQLString },
-          ClaseProducto: { type: _graphql.GraphQLString },
           Presion: { type: _graphql.GraphQLFloat },
           AlturaConValvula: { type: _graphql.GraphQLFloat },
           PesoConValvula: { type: _graphql.GraphQLFloat },
@@ -809,15 +1134,15 @@ var Mutation = new _graphql.GraphQLObjectType({
         },
         resolve: function resolve(_, args) {
           return _Db2.default.models.Envase.findOne({ where: {
-              NumeroInterno: args.NumeroInterno
+              Numero: args.Numero
             }
           }).then(function (R) {
             R.Estado = args.Estado;
             R.EnteId = args.EnteId;
             R.Material = args.Material;
+            R.ProductoId = args.ProductoId;
             R.Capacidad = args.Capacidad;
-            R.Numero = args.Numero;
-            R.ClaseProducto = args.ClaseProducto;
+            R.NumeroInterno = args.NumeroInterno;
             R.Presion = args.Presion;
             R.AlturaConValvula = args.AlturaConValvula;
             R.PesoConValvula = args.PesoConValvula;
@@ -835,6 +1160,7 @@ var Mutation = new _graphql.GraphQLObjectType({
             R.Observaciones = args.Observaciones;
             R.save();
             R.Propietario = R.getEnte();
+            R.Producto = R.getProducto();
 
             return R;
           });
@@ -844,87 +1170,120 @@ var Mutation = new _graphql.GraphQLObjectType({
         type: Produccion,
         args: {
           Id: { type: _graphql.GraphQLInt },
+          Orden: { type: _graphql.GraphQLString },
+          Turno: { type: _graphql.GraphQLString },
           Fecha: { type: _graphql.GraphQLString },
           Lote: { type: _graphql.GraphQLString },
+          FechaInicial: { type: _graphql.GraphQLString },
+          FechaFinal: { type: _graphql.GraphQLString },
+          HoraInicial: { type: _graphql.GraphQLString },
+          HoraFinal: { type: _graphql.GraphQLString },
           FechaFabricacion: { type: _graphql.GraphQLString },
           FechaVencimiento: { type: _graphql.GraphQLString },
           Cantidad: { type: _graphql.GraphQLFloat },
-          Producto: { type: _graphql.GraphQLString },
           EnvaseId: { type: _graphql.GraphQLInt },
+          ProductoId: { type: _graphql.GraphQLInt },
+          ClienteId: { type: _graphql.GraphQLInt },
           PurezaFinal: { type: _graphql.GraphQLFloat },
-          PresionFinal: { type: _graphql.GraphQLFloat }
+          PresionFinal: { type: _graphql.GraphQLFloat },
+          Observacion: { type: _graphql.GraphQLString }
         },
         resolve: function resolve(_, args) {
           return _Db2.default.models.Produccion.create({
+            Orden: args.Orden,
+            Turno: args.Turno,
             Fecha: args.Fecha,
             Lote: args.Lote,
+            FechaInicial: args.FechaInicial,
+            FechaFinal: args.FechaFinal,
+            HoraInicial: args.HoraInicial,
+            HoraFinal: args.HoraFinal,
             FechaFabricacion: args.FechaFabricacion,
             FechaVencimiento: args.FechaVencimiento,
             Cantidad: args.Cantidad,
-            Producto: args.Producto,
+            ProductoId: args.ProductoId,
             EnvaseId: args.EnvaseId,
+            EnteId: args.ClienteId,
             PurezaFinal: args.PurezaFinal,
-            PresionFinal: args.PresionFinal
+            PresionFinal: args.PresionFinal,
+            Observacion: args.Observacion
           }).then(function (R) {
 
             return R;
           });
         }
       },
-      UpdateProduccion: {
+      UpdateOneProduccion: {
         type: Produccion,
         args: {
           Id: { type: _graphql.GraphQLInt },
-          Fecha: { type: _graphql.GraphQLString },
-          Lote: { type: _graphql.GraphQLString },
-          FechaFabricacion: { type: _graphql.GraphQLString },
-          FechaVencimiento: { type: _graphql.GraphQLString },
+          Orden: { type: _graphql.GraphQLString },
           Cantidad: { type: _graphql.GraphQLFloat },
-          Producto: { type: _graphql.GraphQLString },
           EnvaseId: { type: _graphql.GraphQLInt },
-          PurezaFinal: { type: _graphql.GraphQLFloat },
-          PresionFinal: { type: _graphql.GraphQLFloat }
+          ClienteId: { type: _graphql.GraphQLInt }
         },
         resolve: function resolve(_, args) {
           return _Db2.default.models.Produccion.findOne({
             where: {
-              Fecha: args.Fecha,
-              Lote: args.Lote,
-              EnvaseId: args.EnvaseId
+              Id: args.Id
             }
           }).then(function (R) {
-
-            R.FechaFabricacion = args.FechaFabricacion;
-            R.FechaVencimiento = args.FechaVencimiento;
             R.Cantidad = args.Cantidad;
-            R.Producto = args.Producto;
-            R.PurezaFinal = args.PurezaFinal;
-            R.PresionFinal = args.PresionFinal;
+            R.EnvaseId = args.EnvaseId;
+            R.EnteId = args.ClienteId;
             R.save();
             return R;
+          });
+        }
+      },
+      UpdateProduccions: {
+        type: Produccion,
+        args: {
+          Id: { type: _graphql.GraphQLInt },
+          Orden: { type: _graphql.GraphQLString },
+          Turno: { type: _graphql.GraphQLString },
+          Fecha: { type: _graphql.GraphQLString },
+          Lote: { type: _graphql.GraphQLString },
+          FechaInicial: { type: _graphql.GraphQLString },
+          FechaFinal: { type: _graphql.GraphQLString },
+          HoraInicial: { type: _graphql.GraphQLString },
+          HoraFinal: { type: _graphql.GraphQLString },
+          FechaFabricacion: { type: _graphql.GraphQLString },
+          FechaVencimiento: { type: _graphql.GraphQLString },
+          PurezaFinal: { type: _graphql.GraphQLFloat },
+          PresionFinal: { type: _graphql.GraphQLFloat },
+          Observacion: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Produccion.update({
+            Turno: args.Turno,
+            Fecha: args.Fecha,
+            Lote: args.Lote,
+            FechaInicial: args.FechaInicial,
+            FechaFinal: args.FechaFinal,
+            HoraInicial: args.HoraInicial,
+            HoraFinal: args.HoraFinal,
+            FechaFabricacion: args.FechaFabricacion,
+            FechaVencimiento: args.FechaVencimiento,
+            PurezaFinal: args.PurezaFinal,
+            PresionFinal: args.PresionFinal,
+            Observacion: args.Observacion
+          }, {
+            where: {
+              Orden: args.Orden
+            }
           });
         }
       },
       DeleteProduccion: {
         type: Produccion,
         args: {
-          Id: { type: _graphql.GraphQLInt },
-          Fecha: { type: _graphql.GraphQLString },
-          Lote: { type: _graphql.GraphQLString },
-          FechaFabricacion: { type: _graphql.GraphQLString },
-          FechaVencimiento: { type: _graphql.GraphQLString },
-          Cantidad: { type: _graphql.GraphQLFloat },
-          Producto: { type: _graphql.GraphQLString },
-          EnvaseId: { type: _graphql.GraphQLInt },
-          PurezaFinal: { type: _graphql.GraphQLFloat },
-          PresionFinal: { type: _graphql.GraphQLFloat }
+          Id: { type: _graphql.GraphQLInt }
         },
         resolve: function resolve(_, args) {
           return _Db2.default.models.Produccion.findOne({
             where: {
-              Fecha: args.Fecha,
-              Lote: args.Lote,
-              EnvaseId: args.EnvaseId
+              Id: args.Id
             }
           }).then(function (R) {
             return R.destroy();
@@ -938,9 +1297,8 @@ var Mutation = new _graphql.GraphQLObjectType({
           Numero: { type: _graphql.GraphQLString },
           Fecha: { type: _graphql.GraphQLString },
           EnteId: { type: _graphql.GraphQLInt },
-          Sale: { type: _graphql.GraphQLString },
-          Entra: { type: _graphql.GraphQLString },
           ProduccionId: { type: _graphql.GraphQLInt },
+          EnvaseId: { type: _graphql.GraphQLInt },
           Total: { type: _graphql.GraphQLFloat }
         },
         resolve: function resolve(_, args) {
@@ -948,12 +1306,35 @@ var Mutation = new _graphql.GraphQLObjectType({
             Numero: args.Numero,
             Fecha: args.Fecha,
             EnteId: args.EnteId,
-            Sale: args.Sale,
-            Entra: args.Entra,
             ProduccionId: args.ProduccionId,
+            EnvaseId: args.EnvaseId,
             Total: args.Total
           }).then(function (R) {
-            console.log(R);
+            return R;
+          });
+        }
+      },
+      UpdateRemision: {
+        type: Remision,
+        args: {
+          Id: { type: _graphql.GraphQLInt },
+          EnteId: { type: _graphql.GraphQLInt },
+          ProduccionId: { type: _graphql.GraphQLInt },
+          EnvaseId: { type: _graphql.GraphQLInt },
+          Total: { type: _graphql.GraphQLFloat }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Remision.findOne({
+            where: {
+              Id: args.Id
+            }
+          }).then(function (R) {
+
+            R.EnteId = args.EnteId;
+            R.ProduccionId = args.ProduccionId;
+            R.EnvaseId = args.EnvaseId;
+            R.Total = args.Total;
+            R.save();
             return R;
           });
         }
@@ -961,23 +1342,115 @@ var Mutation = new _graphql.GraphQLObjectType({
       DeleteRemision: {
         type: Remision,
         args: {
-          Id: { type: _graphql.GraphQLInt },
-          Numero: { type: _graphql.GraphQLString },
-          Fecha: { type: _graphql.GraphQLString },
-          EnteId: { type: _graphql.GraphQLInt },
-          Sale: { type: _graphql.GraphQLString },
-          Entra: { type: _graphql.GraphQLString },
-          ProduccionId: { type: _graphql.GraphQLInt },
-          Total: { type: _graphql.GraphQLFloat }
+          Id: { type: _graphql.GraphQLInt }
         },
         resolve: function resolve(_, args) {
           return _Db2.default.models.Remision.findOne({
             where: {
-              Numero: args.Numero,
-              ProduccionId: args.ProduccionId
+              Id: args.Id
             }
           }).then(function (R) {
             return R.destroy();
+          });
+        }
+      },
+      CreateKardexSale: {
+        type: Kardex,
+        args: {
+          Cantidad: { type: _graphql.GraphQLFloat },
+          ProductoId: { type: _graphql.GraphQLInt },
+          EnvaseId: { type: _graphql.GraphQLInt },
+          FechaElaboracion: { type: _graphql.GraphQLString },
+          Lote: { type: _graphql.GraphQLString },
+          FechaVencimiento: { type: _graphql.GraphQLString },
+          EnteId: { type: _graphql.GraphQLInt },
+          FechaSale: { type: _graphql.GraphQLString },
+          NumeroFacturaSale: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Kardex.create({
+            Cantidad: args.Cantidad,
+            ProductoId: args.ProductoId,
+            EnvaseId: args.EnvaseId,
+            FechaElaboracion: args.FechaElaboracion,
+            Lote: args.Lote,
+            FechaVencimiento: args.FechaVencimiento,
+            EnteId: args.EnteId,
+            FechaSale: args.FechaSale,
+            NumeroFacturaSale: args.NumeroFacturaSale,
+            FechaEntra: null,
+            NumeroFacturaEntra: null
+          }).then(function (R) {
+            return R;
+          });
+        }
+      },
+      CreateKardexEntra: {
+        type: Kardex,
+        args: {
+          EnvaseId: { type: _graphql.GraphQLInt },
+          EnteId: { type: _graphql.GraphQLInt },
+          FechaEntra: { type: _graphql.GraphQLString },
+          NumeroFacturaEntra: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseId,
+              EnteId: args.EnteId,
+              FechaEntra: null,
+              NumeroFacturaEntra: null
+            }
+          }).then(function (R) {
+            if (R) {
+              R.FechaEntra = args.FechaEntra;
+              R.NumeroFacturaEntra = args.NumeroFacturaEntra;
+              R.save();
+            }
+
+            return R;
+          });
+        }
+      },
+      DeleteKardexSale: {
+        type: Kardex,
+        args: {
+          EnvaseId: { type: _graphql.GraphQLInt },
+          NumeroFacturaSale: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseId,
+              NumeroFacturaSale: args.NumeroFacturaSale
+            }
+          }).then(function (R) {
+            if (R) {
+              R.destroy();
+            }
+            return R;
+          });
+        }
+      },
+      DeleteKardexEntra: {
+        type: Kardex,
+        args: {
+          EnvaseId: { type: _graphql.GraphQLInt },
+          NumeroFacturaEntra: { type: _graphql.GraphQLString }
+        },
+        resolve: function resolve(_, args) {
+          return _Db2.default.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseId,
+              NumeroFacturaEntra: args.NumeroFacturaEntra
+            }
+          }).then(function (R) {
+            if (R) {
+              R.FechaEntra = null;
+              R.NumeroFacturaEntra = null;
+              R.save();
+            }
+            return R;
           });
         }
       }
