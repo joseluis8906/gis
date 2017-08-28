@@ -148,8 +148,6 @@ v-layout( align-center justify-center )
 
 <script>
 
-import gql from 'graphql-tag';
-
 import VMoney from '~/components/MonetaryInput.vue'
 
 import REMISIONS from '~/queries/Remisions.gql'

@@ -257,6 +257,7 @@ v-layout( align-center justify-center )
               v-icon(dark) add
       v-card-actions
         v-spacer
+        v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
         v-btn( dark warning @click.native="hardReset" ) Limpiar
 </template>
 
@@ -767,7 +768,11 @@ export default {
           }
         }
       }
-    }
+    },
+    generar() {
+      this.$store.commit('produccion/changeOrden', this.Orden)
+      this.$router.push('/reporte/produccion')
+    },
   }
 };
 

@@ -62,7 +62,6 @@ v-layout( align-center justify-center )
                       item-value="Id"
                       return-object
                       autocomplete
-                      @click.native="ResetEnvase()"
                       v-if="esUnico"
                       dark )
             
@@ -75,7 +74,6 @@ v-layout( align-center justify-center )
                       return-object
                       :hint="`${Cliente.TipoDocumento || ''}: ${Cliente.NumeroDocumento || ''}`"
                       persistent-hint
-                      @click.native="ResetCliente()"
                       v-if="esCliente"
                       dark )
             
@@ -251,17 +249,6 @@ export default {
       this.$store.commit('kardex/changeFechaInicial', this.FechaInicial)
       this.$store.commit('kardex/changeFechaFinal', this.FechaFinal)
       this.$router.push('/reporte/kardex')
-    },
-    ResetCliente () {
-      this.Cliente = {
-        Id: null,
-        TipoDocumento: null,
-        NumeroDocumento: null,
-        Nombre: null,
-        Ciudad: null,
-        Direccion: null,
-        Telefono: null
-      }
     },
     ResetCliente () {
       this.Cliente = {

@@ -8,27 +8,29 @@ Vue.use(Router)
 
 const _1089b722 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/index.vue' /* webpackChunkName: "pages/index" */)
 
-const _cfa0c9b8 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
-
-const _7e5b7b6c = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
-
-const _8292afca = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/kardex.vue' /* webpackChunkName: "pages/kardex" */)
-
-const _31de3eba = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
-
-const _1e5c4746 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
-
 const _b7bc7f74 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
 
 const _d5b721ac = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
 
-const _4b9d4b8e = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
+const _7e5b7b6c = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
 
 const _92cd3780 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/producto.vue' /* webpackChunkName: "pages/producto" */)
+
+const _4b9d4b8e = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
+
+const _8292afca = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/kardex.vue' /* webpackChunkName: "pages/kardex" */)
+
+const _cfa0c9b8 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
+
+const _1e5c4746 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
+
+const _31de3eba = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
 
 const _3eda8a7c = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/reporte/remision.vue' /* webpackChunkName: "pages/reporte-remision" */)
 
 const _640dd18e = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/reporte/kardex.vue' /* webpackChunkName: "pages/reporte-kardex" */)
+
+const _7cebf268 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/reporte/produccion.vue' /* webpackChunkName: "pages/reporte-produccion" */)
 
 
 
@@ -68,31 +70,6 @@ export default new Router({
 			name: "index"
 		},
 		{
-			path: "/remision",
-			component: _cfa0c9b8,
-			name: "remision"
-		},
-		{
-			path: "/produccion",
-			component: _7e5b7b6c,
-			name: "produccion"
-		},
-		{
-			path: "/kardex",
-			component: _8292afca,
-			name: "kardex"
-		},
-		{
-			path: "/ente",
-			component: _31de3eba,
-			name: "ente"
-		},
-		{
-			path: "/about",
-			component: _1e5c4746,
-			name: "about"
-		},
-		{
 			path: "/envase",
 			component: _b7bc7f74,
 			name: "envase"
@@ -103,14 +80,39 @@ export default new Router({
 			name: "inspire"
 		},
 		{
-			path: "/login",
-			component: _4b9d4b8e,
-			name: "login"
+			path: "/produccion",
+			component: _7e5b7b6c,
+			name: "produccion"
 		},
 		{
 			path: "/producto",
 			component: _92cd3780,
 			name: "producto"
+		},
+		{
+			path: "/login",
+			component: _4b9d4b8e,
+			name: "login"
+		},
+		{
+			path: "/kardex",
+			component: _8292afca,
+			name: "kardex"
+		},
+		{
+			path: "/remision",
+			component: _cfa0c9b8,
+			name: "remision"
+		},
+		{
+			path: "/about",
+			component: _1e5c4746,
+			name: "about"
+		},
+		{
+			path: "/ente",
+			component: _31de3eba,
+			name: "ente"
 		},
 		{
 			path: "/reporte/remision",
@@ -121,6 +123,11 @@ export default new Router({
 			path: "/reporte/kardex",
 			component: _640dd18e,
 			name: "reporte-kardex"
+		},
+		{
+			path: "/reporte/produccion",
+			component: _7cebf268,
+			name: "reporte-produccion"
 		}
   ]
 })

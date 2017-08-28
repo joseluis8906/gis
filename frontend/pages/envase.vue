@@ -42,7 +42,6 @@ v-layout( align-center justify-center )
                       return-object
                       :hint="`${Propietario.TipoDocumento || ''}: ${Propietario.NumeroDocumento || ''}`"
                       persistent-hint
-                      @click.native="ResetPropietario()"
                       dark )
             
             v-text-field( label="Material" v-model="Material" dark )
@@ -56,7 +55,6 @@ v-layout( align-center justify-center )
                       return-object
                       :hint="`Unidad de Medida: ${Producto.UnidadDeMedida || ''}`"
                       persistent-hint
-                      @click.native="ResetProducto()"
                       dark )
             
             v-text-field( label="Capacidad" v-model="Capacidad" dark )
@@ -286,9 +284,12 @@ export default {
       {text: 'No'}
     ],
     ItemsTipoValvula: [
-      {text: 'Tipo1'},
-      {text: 'Tipo2'},
-      {text: 'Tipo3'}
+      {text: 'CGA540'},
+      {text: 'CGA580'},
+      {text: 'CGA870'},
+      {text: 'CGA320'},
+      {text: 'CGA510'},
+      {text: 'CGA590'}
     ],
     ItemsEquipoAlquilado: [
       {text: 'Si'},
