@@ -7,7 +7,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           th(rowspan="5" style="width: 7.5%; text-align: center")
             img(src="~assets/logo.gis.png" style="width: 100%")
-          th(rowspan="5" style="text-align: center; width: 80%") CERTIFICADO DE PRODUCCIÓN
+          th(rowspan="5" style="text-align: center; width: 75%") CERTIFICADO DE PRODUCCIÓN
         tr
           td(class="lado") Código
           td(class="lado") FVT-020
@@ -34,7 +34,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right") {{ Cantidad }}
         tr
           td(style="text-align: left") Cantidad M³:
-          td(style="text-align: right") {{ CantidadM3 }}
+          td(style="text-align: right") {{ CantidadM3 }} {{ UnidadDeMedida }}
         tr
           td(style="text-align: left") Fecha Inicial:
           td(style="text-align: right") {{ FechaInicial }}
@@ -77,9 +77,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       tbody
         tr(v-for="(item, j) in items1" :key="j")
           td(style="text-align: right") {{ item.Envase.Capacidad }}
-          td(style="text-align: left") {{ item.Producto.Nombre }}
-          td(style="text-align: right") {{ item.Envase.Numero }}
-          td(style="text-align: right") {{ item.Ente.Nombre }}
+          td(style="text-align: center") {{ item.Producto.Nombre }}
+          td(style="text-align: center") {{ item.Envase.Numero }}
+          td(style="text-align: center") {{ item.Cliente.Nombre }}
           
     table(style="width: 49%; margin-left: 2%; height: auto; display: inline-block;")
       thead
@@ -92,9 +92,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       tbody
         tr(v-for="(item, k) in items2" :key="k")
           td(style="text-align: right") {{ item.Envase.Capacidad }}
-          td(style="text-align: left") {{ item.Producto.Nombre }}
-          td(style="text-align: right") {{ item.Envase.Numero }}
-          td(style="text-align: right") {{ item.Ente.Nombre }}
+          td(style="text-align: center") {{ item.Producto.Nombre }}
+          td(style="text-align: center") {{ item.Envase.Numero }}
+          td(style="text-align: center") {{ item.Cliente.Nombre }}
           
     div(style="width: 49%; height:40mm; margin-top: 3mm; display: inline-block; vertical-align: top;")
       h6(class="headlines") Observación: {{ Observacion }}
@@ -132,6 +132,7 @@ export default {
       Producto: null,
       Cantidad: null,
       CantidadM3: null,
+      UnidadDeMedida: null,
       FechaInicial: null,
       FechaFinal: null,
       Turno: null,
@@ -185,12 +186,14 @@ export default {
           this.Observacion = data.Produccions[0].Observacion
           
           this.items1 = []
-          
+          this.Cantidad = 0
+          this.CantidadM3 = 0.0
+          this.UnidadDeMedida = data.Produccions[0].Producto.UnidadDeMedida
           var length = data.Produccions.length;
+          
           for ( let i=0; i<=21; i++ ) {
-            if( length <= 21 ) {
+            if( i < length ) {
               var tmp = {
-                Id: data.Produccions[i].Id,
                 Producto: {
                   Id: data.Produccions[i].Producto.Id,
                   Nombre: data.Produccions[i].Producto.Nombre
@@ -207,6 +210,10 @@ export default {
                 },
                 Cantidad: data.Produccions[i].Cantidad,
               }
+              
+              this.Cantidad++
+              this.CantidadM3 += data.Produccions[i].Cantidad
+              
             } else {
               var tmp = {
                 Producto: {
@@ -232,26 +239,29 @@ export default {
           
           this.items2 = []
           
-          for ( let i=0; i<21; i++ ) {
-            if( length <= 21 ) {
+          for ( let i=21; i<43; i++ ) {
+            if( i < length ) {
               var tmp = {
-                Id: data.Produccions[i].Id,
                 Producto: {
-                  Id: data.Produccions[i].Producto.Id,
-                  Nombre: data.Produccions[i].Producto.Nombre
+                  Id: data.Produccions[i-21].Producto.Id,
+                  Nombre: data.Produccions[i-21].Producto.Nombre
                 },
                 Envase: {
-                  Id: data.Produccions[i].Envase.Id,
-                  Numero: data.Produccions[i].Envase.Numero,
-                  Capacidad: data.Produccions[i].Envase.Capacidad,
-                  UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
+                  Id: data.Produccions[i-21].Envase.Id,
+                  Numero: data.Produccions[i-21].Envase.Numero,
+                  Capacidad: data.Produccions[i-21].Envase.Capacidad,
+                  UnidadDeMedida: data.Produccions[i-21].Producto.UnidadDeMedida
                 },
                 Cliente: {
-                  Id: data.Produccions[i].Cliente.Id,
-                  Nombre: data.Produccions[i].Cliente.Nombre
+                  Id: data.Produccions[i-21].Cliente.Id,
+                  Nombre: data.Produccions[i-21].Cliente.Nombre
                 },
-                Cantidad: data.Produccions[i].Cantidad,
+                Cantidad: data.Produccions[i-21].Cantidad,
               }
+              
+              this.Cantidad++
+              this.CantidadM3 += data.Produccions[i].Cantidad
+              
             } else {
               var tmp = {
                 Producto: {
