@@ -559,7 +559,29 @@ export default {
             
             for (let i=0; i<data.Envases.length; i++) {
               if (data.Envases[i].Id === res.UpdateEnvase.Id) {
-                data.Envases[i] = res.UpdateEnvase
+                data.Envases[i].Estado = res.UpdateEnvase.Estado
+                data.Envases[i].EnteId = res.UpdateEnvase.EnteId
+                data.Envases[i].Material = res.UpdateEnvase.Material
+                data.Envases[i].ProductoId = res.UpdateEnvase.ProductoId
+                data.Envases[i].Capacidad = res.UpdateEnvase.Capacidad
+                data.Envases[i].Numero = res.UpdateEnvase.Numero
+                data.Envases[i].NumeroInterno = res.UpdateEnvase.NumeroInterno
+                data.Envases[i].Presion = res.UpdateEnvase.Presion
+                data.Envases[i].AlturaConValvula = res.UpdateEnvase.AlturaConValvula
+                data.Envases[i].PesoConValvula = res.UpdateEnvase.PesoConValvula
+                data.Envases[i].Valvula = res.UpdateEnvase.Valvula
+                data.Envases[i].TipoValvula = res.UpdateEnvase.TipoValvula
+                data.Envases[i].AcabadoColor = res.UpdateEnvase.AcabadoColor
+                data.Envases[i].NormaTecnicaFabricacion = res.UpdateEnvase.NormaTecnicaFabricacion
+                data.Envases[i].Proveedor = res.UpdateEnvase.Proveedor
+                data.Envases[i].FechaCompra = res.UpdateEnvase.FechaCompra
+                data.Envases[i].Garantia = res.UpdateEnvase.Garantia
+                data.Envases[i].FechaFabricacion = res.UpdateEnvase.FechaFabricacion
+                data.Envases[i].PruebaHidrostatica = res.UpdateEnvase.PruebaHidrostatica
+                data.Envases[i].EquipoAlquilado = res.UpdateEnvase.EquipoAlquilado
+                data.Envases[i].FechaAlquiler = res.UpdateEnvase.FechaAlquiler
+                data.Envases[i].Observaciones = res.UpdateEnvase.Observaciones
+                data.Envases[i].Propietario = res.UpdateEnvase.Propietario
               }
             }
             

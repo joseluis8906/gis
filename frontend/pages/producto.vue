@@ -179,7 +179,8 @@ export default {
             
             for (let i=0; i<data.Productos.length; i++) {
               if (data.Productos[i].Id === res.UpdateProducto.Id) {
-                data.Productos[i] = res.UpdateProducto 
+                data.Productos[i].Nombre = res.UpdateProducto.Nombre
+                data.Productos[i].UnidadDeMedida = res.UpdateProducto.UnidadDeMedida
               }
             }
             

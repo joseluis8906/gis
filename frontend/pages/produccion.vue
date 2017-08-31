@@ -598,7 +598,23 @@ export default {
                 
                 for (let i=0; i<data.Produccions.length; i++) {
                   if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
-                    data.Produccions[i] = res.UpdateOneProduccion
+                    data.Produccions[i].Orden = res.UpdateOneProduccion.Orden
+                    data.Produccions[i].Turno = res.UpdateOneProduccion.Turno
+                    data.Produccions[i].Fecha = res.UpdateOneProduccion.Fecha
+                    data.Produccions[i].Lote = res.UpdateOneProduccion.Lote
+                    data.Produccions[i].FechaInicial = res.UpdateOneProduccion.FechaInicial
+                    data.Produccions[i].FechaFinal = res.UpdateOneProduccion.FechaFinal
+                    data.Produccions[i].HoraInicial = res.UpdateOneProduccion.HoraInicial
+                    data.Produccions[i].HoraFinal = res.UpdateOneProduccion.HoraFinal
+                    data.Produccions[i].FechaFabricacion = res.UpdateOneProduccion.FechaFabricacion
+                    data.Produccions[i].FechaVencimiento = res.UpdateOneProduccion.FechaVencimiento
+                    data.Produccions[i].Cantidad = res.UpdateOneProduccion.Cantidad
+                    data.Produccions[i].ProductoId = res.UpdateOneProduccion.ProductoId
+                    data.Produccions[i].EnvaseId = res.UpdateOneProduccion.EnvaseId
+                    data.Produccions[i].ClienteId = res.UpdateOneProduccion.ClienteId
+                    data.Produccions[i].PurezaFinal = res.UpdateOneProduccion.PurezaFinal
+                    data.Produccions[i].PresionFinal = res.UpdateOneProduccion.PresionFinal
+                    data.Produccions[i].Observacion = res.UpdateOneProduccion.Observacion
                   }
                 }
                 

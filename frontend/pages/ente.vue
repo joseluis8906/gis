@@ -232,7 +232,13 @@ export default {
           
           for (let i=0; i<data.Entes.length; i++) {
             if (data.Entes[i].Id === res.UpdateEnte.Id) {
-              data.Entes[i] = res.UpdateEnte
+              data.Entes[i].TipoDocumento = res.UpdateEnte.TipoDocumento
+              data.Entes[i].NumeroDocumento = res.UpdateEnte.NumeroDocumento
+              data.Entes[i].Nombre = res.UpdateEnte.Nombre
+              data.Entes[i].Ciudad = res.UpdateEnte.Ciudad
+              data.Entes[i].Direccion = res.UpdateEnte.Direccion
+              data.Entes[i].Telefono = res.UpdateEnte.Telefono
+              data.Entes[i].Relacion = res.UpdateEnte.Relacion
             }
           }
           

@@ -516,7 +516,10 @@ export default {
                   
                   for (let i=0; i<data.Remisions.length; i++){
                     if ( res.UpdateRemision.Id === data.Remisions[i].Id ) {
-                      data.Remisions[i] = res.UpdateRemision
+                      data.Remisions[i].EnteId = res.UpdateRemision.EnteId
+                      data.Remisions[i].ProduccionId = res.UpdateRemision.ProduccionId
+                      data.Remisions[i].EnvaseId = res.UpdateRemision.EnvaseId
+                      data.Remisions[i].Total = res.UpdateRemision.Total
                       break
                     }
                   }
