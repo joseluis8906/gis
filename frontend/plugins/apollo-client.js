@@ -2,12 +2,24 @@ import Vue from 'vue';
 import ApolloClient, { createBatchingNetworkInterface } from 'apollo-client';
 import VueApollo from 'vue-apollo';
 
-const apolloClient = new ApolloClient({
-  networkInterface: createBatchingNetworkInterface({
-    //uri: 'https://api.graph.cool/simple/v1/ciwce5xw82kh7017179gwzn7q',
-    uri: 'http://localhost:3000/graphql',
+const networkInterface = createBatchingNetworkInterface({
+    uri: 'http://127.0.0.1:3000/private/graphql',
     dataIdFromObject: o => o.Id
-  })
+});
+
+networkInterface.use([{
+  applyBatchMiddleware(req, next) {
+    if (!req.options.headers) {
+      req.options.headers = {};  // Create the header object if needed.
+    }
+    req.options.headers['x-access-token'] = sessionStorage.getItem('x-access-token') ? sessionStorage.getItem('x-access-token') : null;
+    //console.log(req.options.headers);
+    next();
+  }
+}]);
+
+const apolloClient = new ApolloClient({
+    networkInterface
 });
 
 Vue.use(VueApollo);

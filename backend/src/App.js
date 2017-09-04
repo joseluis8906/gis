@@ -9,24 +9,25 @@ import Db from './models/Db'
 import Jwt from 'jsonwebtoken';
 import Bcrypt from 'bcrypt';
 import cors from 'cors';
-
+import httpProxy from 'http-proxy';
 
 const app = express();
 
-var router = express.Router();
+var privateRouter = express.Router();
 
-app.use('/private', router);
+app.use('/private', privateRouter);
 
 //var Upload = multer();
 
 app.set('superSecret', 'K3J9 8LMN 02F3 B3LW');
 
-router.use((req, res, next) => {
+privateRouter.use((req, res, next) => {
   // check header or url parameters or post parameters for token
+  console.log(req.params)
   var token = req.headers['x-access-token'] ||
-              req.params.token ||
-              req.query ? req.query.token : null ||
-              req.body ? req.body.token : null;
+              req.params["x-access-token"] ||
+              req.query ? req.query["x-access-token"] : null ||
+              req.body ? req.body["x-access-token"] : null;
   // decode token
   if (token) {
     // verifies secret and checks exp
@@ -56,8 +57,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-app.use('/graphql', cors(), graphqlExpress({ schema: Schema }));
-app.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
+app.use('/private/graphql', /*cors(),*/ graphqlExpress({ schema: Schema }));
+app.use('/private/graphiql', graphiqlExpress({endpointURL: '/private/graphql'}));
 
 
 //generate password
@@ -134,8 +135,13 @@ app.use((err, req, res, next) => {
   res.status(500).send("Internal server erro");
 });
 
+var proxy = httpProxy.createProxyServer();
+app.all("/frontend/", function(req, res) {
+    console.log('redirecting to frontend');
+    proxy.web(req, res, {target: 'http://127.0.0.1:3001/', ignorePath: true});
+});
 
 app.listen(3000, () => {
-  console.log('Express runing at http://127.0.0.1:3000');
+  console.log('Express backend runing at http://127.0.0.1:3000');
 });
 

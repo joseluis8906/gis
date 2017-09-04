@@ -6,31 +6,31 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 
-const _1089b722 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/index.vue' /* webpackChunkName: "pages/index" */)
+const _dde9bb94 = () => import('/home/jose/Developments/gis/frontend/pages/index.vue' /* webpackChunkName: "pages/index" */)
 
-const _b7bc7f74 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
+const _33cdb7b2 = () => import('/home/jose/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
 
-const _d5b721ac = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
+const _0a113584 = () => import('/home/jose/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
 
-const _7e5b7b6c = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
+const _219ca3b6 = () => import('/home/jose/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
 
-const _92cd3780 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/producto.vue' /* webpackChunkName: "pages/producto" */)
+const _0b2530ac = () => import('/home/jose/Developments/gis/frontend/pages/producto.vue' /* webpackChunkName: "pages/producto" */)
 
-const _4b9d4b8e = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
+const _5ab2c54d = () => import('/home/jose/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
 
-const _8292afca = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/kardex.vue' /* webpackChunkName: "pages/kardex" */)
+const _4e629f87 = () => import('/home/jose/Developments/gis/frontend/pages/kardex.vue' /* webpackChunkName: "pages/kardex" */)
 
-const _cfa0c9b8 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
+const _268930e0 = () => import('/home/jose/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
 
-const _1e5c4746 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
+const _71534771 = () => import('/home/jose/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
 
-const _31de3eba = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
+const _0cb92126 = () => import('/home/jose/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
 
-const _3eda8a7c = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/reporte/remision.vue' /* webpackChunkName: "pages/reporte-remision" */)
+const _e11d49a4 = () => import('/home/jose/Developments/gis/frontend/pages/reporte/remision.vue' /* webpackChunkName: "pages/reporte-remision" */)
 
-const _640dd18e = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/reporte/kardex.vue' /* webpackChunkName: "pages/reporte-kardex" */)
+const _169ce2a5 = () => import('/home/jose/Developments/gis/frontend/pages/reporte/kardex.vue' /* webpackChunkName: "pages/reporte-kardex" */)
 
-const _7cebf268 = () => import('/media/joseluis/Datos/Developments/gis/frontend/pages/reporte/produccion.vue' /* webpackChunkName: "pages/reporte-produccion" */)
+const _22b7b058 = () => import('/home/jose/Developments/gis/frontend/pages/reporte/produccion.vue' /* webpackChunkName: "pages/reporte-produccion" */)
 
 
 
@@ -66,67 +66,67 @@ export default new Router({
   routes: [
 		{
 			path: "/",
-			component: _1089b722,
+			component: _dde9bb94,
 			name: "index"
 		},
 		{
 			path: "/envase",
-			component: _b7bc7f74,
+			component: _33cdb7b2,
 			name: "envase"
 		},
 		{
 			path: "/inspire",
-			component: _d5b721ac,
+			component: _0a113584,
 			name: "inspire"
 		},
 		{
 			path: "/produccion",
-			component: _7e5b7b6c,
+			component: _219ca3b6,
 			name: "produccion"
 		},
 		{
 			path: "/producto",
-			component: _92cd3780,
+			component: _0b2530ac,
 			name: "producto"
 		},
 		{
 			path: "/login",
-			component: _4b9d4b8e,
+			component: _5ab2c54d,
 			name: "login"
 		},
 		{
 			path: "/kardex",
-			component: _8292afca,
+			component: _4e629f87,
 			name: "kardex"
 		},
 		{
 			path: "/remision",
-			component: _cfa0c9b8,
+			component: _268930e0,
 			name: "remision"
 		},
 		{
 			path: "/about",
-			component: _1e5c4746,
+			component: _71534771,
 			name: "about"
 		},
 		{
 			path: "/ente",
-			component: _31de3eba,
+			component: _0cb92126,
 			name: "ente"
 		},
 		{
 			path: "/reporte/remision",
-			component: _3eda8a7c,
+			component: _e11d49a4,
 			name: "reporte-remision"
 		},
 		{
 			path: "/reporte/kardex",
-			component: _640dd18e,
+			component: _169ce2a5,
 			name: "reporte-kardex"
 		},
 		{
 			path: "/reporte/produccion",
-			component: _7cebf268,
+			component: _22b7b058,
 			name: "reporte-produccion"
 		}
   ]

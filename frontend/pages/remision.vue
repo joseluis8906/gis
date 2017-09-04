@@ -11,21 +11,21 @@ v-layout( align-center justify-center )
     :multi-line="snackbar.mode === 'multi-line'"
     :vertical="snackbar.mode === 'vertical'"
     :top="true"
-    v-model="loading" ) 
+    v-model="loading" )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
-  
+
   v-flex( xs12 md10 lg8 )
     v-card
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
             h5(class="grey--text text--lighten-4") Remisión
-            
+
           v-flex( xs12 )
-            
+
             v-text-field( label="Número" v-model="Numero" dark )
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu1"
@@ -34,60 +34,60 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+
               v-text-field( slot="activator"
                             label="Fecha"
                             v-model="Fecha"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="Fecha" 
-                             no-title 
+                             v-model="Fecha"
+                             no-title
                              autosave
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-            
+
             div(  style="border: 1px solid #555555; border-radius: 5px; padding: 12px;"
                   class="mb-4"  )
               v-layout(row wrap)
                 v-flex(xs12)
                   h6(class="grey--text text--lighten-4") Cliente
-                
+
                 v-flex(xs12)
-                  
+
                   v-select( v-bind:items="ItemsDocumento"
                       v-model="Cliente.TipoDocumento"
                       label="Tipo de Documento"
                       item-value="text"
                       dark )
-                  
+
                   v-text-field( label="Nit/C.C" v-model="Cliente.NumeroDocumento" dark )
-                
+
                 v-flex(xs12 md6)
                   v-text-field( label="Nombre" v-model="Cliente.Nombre" readonly )
-                  
+
                 v-flex(xs12 md6)
                   v-text-field( label="Ciudad" v-model="Cliente.Ciudad" readonly )
-                  
+
                 v-flex(xs12 md6)
                   v-text-field( label="Dirección" v-model="Cliente.Direccion" readonly )
-                
+
                 v-flex(xs12 md6)
                   v-text-field( label="Teléfono" v-model="Cliente.Telefono" readonly )
-            
+
             v-data-table( v-bind:headers="headers"
                           :items="items"
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
-            
+
               template(slot="items" scope="props")
                 td(class="text-xs-center") {{ props.item.Produccion.Cantidad }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre }}
-                td(class="text-xs-left" style="border-left: 1px solid #999999") 
+                td(class="text-xs-left" style="border-left: 1px solid #999999")
                   v-select( v-bind:items="ItemsProduccion"
                             v-model="props.item.Produccion"
                             item-text="NumeroEnvase"
@@ -101,7 +101,7 @@ v-layout( align-center justify-center )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
-                td(class="text-xs-left" style="border-left: 1px solid #999999") 
+                td(class="text-xs-left" style="border-left: 1px solid #999999")
                   v-select( v-bind:items="ItemsEnvase"
                             v-model="props.item.Envase"
                             item-text="Numero"
@@ -112,12 +112,12 @@ v-layout( align-center justify-center )
                             :disabled="props.item.EnvaseDisable"
                             class="mb-0 mt-0 pb-0 select-especial"
                             light )
-                td(class="text-xs-right" style="border-left: 1px solid #999999") 
-                  v-money( v-model="props.item.Total" 
-                           style="width: 96px" 
-                           class="input-tab mb-0 mt-0 pb-0" 
+                td(class="text-xs-right" style="border-left: 1px solid #999999")
+                  v-money( v-model="props.item.Total"
+                           style="width: 96px"
+                           class="input-tab mb-0 mt-0 pb-0"
                            mask-type="currency"
-                           :focused="props.item.TotalFocus" 
+                           :focused="props.item.TotalFocus"
                            maxlength=11)
                 td(style="width:64px; border-left: 1px solid #999999" class="pl-1 pr-1")
                   v-btn( fab
@@ -127,7 +127,7 @@ v-layout( align-center justify-center )
                          style="width: 16px; height:16px"
                          @click.native="guardar(props.item);")
                     v-icon(dark) {{ props.item.SaveUpdate }}
-                    
+
                   v-btn( fab
                          dark
                          small
@@ -135,15 +135,15 @@ v-layout( align-center justify-center )
                          style="width: 16px; height:16px"
                          @click.native="eliminar(props.item)")
                     v-icon(dark) remove
-            
+
             v-btn(fab dark class="indigo mb-1 mt-3" @click.native="agregar")
               v-icon(dark) add
-            
+
       v-card-actions
         v-spacer
         v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
         v-btn( dark warning @click.native="hardReset" class="mt-0" ) Limpiar
-        
+
 </template>
 
 <script>
@@ -180,7 +180,7 @@ export default {
       Ciudad: null,
       Direccion: null,
       Telefono: null
-    }, 
+    },
     ItemsDocumento: [
       {text: 'Nit'},
       {text: 'Cédula'}
@@ -200,22 +200,22 @@ export default {
     ],
     items: [],
     ItemsEnvase: [],
-    
+
     months: [
       'Enero',
-      'Febrero', 
-      'Marzo', 
-      'Abril', 
-      'Mayo', 
-      'Junio', 
-      'Julio', 
-      'Agosto', 
-      'Septiembre', 
-      'Octubre', 
-      'Noviembre', 
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-    
+
     menu1: false,
     loading: 0,
 
@@ -231,15 +231,15 @@ export default {
       loadingKey: "loading",
       update (data) {
         //console.log(data)
-        
+
         if (data.Remisions.length > 0) {
-          
+
           this.Fecha = data.Remisions[0].Fecha
           this.Cliente.TipoDocumento = data.Remisions[0].Ente.TipoDocumento
           this.Cliente.NumeroDocumento = data.Remisions[0].Ente.NumeroDocumento
           this.items = []
           for (let i=0; i<data.Remisions.length; i++) {
-            
+
             var tmp = {
               Id: data.Remisions[i].Id,
               Produccion: {
@@ -273,15 +273,15 @@ export default {
               ProduccionDisable: true,
               EnvaseDisable: data.Remisions[i].Envase.Id ? true : false
             }
-            
+
             this.items.push(tmp)
-            
+
           }
-          
+
         } else {
-        
+
           this.reset()
-          
+
         }
       }
     },
@@ -312,7 +312,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        
+
         if (data.Produccions.length > 0) {
           for ( let i=0; i<data.Produccions.length; i++ ) {
             var tmp = {
@@ -336,17 +336,17 @@ export default {
                 Nombre: data.Produccions[i].Cliente.Nombre
               }
             }
-            
+
             this.ItemsProduccion.push(tmp)
-            
+
           }
-          
+
           //console.log(this.ItemsProduccion)
-          
+
         } else {
-          
+
           this.ItemsProduccion = []
-          
+
         }
       }
     },
@@ -362,7 +362,7 @@ export default {
               Id: data.Envases[i].Id,
               Numero: data.Envases[i].Numero
             }
-            
+
             this.ItemsEnvase.push(tmp)
           }
         }
@@ -402,17 +402,17 @@ export default {
     guardar (item) {
       //console.log('Entrando a crear')
       //console.log(item);
-      if( item.Id === null && 
+      if( item.Id === null &&
           this.Fecha !== null &&
           this.Cliente.Id !== null &&
           item.Produccion.Id !== null &&
-          item.Envase.Id !== null && 
-          item.Total !== null && 
+          item.Envase.Id !== null &&
+          item.Total !== null &&
           item.Total !== '') {
-        
+
         item.ProduccionDisable = true
         item.EnvaseDisable = true
-        
+
         const Remision = {
           Numero: this.Numero,
           Fecha: this.Fecha,
@@ -421,7 +421,7 @@ export default {
           EnvaseId: item.Envase.Id,
           Total: item.Total
         }
-        
+
         //console.log(item)
         this.$apollo.mutate ({
           mutation: CREATE_REMISION,
@@ -435,9 +435,9 @@ export default {
           },
           loadingKey: 'loading',
           update (store, {data: res}) {
-            
+
             //console.log ({store: store, res: res})
-            
+
             try{
               var data = store.readQuery({
                 query: REMISIONS,
@@ -445,9 +445,9 @@ export default {
                   Numero: Remision.Numero
                 }
               })
-              
+
               data.Remisions.push(res.CreateRemision)
-              
+
               store.writeQuery({
                 query: REMISIONS,
                 variables: {
@@ -455,35 +455,35 @@ export default {
                 },
                 data
               })
-              
+
             } catch (Err) {
-              
+
               data = {Remisions: []}
-                
+
               data.Remisions.push(res.CreateRemision)
-              
+
               store.writeQuery({
                 query: REMISIONS,
                 data: data
               })
-              
+
             }
-            
+
           }
         })
-        
+
         this.CreateKardexEntra(item)
         this.CreateKardexSale(item)
-        
+
       } else {
-        
+
         if( this.Fecha !== null &&
             this.Cliente.Id !== null &&
             item.ProduccionId !== null &&
-            item.EnvaseId !== null && 
-            item.Total !== null && 
-            item.Total !== '') { 
-            
+            item.EnvaseId !== null &&
+            item.Total !== null &&
+            item.Total !== '') {
+
             const Remision = {
               Id: item.Id,
               EnteId: this.Cliente.Id,
@@ -491,7 +491,7 @@ export default {
               EnvaseId: item.Envase.Id,
               Total: item.Total
             }
-        
+
             //console.log(item)
             this.$apollo.mutate ({
               mutation: UPDATE_REMISION,
@@ -504,16 +504,16 @@ export default {
               },
               loadingKey: 'loading',
               update (store, {data: res}) {
-                
+
                 try{
-                  
+
                   var data = store.readQuery({
                     query: REMISIONS,
                     variables: {
                       Numero: res.UpdateRemision.Numero
                     }
                   })
-                  
+
                   for (let i=0; i<data.Remisions.length; i++){
                     if ( res.UpdateRemision.Id === data.Remisions[i].Id ) {
                       data.Remisions[i].EnteId = res.UpdateRemision.EnteId
@@ -523,7 +523,7 @@ export default {
                       break
                     }
                   }
-                  
+
                   store.writeQuery({
                     query: REMISIONS,
                     variables: {
@@ -531,47 +531,47 @@ export default {
                     },
                     data: data
                   })
-                  
+
                 } catch (Err) {
-                  
+
                   console.log (`Error encontrado: ${Err}`)
-                  
+
                   data = {Remisions: []}
-                  
+
                   data.Remisions.push(res.UpdateRemision)
-                  
+
                   store.writeQuery({
                     query: REMISIONS,
                     data: data
                   })
-                  
+
                 }
-                
+
                 var newData = store.readQuery({
                   query: REMISIONS,
                   variables: {
                     Numero: res.UpdateRemision.Numero
                   }
                 })
-                
-                
+
+
               }
             })
-           
+
           }
         }
-      
+
     },
     eliminar (item) {
-      
+
       const Remision = {
         Id: item.Id,
         Numero: this.Numero,
         ProduccionId: item.ProduccionId
       }
-      
+
       if (item.Id !== null) {
-        
+
         this.$apollo.mutate ({
           mutation: DELETE_REMISION,
           variables: {
@@ -579,10 +579,10 @@ export default {
           },
           loadingKey: 'loading',
           update (store, {data: res}) {
-            
+
             //console.log('eliminar')
             //console.log ({store: store, res: res})
-            
+
             try{
               var data = store.readQuery({
                 query: REMISIONS,
@@ -591,15 +591,15 @@ export default {
                   ProduccionId: Remision.ProduccionId
                 }
               })
-              
-              
+
+
               for (let i=0; i<data.Remisions.length; i++) {
                 if (data.Remisions[i].ProduccionId === res.DeleteRemision.ProduccionId) {
                   //console.log('Eliminado de cache')
                   data.Remisions.splice(i, 1)
                 }
               }
-              
+
               store.writeQuery({
                 query: REMISIONS,
                 variables: {
@@ -608,35 +608,35 @@ export default {
                 },
                 data
               })
-              
+
             } catch (Err) {
-              
+
             }
-            
+
           }
         })
-        
+
         this.EliminarKardex(item)
-        
+
       } else {
-      
+
         for (let i=0; i<this.items.length; i++) {
           if (item.ProduccionId === this.items[i].ProduccionId) {
             //console.log('Eliminado de cache')
             this.items.splice(i, 1)
           }
         }
-      
+
       }
-      
+
     },
     hardReset () {
       this.Numero = null
     },
     reset () {
-      
+
       this.Fecha = null,
-      
+
       this.Cliente = {
         Id: null,
         TipoDocumento: null,
@@ -646,7 +646,7 @@ export default {
         Direccion: null,
         Telefono: null
       }
-      
+
       this.items = []
     },
     generar () {
@@ -654,7 +654,7 @@ export default {
       this.$router.push('/reporte/remision');
     },
     CreateKardexSale (item) {
-      
+
       var kardex = {
         Cantidad: item.Produccion.Cantidad,
         ProductoId: item.Produccion.Producto.Id,
@@ -666,7 +666,7 @@ export default {
         FechaSale: this.Fecha,
         NumeroFacturaSale: this.Numero
       }
-      
+
       this.$apollo.mutate({
         mutation: CREATE_KARDEX_SALE,
         variables: {
@@ -693,7 +693,7 @@ export default {
         FechaEntra: this.Fecha,
         NumeroFacturaEntra: this.Numero
       }
-      
+
       this.$apollo.mutate({
         mutation: CREATE_KARDEX_ENTRA,
         variables: {
@@ -709,12 +709,12 @@ export default {
       })
     },
     EliminarKardex (item) {
-      
+
       var kardex1 = {
         EnvaseId: item.Produccion.Envase.Id,
         NumeroFacturaSale: this.Numero
       }
-      
+
       this.$apollo.mutate({
         mutation: DELETE_KARDEX_SALE,
         variables: {
@@ -726,14 +726,14 @@ export default {
           //console.log(res)
         }
       })
-      
+
       if (item.Envase.Id) {
-        
+
         var kardex2 = {
           EnvaseId: item.Envase.Id,
           NumeroFacturaEntra: this.Numero
         }
-        
+
         this.$apollo.mutate({
         mutation: DELETE_KARDEX_ENTRA,
         variables: {
@@ -746,7 +746,7 @@ export default {
         }
       })
       }
-      
+
     },
   },
   components: {
@@ -765,11 +765,11 @@ export default {
   text-align center
   outline none
   border-bottom 1px dotted #555555
-  
+
 .select-especial
   border-bottom none !important
-  
+
 .input-group--select
   height: 32px
-  
+
 </style>

@@ -1,7 +1,7 @@
 <template lang="pug">
 doctype html
 v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
-  v-navigation-drawer(v-model="primaryDrawer.model" persistent="persistent")
+  v-navigation-drawer(v-model="primaryDrawer.model" persistent='persistent')
     v-list(dense)
       template(v-for="(item, i) in items")
         v-list-tile(:key="i" nuxt link :to="item.to")

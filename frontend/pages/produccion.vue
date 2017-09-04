@@ -217,6 +217,7 @@ v-layout( align-center justify-center )
                              item-value="Id"
                              return-object
                              autocomplete
+                             :disabled="props.item.EnvaseDisable"
                              light
                              class="input-tab mb-0 mt-0 pb-0"
                              style="width: 96px; font-size: 90%" )
