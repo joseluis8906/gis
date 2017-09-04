@@ -79,6 +79,11 @@ export default {
       }
     }
   },
+  beforeMount () {
+    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
+      this.$router.push('/')
+    }
+  },
   methods: {
     CreateOrUpdate () {
       if (this.update) {

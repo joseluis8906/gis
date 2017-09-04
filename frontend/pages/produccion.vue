@@ -431,6 +431,7 @@ export default {
       deep: true
     }
   },
+  
   methods: {
     agregar () {
       var tmp = {
