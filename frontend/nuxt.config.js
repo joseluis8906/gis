@@ -35,6 +35,7 @@ module.exports = {
     },
     vendor: [
       'apollo-client',
+      'axios',
       'graphql-tag',
       'isomorphic-fetch',
       'vue-apollo',

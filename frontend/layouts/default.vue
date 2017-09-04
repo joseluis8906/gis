@@ -10,7 +10,14 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
             
           v-list-tile-content
             v-list-tile-title {{ item.text }}
-            
+        
+      v-list-tile(@click.native="logout")
+        v-list-tile-action
+          v-icon exit_to_app
+          
+        v-list-tile-content
+          v-list-tile-title Salir
+        
   v-toolbar(fixed)
     v-toolbar-side-icon(@click.native.stop="primaryDrawer.model = !primaryDrawer.model" v-if="primaryDrawer.type !== 'permanent'")
     v-toolbar-title {{ title }}
@@ -26,29 +33,36 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
 
 <script>
   export default {
-    data: () => ({
-      dark: true,
-      primaryDrawer: {
-        model: true,
-        type: 'persistent',
-        clipped: false,
-        floating: true,
-        mini: false
-      },
-      footer: {
-        fixed: true
-      },
-      items: [
-        { icon: 'subtitles', text: 'Ente', to: '/ente'},
-        { icon: 'delete', text: 'Producto', to: '/producto'},
-        { icon: 'battery_alert', text: 'Envase', to: '/envase' },
-        { icon: 'settings', text: 'Produccion', to: '/produccion' },
-        { icon: 'compare_arrows', text: 'Remisión', to: '/remision' },
-        { icon: 'assignment', text: 'Kardex', to: '/kardex' },
-        { icon: 'exit_to_app', text: 'Salir', to: '/'}
-      ],
-      title: 'Administración GIS'
-    })
+    data: () => {
+      return {
+        dark: true,
+        primaryDrawer: {
+          model: true,
+          type: 'persistent',
+          clipped: false,
+          floating: true,
+          mini: false
+        },
+        footer: {
+          fixed: true
+        },
+        items: [
+          { icon: 'subtitles', text: 'Ente', to: '/ente' },
+          { icon: 'delete', text: 'Producto', to: '/producto' },
+          { icon: 'battery_alert', text: 'Envase', to: '/envase' },
+          { icon: 'settings', text: 'Produccion', to: '/produccion' },
+          { icon: 'compare_arrows', text: 'Remisión', to: '/remision' },
+          { icon: 'assignment', text: 'Kardex', to: '/kardex' },
+        ],
+        title: 'Administración GIS'
+      }
+    },
+    methods: {
+      logout () {
+        sessionStorage.removeItem("x-access-token")
+        this.$router.push('/')
+      }
+    }
   }
 </script>
 

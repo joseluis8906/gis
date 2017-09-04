@@ -10,17 +10,39 @@
           h6(class="pt-4 grey--text text--lighten-4") Inicie Sessión
           p(class="pb-4") Con su cuenta GIS
           
-          v-text-field(label="Nombre de Usuario" id="UserName" class="pb-3")
-          v-text-field(label="Contraseña" id="Password")
+          v-text-field(label="Nombre de Usuario"  v-model="UserName" class="pb-3")
+          v-text-field(label="Contraseña" v-model="Password" type="password")
             
                 
         v-card-actions
-          v-btn(primary dark router nuxt to="/inspire" class="mb-3") Continuar
+          v-btn(primary dark  class="mb-3" @click.native.stop="login") Continuar
           
 </template>
 
 <script>
+  import axios from 'axios'
+  
   export default {
-    layout: 'plain'
+    data () {
+      return {
+        UserName: null,
+        Password: null
+      }
+    },
+    layout: 'plain',
+    methods: {
+      login () {
+        axios.post('/backend/login/', {
+          UserName: this.UserName,
+          Password: this.Password
+        }).then(res => {
+          //console.log(res.data)
+          if(res.data.Result === 1){
+            sessionStorage.setItem('x-access-token', res.data.Token)
+            this.$router.push('/inspire')
+          }
+        });
+      }
+    }
   }
 </script>
