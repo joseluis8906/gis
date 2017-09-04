@@ -21,7 +21,7 @@ let layouts = {
 }
 
 export default {
-  head: {"title":"starter","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"Nuxt.js project"}],"link":[{"rel":"icon","type":"image/png","href":"/logo.gis.favicon.png"},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css?family=Work+Sans:200"},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css?family=Archivo+Black"},{"rel":"stylesheet","href":"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"},{"rel":"stylesheet","href":"https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/1.9.33/css/materialdesignicons.min.css"}]},
+  head: {"title":"Gis","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"Nuxt.js project"}],"link":[{"rel":"icon","type":"image/png","href":"/logo.gis.favicon.png"},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css?family=Work+Sans:200"},{"rel":"stylesheet","href":"https://fonts.googleapis.com/css?family=Archivo+Black"},{"rel":"stylesheet","href":"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"},{"rel":"stylesheet","href":"https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/1.9.33/css/materialdesignicons.min.css"}]},
   data: () => ({
     layout: null,
     layoutName: ''

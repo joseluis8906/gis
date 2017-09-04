@@ -3,7 +3,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'starter',
+    title: 'Gis',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -50,6 +50,6 @@ module.exports = {
   css: [
     'swiper/dist/css/swiper.css',
     { src: '~assets/style/app.styl', lang: 'styl' }
-  ]
+  ],
   
 }
