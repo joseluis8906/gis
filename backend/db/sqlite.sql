@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS "Produccion" (
   "PurezaFinal" DECIMAL,
   "PresionFinal" DECIMAL,
   "Observacion" TEXT,
+  "Despachado" TEXT
   UNIQUE(Orden, EnvaseId)
 );
 
