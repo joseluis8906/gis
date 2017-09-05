@@ -1,16 +1,18 @@
 mutation UpdateOneProduccion ( 
-  $Id: Int!,
-  $Orden: String!,
-  $Cantidad: Float!,
-  $EnvaseId: Int!,
-  $ClienteId: Int!
+  $Id: Int,
+  $Orden: String,
+  $Cantidad: Float,
+  $EnvaseId: Int,
+  $ClienteId: Int,
+  $Despachado: String,
 ) {
   UpdateOneProduccion (
     Id: $Id,
     Orden: $Orden,
     Cantidad: $Cantidad,
     EnvaseId: $EnvaseId,
-    ClienteId: $ClienteId
+    ClienteId: $ClienteId,
+    Despachado: $Despachado
   ){
     Id
     Orden
@@ -30,6 +32,7 @@ mutation UpdateOneProduccion (
     PurezaFinal
     PresionFinal
     Observacion
+    Despachado
     Envase {
       Id
       Numero

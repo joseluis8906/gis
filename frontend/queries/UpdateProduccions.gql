@@ -54,6 +54,7 @@ mutation UpdateProduccion (
     PurezaFinal
     PresionFinal
     Observacion
+    Despachado
     Envase {
       Id
       Numero

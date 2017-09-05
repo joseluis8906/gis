@@ -96,8 +96,7 @@ const Envase = Db.define('Envase', {
   PruebaHidrostatica: Sequelize.DATEONLY,
   EquipoAlquilado: Sequelize.STRING,
   FechaAlquiler: Sequelize.DATEONLY,
-  Observaciones: Sequelize.STRING,
-  Despachado: Sequelize.STRING
+  Observaciones: Sequelize.STRING
 },
 {
   timestamps: false,
@@ -130,7 +129,8 @@ const Produccion = Db.define('Produccion', {
   EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
   PurezaFinal: Sequelize.DECIMAL,
   PresionFinal: Sequelize.DECIMAL,
-  Observacion: Sequelize.TEXT
+  Observacion: Sequelize.TEXT,
+  Despachado: Sequelize.STRING
 },
 {
   timestamps: false,

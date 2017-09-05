@@ -154,7 +154,6 @@ import REMISIONS from '~/queries/Remisions.gql'
 import PRODUCCIONS from '~/queries/Produccions.gql'
 import CREATE_REMISION from '~/queries/CreateRemision.gql'
 import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
-import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
 import DELETE_REMISION from '~/queries/DeleteRemision.gql'
 import ONE_ENTE from '~/queries/OneEnte.gql'
 import ENVASES from '~/queries/Envases.gql'
@@ -263,8 +262,7 @@ export default {
                   TipoDocumento: data.Remisions[i].TipoDocumento,
                   NumeroDocumento: data.Remisions[i].NumeroDocumento,
                   Nombre: data.Remisions[i].Ente.Nombre
-                },
-                Despachado: data.Remisions[i].Despachado
+                }
               },
               Envase: {
                 Id: data.Remisions[i].Envase.Id,
@@ -336,12 +334,10 @@ export default {
               Cliente: {
                 Id: data.Produccions[i].Cliente.Id,
                 Nombre: data.Produccions[i].Cliente.Nombre
-              },
-              Despachado: data.Produccions[i].Despachado
+              }
             }
-            if (item.Despachado === 'No') {
-              this.ItemsProduccion.push(tmp)
-            }
+
+            this.ItemsProduccion.push(tmp)
 
           }
 
@@ -481,7 +477,6 @@ export default {
           }
         })
 
-        this.UpdateProduccion(item.Produccion, 'Si')
         this.CreateKardexEntra(item)
         this.CreateKardexSale(item)
 
@@ -625,7 +620,7 @@ export default {
 
           }
         })
-        this.UpdateProduccion(item.Produccion, 'No')
+
         this.EliminarKardex(item)
 
       } else {
@@ -756,85 +751,7 @@ export default {
         }
       })
       }
-    },
-    UpdateProduccion (item, Tipo) {
-      const Produccion = {
-            Id: item.Id,
-            Cantidad: item.Cantidad,
-            EnvaseId: item.Envase.Id,
-            ClienteId: item.Cliente.Id,
-            Despachado: Tipo
-          }
 
-      this.$apollo.mutate ({
-        mutation: UPDATE_ONE_PRODUCCION,
-        variables: {
-          Id: Produccion.Id,
-          Cantidad: Produccion.Cantidad,
-          EnvaseId: Produccion.EnvaseId,
-          ClienteId: Produccion.ClienteId,
-          Despachado: Produccion.Despachado
-        },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-          //console.log('actualizar')
-          //console.log ({store: store, res: res})
-
-          try{
-            const data = store.readQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: Produccion.Orden,
-              }
-            })
-
-            for (let i=0; i<data.Produccions.length; i++) {
-              if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
-                data.Produccions[i].Orden = res.UpdateOneProduccion.Orden
-                data.Produccions[i].Turno = res.UpdateOneProduccion.Turno
-                data.Produccions[i].Fecha = res.UpdateOneProduccion.Fecha
-                data.Produccions[i].Lote = res.UpdateOneProduccion.Lote
-                data.Produccions[i].FechaInicial = res.UpdateOneProduccion.FechaInicial
-                data.Produccions[i].FechaFinal = res.UpdateOneProduccion.FechaFinal
-                data.Produccions[i].HoraInicial = res.UpdateOneProduccion.HoraInicial
-                data.Produccions[i].HoraFinal = res.UpdateOneProduccion.HoraFinal
-                data.Produccions[i].FechaFabricacion = res.UpdateOneProduccion.FechaFabricacion
-                data.Produccions[i].FechaVencimiento = res.UpdateOneProduccion.FechaVencimiento
-                data.Produccions[i].Cantidad = res.UpdateOneProduccion.Cantidad
-                data.Produccions[i].ProductoId = res.UpdateOneProduccion.ProductoId
-                data.Produccions[i].EnvaseId = res.UpdateOneProduccion.EnvaseId
-                data.Produccions[i].ClienteId = res.UpdateOneProduccion.ClienteId
-                data.Produccions[i].PurezaFinal = res.UpdateOneProduccion.PurezaFinal
-                data.Produccions[i].PresionFinal = res.UpdateOneProduccion.PresionFinal
-                data.Produccions[i].Observacion = res.UpdateOneProduccion.Observacion
-                data.Produccions[i].Despachado = res.Despachado
-              }
-            }
-
-            store.writeQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: Produccion.Orden,
-              },
-              data
-            })
-
-          } catch (Err) {
-
-            data = {Produccions: []}
-
-            data.Produccions.push(res.UpdateOneProduccion)
-
-            store.writeQuery({
-              query: PRODUCCIONS,
-              data: data
-            })
-
-          }
-
-        }
-
-      })
     },
   },
   components: {

@@ -21,6 +21,7 @@ mutation DeleteProduccion (
     PurezaFinal
     PresionFinal
     Observacion
+    Despachado
     Envase {
       Id
       Numero

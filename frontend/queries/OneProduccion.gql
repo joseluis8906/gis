@@ -54,6 +54,7 @@ query OneProduccion (
     PurezaFinal
     PresionFinal
     Observacion
+    Despachado
     Envase {
       Id
       Numero

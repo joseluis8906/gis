@@ -1,4 +1,4 @@
-  <template lang="pug">
+<template lang="pug">
 v-layout( align-center justify-center )
   v-snackbar(
     :timeout="snackbar.timeout"
@@ -252,9 +252,8 @@ v-layout( align-center justify-center )
                          small
                          error
                          style="width: 16px; height:16px"
-                         @click.native="eliminar(props.item)"
-                         :disabled="props.item.EliminarDisable")
-                    v-icon remove
+                         @click.native="eliminar(props.item)")
+                    v-icon(dark) remove
                     
             v-btn(fab dark class="indigo" @click.native="agregar")
               v-icon(dark) add
@@ -400,9 +399,7 @@ export default {
               Cantidad: data.Produccions[i].Cantidad,
               SaveUpdate: 'update',
               ClienteDisable: true,
-              EnvaseDisable: true,
-              EliminarDisable: data.Produccions[i].Despachado === 'Si' ? true : false,
-              Despachado: data.Produccions[i].Despachado
+              EnvaseDisable: true
             }
             this.items.push(tmp)
           }
@@ -485,8 +482,7 @@ export default {
             ClienteId: item.Cliente.Id,
             PurezaFinal: this.PurezaFinal,
             PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion,
-            Despachado: 'No'
+            Observacion: this.Observacion
           }
           
           this.$apollo.mutate ({
@@ -508,8 +504,7 @@ export default {
               ClienteId: Produccion.ClienteId,
               PurezaFinal: Produccion.PurezaFinal,
               PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion,
-              Despachado: Produccion.Despachado
+              Observacion: Produccion.Observacion
             },
             loadingKey: 'loading',
             update (store, {data: res}) {
@@ -570,8 +565,7 @@ export default {
             ClienteId: item.Cliente.Id,
             PurezaFinal: this.PurezaFinal,
             PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion,
-            Despachado: item.Despachado
+            Observacion: this.Observacion
           }
           
           this.$apollo.mutate ({
@@ -628,7 +622,6 @@ export default {
                     data.Produccions[i].PurezaFinal = res.UpdateOneProduccion.PurezaFinal
                     data.Produccions[i].PresionFinal = res.UpdateOneProduccion.PresionFinal
                     data.Produccions[i].Observacion = res.UpdateOneProduccion.Observacion
-                    data.Produccions[i].Despachado = res.Despachado
                   }
                 }
                 
@@ -816,6 +809,4 @@ export default {
 .input-group--select
   height: 31px
 
-.application .theme--dark.btn:disabled:not(.btn--icon):not(.btn--flat)
-  background-color rgba(25,25,25, 1) !important
 </style>
