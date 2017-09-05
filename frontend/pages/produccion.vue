@@ -234,6 +234,7 @@ v-layout( align-center justify-center )
                       item-text="Nombre"
                       autocomplete
                       return-object
+                      :disabled="props.item.ClienteDisable"
                       light
                       class="input-tab mb-0 mt-0 pb-0"
                       style="width: 148px" )
@@ -396,7 +397,9 @@ export default {
                 Nombre: data.Produccions[i].Cliente.Nombre
               },
               Cantidad: data.Produccions[i].Cantidad,
-              SaveUpdate: 'update'
+              SaveUpdate: 'update',
+              ClienteDisable: true,
+              EnvaseDisable: true
             }
             this.items.push(tmp)
           }
@@ -459,6 +462,8 @@ export default {
         if ( item.Id === null ) {
           
           item.SaveUpdate = 'update'
+          item.EnvaseDisable = true
+          item.ClienteDisable = true
           
           const Produccion = {
             Orden: this.Orden,
