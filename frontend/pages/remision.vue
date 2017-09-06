@@ -339,9 +339,9 @@ export default {
               },
               Despachado: data.Produccions[i].Despachado
             }
-            if (item.Despachado === 'No') {
+            //if (tmp.Despachado === 'No') {
               this.ItemsProduccion.push(tmp)
-            }
+            //}
 
           }
 
