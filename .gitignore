@@ -1,3 +1,4 @@
 backend/node_modules
+backend/db/Db.sqlite
 frontend/node_modules
 proxy/node_modules
