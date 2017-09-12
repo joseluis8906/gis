@@ -1007,9 +1007,11 @@ var Mutation = new GraphQLObjectType({
                 if (G !== null) {
                   U.addGroup(G)
                 }
+                return U;
               })
+            }else {
+              return U;
             }
-            return U;
           });
         }
       },
@@ -1030,9 +1032,11 @@ var Mutation = new GraphQLObjectType({
                 if (G !== null) {
                   U.removeGroup(G)
                 }
+                return U;
               })
+            } else {
+              return U;
             }
-            return U;
           });
         }
       },
