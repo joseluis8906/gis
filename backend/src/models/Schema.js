@@ -1001,15 +1001,18 @@ var Mutation = new GraphQLObjectType({
             where: {Id: args.UserId}
           }).then(U => {
             if (U !== null){
-              Db.models.Group.findOne({
+              return Db.models.Group.findOne({
                 where: {Id: args.GroupId}
               }).then(G => {
                 if (G !== null) {
-                  U.addGroup(G)
+                  return U.addGroup(G).then(R => {
+                    return U;
+                  })
+                } else {
+                  return U;
                 }
-                return U;
               })
-            }else {
+            } else {
               return U;
             }
           });
@@ -1026,7 +1029,7 @@ var Mutation = new GraphQLObjectType({
             where: {Id: args.UserId}
           }).then(U => {
             if (U !== null){
-              Db.models.Group.findOne({
+              return Db.models.Group.findOne({
                 where: {Id: args.GroupId}
               }).then(G => {
                 if (G !== null) {
