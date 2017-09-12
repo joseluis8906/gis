@@ -1,45 +1,39 @@
-import { GraphQLObjectType, 
-  GraphQLInt, 
-  GraphQLString, 
+import { GraphQLObjectType,
+  GraphQLInt,
+  GraphQLString,
   GraphQLFloat,
-  GraphQLList, 
+  GraphQLList,
   GraphQLSchema } from 'graphql';
-  
+
 import Db from './Db.js';
 
-var Person = new GraphQLObjectType({
-  name: "Person",
-  description: "Object representation of Person",
+var User = new GraphQLObjectType({
+  name: "User",
+  description: "Object representation of User",
   fields: () => {
     return {
       Id: {
         type: GraphQLInt,
-        resolve(Person) {
-          return Person.Id;
+        resolve(User) {
+          return User.Id;
         }
       },
-      Email: {
+      UserName: {
         type: GraphQLString,
-        resolve(Person) {
-          return Person.Email;
+        resolve(User) {
+          return User.UserName;
         }
       },
-      FirstName: {
+      Password: {
         type: GraphQLString,
-        resolve(Person) {
-          return Person.FirstName;
+        resolve(User) {
+          return User.Password;
         }
       },
-      LastName: {
-        type: GraphQLString,
-        resolve(Person) {
-          return Person.LastName;
-        }
-      },
-      Posts: {
-        type: new GraphQLList(Post),
-        resolve(Person) {
-          return Person.getPosts();
+      Groups: {
+        type: new GraphQLList(Group),
+        resolve(User) {
+          return User.getGroups();
         }
       }
     };
@@ -47,27 +41,27 @@ var Person = new GraphQLObjectType({
 });
 
 
-var Post = new GraphQLObjectType({
-  name: "Post",
-  description: "Object representation of Post",
+var Group = new GraphQLObjectType({
+  name: "Group",
+  description: "Object representation of Group",
   fields: () => {
     return {
-      PersonId: {
+      Id: {
         type: GraphQLInt,
-        resolve(Post) {
-          return Post.PersonId;
+        resolve(Group) {
+          return Group.Id;
         }
       },
-      Title: {
+      Name: {
         type: GraphQLString,
-        resolve(Post) {
-          return Post.Title;
+        resolve(Group) {
+          return Group.Name;
         }
       },
-      Content: {
-        type: GraphQLString,
-        resolve(Post) {
-          return Post.Content;
+      Users: {
+        type: new GraphQLList(User),
+        resolve(Group) {
+          return Group.getUsers();
         }
       }
     };
@@ -656,27 +650,26 @@ var Query = new GraphQLObjectType({
           return "world";
         }
       },
-      People: {
-        type: new GraphQLList(Person),
+      Users: {
+        type: new GraphQLList(User),
         args: {
           Id: {type: GraphQLInt},
-          Email: {type: GraphQLString},
-          FirstName: {type: GraphQLString},
-          LastName: {type: GraphQLString}
+          UserName: {type: GraphQLString},
+          Password: {type: GraphQLString},
+          Active: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Person.findAll({where: args});
+          return Db.models.User.findAll({where: args});
         }
       },
-      Posts: {
-        type: new GraphQLList(Post),
+      Groups: {
+        type: new GraphQLList(Group),
         args: {
-          PersonId: {type: GraphQLInt},
-          Title: {type: GraphQLString},
-          Content: {type: GraphQLString}
+          Id: {type: GraphQLInt},
+          Name: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Post.findAll({where: args});
+          return Db.models.Group.findAll({where: args});
         }
       },
       Entes: {
@@ -707,7 +700,7 @@ var Query = new GraphQLObjectType({
             }
           });
         }
-      },      
+      },
       OneEnte: {
         type: Ente,
         args: {
@@ -971,18 +964,75 @@ var Mutation = new GraphQLObjectType({
   description: "Function to create stuf",
   fields: () => {
     return {
-      AddPerson: {
-        type: Person,
+      CreateUser: {
+        type: User,
         args: {
-          Email: {type: GraphQLInt},
-          FirstName: {type: GraphQLString},
-          LastName: {type: GraphQLString}
+          UserName: {type: GraphQLString},
+          Password: {type: GraphQLString},
+          Active: {type: GraphQLString}
         },
         resolve(_, args) {
-          return Db.models.Person.create({
-            Email: args.Email,
-            FirstName: args.FirstName,
-            LastName: args.LastName
+          return Db.models.User.create({
+            UserName: args.UserName,
+            Password: args.Password,
+            Active: args.Active
+          });
+        }
+      },
+      CreateGroup: {
+        type: Group,
+        args: {
+          Name: {type: GraphQLString},
+        },
+        resolve(_, args) {
+          return Db.models.Group.create({
+            Name: args.Name
+          });
+        }
+      },
+      UserAddGroup: {
+        type: User,
+        args: {
+          UserId: {type: GraphQLInt},
+          GroupId: {type: GraphQLInt}
+        },
+        resolve(_, args) {
+          return Db.models.User.findOne({
+            where: {Id: args.UserId}
+          }).then(U => {
+            if (U !== null){
+              Db.models.Group.findOne({
+                where: {Id: args.GroupId}
+              }).then(G => {
+                if (G !== null) {
+                  U.addGroup(G)
+                }
+              })
+            }
+            return U;
+          });
+        }
+      },
+      UserRemoveGroup: {
+        type: User,
+        args: {
+          UserId: {type: GraphQLInt},
+          GroupId: {type: GraphQLInt},
+        },
+        resolve(_, args) {
+          return Db.models.User.findOne({
+            where: {Id: args.UserId}
+          }).then(U => {
+            if (U !== null){
+              Db.models.Group.findOne({
+                where: {Id: args.GroupId}
+              }).then(G => {
+                if (G !== null) {
+                  U.removeGroup(G)
+                }
+              })
+            }
+            return U;
           });
         }
       },
@@ -1184,7 +1234,7 @@ var Mutation = new GraphQLObjectType({
               R.save();
               R.Propietario = R.getEnte();
               R.Producto = R.getProducto();
-              
+
               return R;
           });
         }
@@ -1233,9 +1283,9 @@ var Mutation = new GraphQLObjectType({
             Observacion: args.Observacion,
             Despachado: args.Despachado
           }).then( R => {
-          
+
             return R;
-            
+
           });
         }
       },
@@ -1250,7 +1300,7 @@ var Mutation = new GraphQLObjectType({
           Despachado: {type: GraphQLString}
         },
         resolve(_, args) {
-          return Db.models.Produccion.findOne({ 
+          return Db.models.Produccion.findOne({
             where: {
               Id: args.Id
             }
@@ -1284,7 +1334,7 @@ var Mutation = new GraphQLObjectType({
           Despachado: {type: GraphQLString}
         },
         resolve(_, args) {
-          return Db.models.Produccion.update({ 
+          return Db.models.Produccion.update({
             Turno: args.Turno,
             Fecha: args.Fecha,
             Lote: args.Lote,
@@ -1341,7 +1391,7 @@ var Mutation = new GraphQLObjectType({
             Total: args.Total
           }).then( R => {
             return R;
-            
+
           });
         }
       },
@@ -1360,14 +1410,14 @@ var Mutation = new GraphQLObjectType({
               Id: args.Id
             }
           }).then( R => {
-            
+
             R.EnteId = args.EnteId;
             R.ProduccionId = args.ProduccionId;
             R.EnvaseId = args.EnvaseId;
             R.Total = args.Total;
             R.save();
             return R;
-            
+
           });
         }
       },
@@ -1430,7 +1480,7 @@ var Mutation = new GraphQLObjectType({
             where: {
               EnvaseId: args.EnvaseId,
               EnteId: args.EnteId,
-              FechaEntra: null, 
+              FechaEntra: null,
               NumeroFacturaEntra: null
             }
           }).then( R => {
@@ -1439,9 +1489,9 @@ var Mutation = new GraphQLObjectType({
               R.NumeroFacturaEntra = args.NumeroFacturaEntra;
               R.save();
             }
-            
+
             return R;
-            
+
           });
         }
       },
@@ -1499,4 +1549,3 @@ var Schema = new GraphQLSchema({
 });
 
 export default Schema;
-

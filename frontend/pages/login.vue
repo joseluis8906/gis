@@ -6,22 +6,22 @@
         v-card-text
           div(class="text-xs-center")
             img(src="~assets/logo.gis.png" alt="logo.gis")
-            
+
           h6(class="pt-4 grey--text text--lighten-4") Inicie Sessión
           p(class="pb-4") Con su cuenta GIS
-          
+
           v-text-field(label="Nombre de Usuario"  v-model="UserName" class="pb-3")
           v-text-field(label="Contraseña" v-model="Password" type="password")
-            
-                
+
+
         v-card-actions
           v-btn(primary dark  class="mb-3" @click.native.stop="login") Continuar
-          
+
 </template>
 
 <script>
   import axios from 'axios'
-  
+
   export default {
     data () {
       return {
@@ -39,6 +39,7 @@
           //console.log(res.data)
           if(res.data.Result === 1){
             sessionStorage.setItem('x-access-token', res.data.Token)
+            sessionStorage.setItem('x-access-role', res.data.Role)
             this.$router.push('/inspire')
           }
         });

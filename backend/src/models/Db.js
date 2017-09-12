@@ -9,36 +9,34 @@ const User = Db.define('User', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   UserName: {type: Sequelize.STRING, unique: true},
   Password: Sequelize.STRING,
+  Active: Sequelize.STRING
 },
 {
   timestamps: false,
   freezeTableName: true
 });
 
-const Person = Db.define('Person', {
+const Group = Db.define('Group', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-  Email: {type: Sequelize.STRING, unique: true},
-  FirstName: Sequelize.STRING,
-  LastName: Sequelize.STRING
+  Name: {type: Sequelize.STRING, unique: true}
 },
 {
   timestamps: false,
   freezeTableName: true
 });
 
-
-const Post = Db.define('Post', {
-  PersonId: {type: Sequelize.INTEGER, primaryKey: true, references: {model: Person, key: 'Id'}},
-  Title: Sequelize.STRING,
-  Content: Sequelize.STRING
+const UserGroup = Db.define('UserGroup', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  UserId: {type: Sequelize.INTEGER, references: {model: User, key: 'Id'}},
+  GroupId: {type: Sequelize.INTEGER, references: {model: Group, key: 'Id'}}
 },
 {
   timestamps: false,
   freezeTableName: true
 });
 
-Person.hasMany(Post);
-Post.belongsTo(Person);
+User.belongsToMany(Group, {through: 'UserGroup'});
+Group.belongsToMany(User, {through: 'UserGroup'});
 
 
 //############# gis ################
