@@ -89,13 +89,6 @@ export default {
     },
   },
   methods: {
-    CreateOrUpdate () {
-      if (this.Id === null) {
-        this.Create();
-      }else{
-        this.Update();
-      }
-    },
     CryptPassword (){
       if (this.UiPassword !== null && this.UiPassword !== '') {
         axios.get(`/backend/generatepassword/${this.UiPassword}`).then(res => {
@@ -108,13 +101,20 @@ export default {
         this.CreateOrUpdate()
       }
     },
+    CreateOrUpdate () {
+      if (this.Id === null) {
+        this.Create();
+      }else{
+        this.Update();
+      }
+    },
     Create () {
       const User = {
         UserName: this.UserName,
         Password: this.Password,
         Active: this.Active,
       };
-
+      
       this.Reset ();
 
       this.$apollo.mutate ({

@@ -967,7 +967,7 @@ var Query = new GraphQLObjectType({
 //mutation
 var Mutation = new GraphQLObjectType({
   name: "Mutation",
-  description: "Function to create stuf",
+  description: "Function to create stuff",
   fields: () => {
     return {
       CreateUser: {

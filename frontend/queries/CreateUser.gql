@@ -1,4 +1,4 @@
-mutation CreateUser(
+mutation CreateUser (
   $Id: Int,
   $UserName: String,
   $Password: String,
