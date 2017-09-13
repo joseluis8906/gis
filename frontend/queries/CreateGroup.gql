@@ -1,8 +1,8 @@
 mutation CreateGroup (
-  $Name: String,
+  $Name: String
 ) {
   CreateGroup (
-    Name: $Name,
+    Name: $Name
   ) {
     Id
     Name
