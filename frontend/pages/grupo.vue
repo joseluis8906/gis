@@ -20,32 +20,24 @@ v-layout( align-center justify-center )
       v-layout(row wrap pt-3 light-blue)
         v-flex( xs12 )
           h5(class="grey--text text--lighten-4 text-xs-center bold")
-            v-icon(ma) person
-            |  Usuario
+            v-icon(ma) group
+            |  Grupo
       v-card-text
         v-layout( row wrap)
           v-flex( xs12 )
-            v-text-field( label="Nombre De Usuario" v-model="UserName" dark )
-
-            v-text-field( label="Contraseña" v-model="UiPassword" type="Password" maxlength="4" dark )
-
-            v-select( v-bind:items="ItemsActive"
-                      v-model="Active"
-                      label="Activo"
-                      item-value="text"
-                      dark )
+            v-text-field( label="Nombre" v-model="Name" dark )
 
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="CryptPassword" ) Guardar
+        v-btn( dark primary @click.native="CreateOrUpdate" ) Guardar
 </template>
 
 <script>
 
-import USERS from '~/queries/Users.gql'
-import CREATE_USER from '~/queries/CreateUser.gql'
-import UPDATE_USER from '~/queries/UpdateUser.gql'
+import GROUPS from '~/queries/Groups.gql'
+import CREATE_GROUP from '~/queries/CreateGroup.gql'
+import UPDATE_GROUP from '~/queries/UpdateGroup.gql'
 
 import axios from 'axios'
 
@@ -58,14 +50,7 @@ export default {
       text: 'Cargando'
     },
     Id: null,
-    UserName: null,
-    Password: null,
-    Active: null,
-    UiPassword: null,
-    ItemsActive: [
-      {text: 'Si'},
-      {text: 'No'}
-    ],
+    Name: null,
     loading: 0
   }),
   beforeMount () {
@@ -74,33 +59,21 @@ export default {
     }
   },
   apollo: {
-    Users: {
-      query: USERS,
+    Groups: {
+      query: GROUPS,
       variables () {
         return {
-          UserName: this.UserName
+          Name: this.Name
         }
       },
       loadingKey: 'loading',
       update (data) {
         //console.log(data)
-        this.LoadUi(data.Users)
+        this.LoadUi(data.Groups)
       }
     },
   },
   methods: {
-    CryptPassword (){
-      if (this.UiPassword !== null && this.UiPassword !== '') {
-        axios.get(`/backend/generatepassword/${this.UiPassword}`).then(res => {
-          this.Password = res.data.Password
-          this.CreateOrUpdate()
-        }).catch(err => {
-          console.log(err)
-        });
-      } else {
-        this.CreateOrUpdate()
-      }
-    },
     CreateOrUpdate () {
       if (this.Id === null) {
         this.Create();
@@ -109,52 +82,48 @@ export default {
       }
     },
     Create () {
-      const User = {
-        UserName: this.UserName,
-        Password: this.Password,
-        Active: this.Active,
+      const Group = {
+        Name: this.Name
       };
 
       this.Reset ();
 
       this.$apollo.mutate ({
-        mutation: CREATE_USER,
+        mutation: CREATE_GROUP,
         variables: {
-          UserName: User.UserName,
-          Password: User.Password,
-          Active: User.Active
+          Name: Group.Name
       },
       loadingKey: 'loading',
       update: (store, { data: res }) => {
         //console.log(Ente);
         try{
           var data = store.readQuery({
-            query: USERS,
+            query: GROUPS,
             variables: {
-              UserName: res.CreateUser.UserName,
+              Name: res.CreateGroup.Name
             }
           })
 
-          data.Users.push(res.CreateUser)
+          data.Groups.push(res.CreateGroup)
 
           store.writeQuery({
-            query: USERS,
+            query: GROUPS,
             variables: {
-              UserName: res.CreateUser.UserName
+              Name: res.CreateGroup.Name
             },
             data: data
           })
 
         } catch (Err) {
 
-          var data = {Users: []}
+          var data = {Groups: []}
 
-          data.Users.push(res.CreateUser)
+          data.Groups.push(res.CreateGroup)
 
           store.writeQuery({
-            query: USERS,
+            query: GROUPS,
             variables: {
-              UserName: res.CreateUser.UserName
+              Name: res.CreateGroup.Name
             },
             data: data
           })
@@ -170,60 +139,54 @@ export default {
     },
     Update () {
       //console.log(this.Password)
-      const User = {
+      const Group = {
         Id: this.Id,
-        UserName: this.UserName,
-        Password: this.Password,
-        Active: this.Active
+        Name: this.Name,
       };
 
       this.Reset ();
 
       this.$apollo.mutate ({
-        mutation: UPDATE_USER,
+        mutation: UPDATE_GROUP,
         variables: {
-          Id: User.Id,
-          UserName: User.UserName,
-          Password: User.Password,
-          Active: User.Active
+          Id: Group.Id,
+          Name: Group.Name
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
           //console.log(Ente);
           try {
             var data = store.readQuery({
-              query: USERS,
+              query: GROUPS,
               variables: {
-                UserName: res.UpdateUser.UserName
+                Name: res.UpdateGroup.Name
               }
             })
 
-            for (let i=0; i<data.Users.length; i++) {
-              if (data.Users[i].Id === res.UpdateUser.Id) {
-                data.Users[i].UserName = res.UpdateUser.UserName
-                data.Users[i].Password = res.UpdateUser.Password
-                data.Users[i].Active = res.UpdateUser.Active
+            for (let i=0; i<data.Groups.length; i++) {
+              if (data.Groups[i].Id === res.UpdateGroup.Id) {
+                data.Groups[i].Name = res.UpdateGroup.Name
               }
             }
 
             store.writeQuery({
-              query: USERS,
+              query: GROUPS,
               variables: {
-                UserName: res.UpdateUser.UserName
+                Name: res.UpdateGroup.Name
               },
               data: data
             })
 
           } catch (Err) {
 
-            var data = {Users: []}
+            var data = {Groups: []}
 
-            data.Users.push(res.UpdateUser)
+            data.Groups.push(res.UpdateGroup)
 
             store.writeQuery({
-              query: USERS,
+              query: GROUPS,
               variables: {
-                UserName: res.UpdateUser.UserName
+                Name: res.UpdateGroup.Name
               },
               data: data
             })
@@ -239,31 +202,20 @@ export default {
     },
     Reset () {
       this.Id = null
-      this.UserName = null
-      this.Password = null
-      this.UiPassword = null
-      this.Active = null
+      this.Name = null
     },
-    LoadUi (Users) {
-      if( Users.length === 0 ) {
+    LoadUi (Groups) {
+      if( Groups.length === 0 ) {
         this.Id = null
-        this.Password = null
-        this.UiPassword = null
-        this.Active = null
       }
 
-      for (let i=0; i<Users.length; i++) {
-        if ( this.UserName === Users[i].UserName ) {
-          this.Id = Users[i].Id
-          this.UserName = Users[i].UserName
-          this.Password = Users[i].Password
-          this.Active = Users[i].Active
+      for (let i=0; i<Groups.length; i++) {
+        if ( this.Name === Groups[i].Name ) {
+          this.Id = Groups[i].Id
+          this.Name = Groups[i].Name
           break
         }else{
           this.Id = null
-          this.Password = null
-          this.UiPassword = null
-          this.Active = null
         }
       }
 

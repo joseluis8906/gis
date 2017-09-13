@@ -8,25 +8,27 @@ Vue.use(Router)
 
 const _dde9bb94 = () => import('/home/jose/Developments/gis/frontend/pages/index.vue' /* webpackChunkName: "pages/index" */)
 
-const _268930e0 = () => import('/home/jose/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
-
-const _71534771 = () => import('/home/jose/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
-
-const _ca80c8dc = () => import('/home/jose/Developments/gis/frontend/pages/usuario.vue' /* webpackChunkName: "pages/usuario" */)
-
-const _0a113584 = () => import('/home/jose/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
-
 const _0cb92126 = () => import('/home/jose/Developments/gis/frontend/pages/ente.vue' /* webpackChunkName: "pages/ente" */)
-
-const _219ca3b6 = () => import('/home/jose/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
-
-const _33cdb7b2 = () => import('/home/jose/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
 
 const _4e629f87 = () => import('/home/jose/Developments/gis/frontend/pages/kardex.vue' /* webpackChunkName: "pages/kardex" */)
 
-const _5ab2c54d = () => import('/home/jose/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
+const _ca80c8dc = () => import('/home/jose/Developments/gis/frontend/pages/usuario.vue' /* webpackChunkName: "pages/usuario" */)
+
+const _219ca3b6 = () => import('/home/jose/Developments/gis/frontend/pages/produccion.vue' /* webpackChunkName: "pages/produccion" */)
+
+const _71534771 = () => import('/home/jose/Developments/gis/frontend/pages/about.vue' /* webpackChunkName: "pages/about" */)
+
+const _c4d13b66 = () => import('/home/jose/Developments/gis/frontend/pages/grupo.vue' /* webpackChunkName: "pages/grupo" */)
+
+const _268930e0 = () => import('/home/jose/Developments/gis/frontend/pages/remision.vue' /* webpackChunkName: "pages/remision" */)
 
 const _0b2530ac = () => import('/home/jose/Developments/gis/frontend/pages/producto.vue' /* webpackChunkName: "pages/producto" */)
+
+const _33cdb7b2 = () => import('/home/jose/Developments/gis/frontend/pages/envase.vue' /* webpackChunkName: "pages/envase" */)
+
+const _0a113584 = () => import('/home/jose/Developments/gis/frontend/pages/inspire.vue' /* webpackChunkName: "pages/inspire" */)
+
+const _5ab2c54d = () => import('/home/jose/Developments/gis/frontend/pages/login.vue' /* webpackChunkName: "pages/login" */)
 
 const _22b7b058 = () => import('/home/jose/Developments/gis/frontend/pages/reporte/produccion.vue' /* webpackChunkName: "pages/reporte-produccion" */)
 
@@ -72,39 +74,9 @@ export default new Router({
 			name: "index"
 		},
 		{
-			path: "/remision",
-			component: _268930e0,
-			name: "remision"
-		},
-		{
-			path: "/about",
-			component: _71534771,
-			name: "about"
-		},
-		{
-			path: "/usuario",
-			component: _ca80c8dc,
-			name: "usuario"
-		},
-		{
-			path: "/inspire",
-			component: _0a113584,
-			name: "inspire"
-		},
-		{
 			path: "/ente",
 			component: _0cb92126,
 			name: "ente"
-		},
-		{
-			path: "/produccion",
-			component: _219ca3b6,
-			name: "produccion"
-		},
-		{
-			path: "/envase",
-			component: _33cdb7b2,
-			name: "envase"
 		},
 		{
 			path: "/kardex",
@@ -112,14 +84,49 @@ export default new Router({
 			name: "kardex"
 		},
 		{
-			path: "/login",
-			component: _5ab2c54d,
-			name: "login"
+			path: "/usuario",
+			component: _ca80c8dc,
+			name: "usuario"
+		},
+		{
+			path: "/produccion",
+			component: _219ca3b6,
+			name: "produccion"
+		},
+		{
+			path: "/about",
+			component: _71534771,
+			name: "about"
+		},
+		{
+			path: "/grupo",
+			component: _c4d13b66,
+			name: "grupo"
+		},
+		{
+			path: "/remision",
+			component: _268930e0,
+			name: "remision"
 		},
 		{
 			path: "/producto",
 			component: _0b2530ac,
 			name: "producto"
+		},
+		{
+			path: "/envase",
+			component: _33cdb7b2,
+			name: "envase"
+		},
+		{
+			path: "/inspire",
+			component: _0a113584,
+			name: "inspire"
+		},
+		{
+			path: "/login",
+			component: _5ab2c54d,
+			name: "login"
 		},
 		{
 			path: "/reporte/produccion",

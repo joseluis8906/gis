@@ -54,6 +54,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           { icon: 'compare_arrows', text: 'Remisión', to: '/remision', Roles: ["Gerencia", "Ventas"] },
           { icon: 'assignment', text: 'Kardex', to: '/kardex', Roles: ["Gerencia"] },
           { icon: 'person', text: 'Usuario', to: '/usuario', Roles: ["Administrador"] },
+          { icon: 'group', text: 'Grupo', to: '/grupo', Roles: ["Administrador"] },
         ],
         title: 'Administración GIS',
         StoreRoles: []
