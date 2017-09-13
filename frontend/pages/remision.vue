@@ -189,9 +189,9 @@ export default {
     ItemsProduccion: [],
     ItemsEnvase: [],
     headers: [
-      { text: 'Cant', align: 'left', sortable: false,  value: 'Cantidad' },
-      { text: 'Producto', align: 'left', sortable: true,  value: 'Producto' },
-      { text: 'Sale', align: 'center', sortable: false,  value: 'Sale' },
+      { text: 'Cant', align: 'left', sortable: true,  value: 'Cantidad' },
+      { text: 'Producto', align: 'left', sortable: false, value: 'Producto' },
+      { text: 'Sale', align: 'center', sortable: true,  value: 'Sale' },
       { text: 'F.Elaboración', align: 'center', sortable: false,  value: 'Elaboración' },
       { text: 'F.Vencimiento', align: 'center', sortable: false,  value: 'Vencimiento' },
       { text: 'Lote', align: 'center', sortable: false,  value: 'Lote' },
@@ -200,7 +200,6 @@ export default {
       { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
     ],
     items: [],
-    ItemsEnvase: [],
 
     months: [
       'Enero',
