@@ -1,11 +1,9 @@
 mutation CreateUser (
-  $Id: Int,
   $UserName: String,
   $Password: String,
   $Active: String
 ) {
   CreateUser (
-    Id: $Id,
     UserName: $UserName,
     Password: $Password,
     Active: $Active
