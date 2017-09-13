@@ -35,10 +35,22 @@ v-layout( align-center justify-center )
                       item-value="text"
                       dark )
 
+            v-select( label="Grupos"
+                      v-bind:items="ItemsGroup"
+                      v-model="SelectedGroups"
+                      item-text="Name"
+                      item-value="Id"
+                      multiple
+                      chips
+                      hint="Grupos Seleccionados"
+                      persistent-hint
+                      return-object
+                      class="select-special")
+
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="CryptPassword" ) Guardar
+        v-btn( dark primary @click.native="CheckGroups" ) Guardar
 </template>
 
 <script>
@@ -46,6 +58,7 @@ v-layout( align-center justify-center )
 import USERS from '~/queries/Users.gql'
 import CREATE_USER from '~/queries/CreateUser.gql'
 import UPDATE_USER from '~/queries/UpdateUser.gql'
+import GROUPS from '~/queries/Groups.gql'
 
 import axios from 'axios'
 
@@ -62,10 +75,12 @@ export default {
     Password: null,
     Active: null,
     UiPassword: null,
+    SelectedGroups: [],
     ItemsActive: [
       {text: 'Si'},
       {text: 'No'}
     ],
+    ItemsGroup: [],
     loading: 0
   }),
   beforeMount () {
@@ -87,8 +102,32 @@ export default {
         this.LoadUi(data.Users)
       }
     },
+    Groups: {
+      query: GROUPS,
+      variables () {
+        return {
+          Name: this.Name
+        }
+      },
+      loadingKey: 'loading',
+      update (data) {
+        //console.log(data)
+        this.ItemsGroup = []
+        for (let i=0; i<data.Groups.length; i++){
+          this.ItemsGroup.push (data.Groups[i])
+        }
+      }
+    },
+  },
+  watch: {
+    SelectedGroups () {
+      this.CheckGroups()
+    }
   },
   methods: {
+    CheckGroups () {
+      console.log(this.SelectedGroups);
+    },
     CryptPassword (){
       if (this.UiPassword !== null && this.UiPassword !== '') {
         axios.get(`/backend/generatepassword/${this.UiPassword}`).then(res => {
