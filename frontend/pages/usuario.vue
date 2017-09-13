@@ -97,7 +97,7 @@ export default {
       }
     },
     CryptPassword (){
-      if (this.UiPassword !== null || this.UiPassword !== '') {
+      if (this.UiPassword !== null && this.UiPassword !== '') {
         axios.get(`/backend/generatepassword/${this.UiPassword}`).then(res => {
           this.Password = res.data.Password
           this.CreateOrUpdate()
@@ -169,6 +169,7 @@ export default {
       })
     },
     Update () {
+      //console.log(this.Password)
       const User = {
         Id: this.Id,
         UserName: this.UserName,
@@ -177,7 +178,6 @@ export default {
       };
 
       this.Reset ();
-      console.log(User.Password)
 
       this.$apollo.mutate ({
         mutation: UPDATE_USER,
@@ -257,7 +257,6 @@ export default {
           this.Id = Users[i].Id
           this.UserName = Users[i].UserName
           this.Password = Users[i].Password
-          console.log(this.Password)
           this.Active = Users[i].Active
           break
         }else{

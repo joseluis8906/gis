@@ -11,7 +11,7 @@
           p(class="pb-4") Con su cuenta GIS
 
           v-text-field(label="Nombre de Usuario"  v-model="UserName" class="pb-3")
-          v-text-field(label="Contraseña" v-model="Password" type="password")
+          v-text-field(label="Contraseña" v-model="Password" type="password" maxlength="4")
 
 
         v-card-actions
