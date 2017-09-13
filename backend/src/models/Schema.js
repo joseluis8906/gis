@@ -30,6 +30,12 @@ var User = new GraphQLObjectType({
           return User.Password;
         }
       },
+      Active: {
+        type: GraphQLString,
+        resolve(User) {
+          return User.Active;
+        }
+      },
       Groups: {
         type: new GraphQLList(Group),
         resolve(User) {
@@ -976,6 +982,25 @@ var Mutation = new GraphQLObjectType({
             UserName: args.UserName,
             Password: args.Password,
             Active: args.Active
+          });
+        }
+      },
+      UpdateUser: {
+        type: User,
+        args: {
+          Id: {type: GraphQLInt},
+          UserName: {type: GraphQLString},
+          Password: {type: GraphQLString},
+          Active: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.User.findOne({
+            where: {Id: args.Id}
+          }).then( R => {
+            R.Password = args.Password,
+            R.Active = args.Active
+            R.save()
+            return R;
           });
         }
       },

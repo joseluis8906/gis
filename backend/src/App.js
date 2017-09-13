@@ -22,9 +22,9 @@ app.set('superSecret', 'K3J9 8LMN 02F3 B3LW');
 privateRouter.use((req, res, next) => {
   // check header or url parameters or post parameters for token
   //console.log(req.headers['x-access-token'])
-  var token = req.headers['x-access-token'] ? req.headers['x-access-token'] : 
-              req.params["x-access-token"] ? req.params["x-access-token"] : 
-              req.query ? req.query["x-access-token"] : 
+  var token = req.headers['x-access-token'] ? req.headers['x-access-token'] :
+              req.params["x-access-token"] ? req.params["x-access-token"] :
+              req.query ? req.query["x-access-token"] :
               req.body ? req.body["x-access-token"] : null;
   // decode token
   //console.log(token)
@@ -72,7 +72,7 @@ app.get('/generatepassword/:Password', (req, res) => {
 //login get
 app.get('/login/:UserName/:Password', (req, res, next) => {
   var Data = (req.params);
-  
+
   Db.models.User.findOne({where: {UserName: Data.UserName}}).then( R => {
     Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
       if(Res) {
@@ -90,18 +90,27 @@ app.get('/login/:UserName/:Password', (req, res, next) => {
         res.json({ Result: 0, Err: "Password Erronea" });
       }
     });
-    
+
   }).catch(Err => {
     res.json({ Result: 0, Err: `Error consultando ususario: ${Err}` });
   });
-  
+
 });
 
 //login post
 app.post('/login/', (req, res, next) => {
   var Data = (req.body);
-  
-  Db.models.User.findOne({where: {UserName: Data.UserName}}).then( R => {
+
+  Db.models.User.findOne({
+    where: {UserName: Data.UserName},
+    include: [
+      {model: Db.models.Group},
+    ]
+  }).then( R => {
+    var Roles = [];
+    for (let i=0; i<R.Groups.length; i++){
+      Roles.push(R.Groups[i].Name);
+    }
     Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
       if(Res) {
         Jwt.sign({ User: Data.UserName },
@@ -109,7 +118,8 @@ app.post('/login/', (req, res, next) => {
           {expiresIn: "365d" /*expires in 365 dias*/},
           (Err, Token) => {
             if(!Err) {
-              res.json({ Result: 1, Token: Token});
+
+              res.json({ Result: 1, Token: Token, Roles: Roles});
             }else{
               res.json({ Result: 0, Err: `Error generando token: ${Err}`});
             }
@@ -118,11 +128,11 @@ app.post('/login/', (req, res, next) => {
         res.json({ Result: 0, Err: "Password Erronea" });
       }
     });
-    
+
   }).catch(Err => {
     res.json({ Result: 0, Err: `Error consultando ususario: ${Err}` });
   });
-  
+
 });
 
 app.get('/', (req, res) => {
@@ -137,6 +147,3 @@ app.use((err, req, res, next) => {
 app.listen(3002, () => {
   console.log('Express backend runing at http://127.0.0.1:3002');
 });
-
-
-

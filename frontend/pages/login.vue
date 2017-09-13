@@ -39,7 +39,7 @@
           //console.log(res.data)
           if(res.data.Result === 1){
             sessionStorage.setItem('x-access-token', res.data.Token)
-            sessionStorage.setItem('x-access-role', res.data.Role)
+            sessionStorage.setItem('x-access-roles', JSON.stringify(res.data.Roles))
             this.$router.push('/inspire')
           }
         });

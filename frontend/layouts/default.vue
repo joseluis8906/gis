@@ -7,28 +7,28 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
         v-list-tile(:key="i" nuxt link :to="item.to")
           v-list-tile-action
             v-icon {{ item.icon }}
-            
+
           v-list-tile-content
             v-list-tile-title {{ item.text }}
-        
+
       v-list-tile(@click.native="logout")
         v-list-tile-action
           v-icon exit_to_app
-          
+
         v-list-tile-content
           v-list-tile-title Salir
-        
+
   v-toolbar(fixed)
     v-toolbar-side-icon(@click.native.stop="primaryDrawer.model = !primaryDrawer.model" v-if="primaryDrawer.type !== 'permanent'")
     v-toolbar-title {{ title }}
-    
+
   main
     v-container(fluid mb-5 pt-0)
       nuxt
-      
+
   v-footer(fixed)
     <span> © {{ new Date().getFullYear() }} </span> Jose Luis Cáceres Escudero
-    
+
 </template>
 
 <script>
@@ -53,6 +53,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           { icon: 'settings', text: 'Produccion', to: '/produccion' },
           { icon: 'compare_arrows', text: 'Remisión', to: '/remision' },
           { icon: 'assignment', text: 'Kardex', to: '/kardex' },
+          { icon: 'person', text: 'Usuario', to: '/usuario' },
         ],
         title: 'Administración GIS'
       }
@@ -60,6 +61,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
     methods: {
       logout () {
         sessionStorage.removeItem("x-access-token")
+        sessionStorage.removeItem("x-access-roles")
         this.$router.push('/')
       }
     }
