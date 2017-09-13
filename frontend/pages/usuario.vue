@@ -60,6 +60,8 @@ import USERS from '~/queries/Users.gql'
 import CREATE_USER from '~/queries/CreateUser.gql'
 import UPDATE_USER from '~/queries/UpdateUser.gql'
 import GROUPS from '~/queries/Groups.gql'
+import USER_ADD_GROUP from '~/queries/UserAddGroup.gql'
+import USER_REMOVE_GROUP from '~/queries/UserRemoveGroup.gql'
 
 import axios from 'axios'
 
@@ -77,6 +79,8 @@ export default {
     Active: null,
     UiPassword: null,
     SelectedGroups: [],
+    OldSelectedGroups: [],
+    SelectedGroupsForUi: false,
     DisableGroupSelect: true,
     ItemsActive: [
       {text: 'Si'},
@@ -109,18 +113,10 @@ export default {
     },
     Groups: {
       query: GROUPS,
-      variables () {
-        return {
-          Name: this.Name
-        }
-      },
       loadingKey: 'loading',
       update (data) {
         //console.log(data)
-        this.ItemsGroup = []
-        for (let i=0; i<data.Groups.length; i++){
-          this.ItemsGroup.push (data.Groups[i])
-        }
+        this.ItemsGroup = data.Groups
       }
     },
   },
@@ -134,7 +130,141 @@ export default {
   },
   methods: {
     CheckGroups () {
-      console.log(this.SelectedGroups);
+      if(this.Id !== null) {
+        if(!this.SelectedGroupsForUi) {
+          if (this.SelectedGroups.length > this.OldSelectedGroups.length) {
+            //console.log('Nuevo Rol')
+            const UserAddGroup = {
+              UserId: this.Id,
+              GroupId: this.SelectedGroups[this.SelectedGroups.length-1].Id
+            };
+
+            this.$apollo.mutate ({
+              mutation: USER_ADD_GROUP,
+              variables: {
+                UserId: UserAddGroup.UserId,
+                GroupId: UserAddGroup.GroupId
+            },
+            loadingKey: 'loading',
+            update: (store, { data: res }) => {
+              //console.log(res);
+              try{
+                var data = store.readQuery({
+                  query: USERS,
+                  variables: {
+                    UserName: res.UserAddGroup.UserName,
+                  }
+                })
+
+                for (let i=0; i<data.Users.length; i++) {
+                  if (data.Users[i].Id === res.UserAddGroup.Id) {
+                    data.Users[i].Groups = res.UserAddGroup.Groups
+                  }
+                }
+
+                store.writeQuery({
+                  query: USERS,
+                  variables: {
+                    UserName: res.UserAddGroup.UserName
+                  },
+                  data: data
+                })
+
+              } catch (Err) {
+
+                var data = {Users: []}
+
+                data.Users.push(res.UserAddGroup)
+
+                store.writeQuery({
+                  query: USERS,
+                  variables: {
+                    UserName: res.UserAddGroup.UserName
+                  },
+                  data: data
+                })
+
+              }
+
+            },
+            }).then( data => {
+              //console.log(data)
+            }).catch( Err => {
+              //console.log(Err)
+            })
+            this.OldSelectedGroups = this.SelectedGroups
+          }
+          else if (this.SelectedGroups.length < this.OldSelectedGroups.length) {
+            //console.log('Rol Eliminado')
+            for(let i=0; i<this.OldSelectedGroups.length; i++){
+              if(this.SelectedGroups.indexOf(this.OldSelectedGroups[i]) === -1){
+
+                const UserRemoveGroup = {
+                  UserId: this.Id,
+                  GroupId: this.OldSelectedGroups[i].Id
+                };
+
+                this.$apollo.mutate ({
+                  mutation: USER_REMOVE_GROUP,
+                  variables: {
+                    UserId: UserRemoveGroup.UserId,
+                    GroupId: UserRemoveGroup.GroupId
+                },
+                loadingKey: 'loading',
+                update: (store, { data: res }) => {
+                  //console.log(res);
+                  try{
+                    var data = store.readQuery({
+                      query: USERS,
+                      variables: {
+                        UserName: res.UserRemoveGroup.UserName,
+                      }
+                    })
+
+                    for (let i=0; i<data.Users.length; i++) {
+                      if (data.Users[i].Id === res.UserRemoveGroup.Id) {
+                        data.Users[i].Groups = res.UserRemoveGroup.Groups
+                      }
+                    }
+
+                    store.writeQuery({
+                      query: USERS,
+                      variables: {
+                        UserName: res.UserRemoveGroup.UserName
+                      },
+                      data: data
+                    })
+
+                  } catch (Err) {
+
+                    var data = {Users: []}
+
+                    data.Users.push(res.UserRemoveGroup)
+
+                    store.writeQuery({
+                      query: USERS,
+                      variables: {
+                        UserName: res.UserRemoveGroup.UserName
+                      },
+                      data: data
+                    })
+
+                  }
+
+                },
+                }).then( data => {
+                  //console.log(data)
+                }).catch( Err => {
+                  //console.log(Err)
+                })
+                break
+              }
+            }
+            this.OldSelectedGroups = this.SelectedGroups
+          }
+        }
+        this.SelectedGroupsForUi = false
+      }
     },
     CryptPassword (){
       if (this.UiPassword !== null && this.UiPassword !== '') {
@@ -290,6 +420,7 @@ export default {
       this.Password = null
       this.UiPassword = null
       this.Active = null
+      this.SelectedGroups = []
     },
     LoadUi (Users) {
       if( Users.length === 0 ) {
@@ -297,7 +428,8 @@ export default {
         this.Password = null
         this.UiPassword = null
         this.Active = null
-        this.SelectedGroups = null
+        this.SelectedGroups = []
+        this.OldSelectedGroups = []
       }
 
       for (let i=0; i<Users.length; i++) {
@@ -306,14 +438,17 @@ export default {
           this.UserName = Users[i].UserName
           this.Password = Users[i].Password
           this.Active = Users[i].Active
+          this.SelectedGroupsForUi = true
           this.SelectedGroups = Users[i].Groups
+          this.OldSelectedGroups = Users[i].Groups
           break
         }else{
           this.Id = null
           this.Password = null
           this.UiPassword = null
           this.Active = null
-          this.SelectedGroups = null
+          this.SelectedGroups = []
+          this.OldSelectedGroups = []
         }
       }
 

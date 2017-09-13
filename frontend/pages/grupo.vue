@@ -100,18 +100,12 @@ export default {
         try{
           var data = store.readQuery({
             query: GROUPS,
-            variables: {
-              Name: res.CreateGroup.Name
-            }
           })
 
           data.Groups.push(res.CreateGroup)
 
           store.writeQuery({
             query: GROUPS,
-            variables: {
-              Name: res.CreateGroup.Name
-            },
             data: data
           })
 
@@ -123,9 +117,6 @@ export default {
 
           store.writeQuery({
             query: GROUPS,
-            variables: {
-              Name: res.CreateGroup.Name
-            },
             data: data
           })
 
@@ -159,9 +150,6 @@ export default {
           try {
             var data = store.readQuery({
               query: GROUPS,
-              variables: {
-                Name: res.UpdateGroup.Name
-              }
             })
 
             for (let i=0; i<data.Groups.length; i++) {
@@ -172,9 +160,6 @@ export default {
 
             store.writeQuery({
               query: GROUPS,
-              variables: {
-                Name: res.UpdateGroup.Name
-              },
               data: data
             })
 
@@ -186,9 +171,6 @@ export default {
 
             store.writeQuery({
               query: GROUPS,
-              variables: {
-                Name: res.UpdateGroup.Name
-              },
               data: data
             })
 
