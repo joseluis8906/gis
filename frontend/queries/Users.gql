@@ -14,5 +14,9 @@ query Users(
     UserName
     Password
     Active
+    Groups {
+      Id
+      Name
+    }
   }
 }

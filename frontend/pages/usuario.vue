@@ -42,10 +42,11 @@ v-layout( align-center justify-center )
                       item-value="Id"
                       multiple
                       chips
-                      hint="Grupos Seleccionados"
+                      hint="Roles Seleccionados"
                       persistent-hint
                       return-object
-                      class="select-special")
+                      class="select-special"
+                      :disabled="DisableGroupSelect")
 
       v-card-actions
         v-spacer
@@ -76,6 +77,7 @@ export default {
     Active: null,
     UiPassword: null,
     SelectedGroups: [],
+    DisableGroupSelect: true,
     ItemsActive: [
       {text: 'Si'},
       {text: 'No'}
@@ -86,6 +88,9 @@ export default {
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
       this.$router.push('/')
+    } else {
+      var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+      this.$store.commit('security/AddRoles', Roles);
     }
   },
   apollo: {
@@ -122,6 +127,9 @@ export default {
   watch: {
     SelectedGroups () {
       this.CheckGroups()
+    },
+    Id (value) {
+      (value === null) ? this.DisableGroupSelect = true : this.DisableGroupSelect = false
     }
   },
   methods: {
@@ -289,6 +297,7 @@ export default {
         this.Password = null
         this.UiPassword = null
         this.Active = null
+        this.SelectedGroups = null
       }
 
       for (let i=0; i<Users.length; i++) {
@@ -297,12 +306,14 @@ export default {
           this.UserName = Users[i].UserName
           this.Password = Users[i].Password
           this.Active = Users[i].Active
+          this.SelectedGroups = Users[i].Groups
           break
         }else{
           this.Id = null
           this.Password = null
           this.UiPassword = null
           this.Active = null
+          this.SelectedGroups = null
         }
       }
 

@@ -11,27 +11,27 @@ v-layout( align-center justify-center )
     :multi-line="snackbar.mode === 'multi-line'"
     :vertical="snackbar.mode === 'vertical'"
     :top="true"
-    v-model="loading" ) 
+    v-model="loading" )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
-  
+
   v-flex( xs12 md8 lg6 )
     v-card
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
             h5(class="grey--text text--lighten-4") Producto
-            
+
           v-flex( xs12 )
-            
+
             v-text-field( label="Nombre" v-model="Nombre" dark )
-            
+
             v-select( v-bind:items="ItemsUnidadDeMedida"
                       v-model="UnidadDeMedida"
                       label="Unidad de Medida"
                       item-value="text"
                       dark )
-            
+
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
@@ -74,7 +74,7 @@ export default {
       loadingKey: 'loading',
       update (data) {
         this.UnidadDeMedida = data.OneProducto ? data.OneProducto.UnidadDeMedida : null
-        
+
         this.update = data.OneProducto ? true : false
       }
     }
@@ -82,6 +82,9 @@ export default {
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
       this.$router.push('/')
+    } else {
+      var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+      this.$store.commit('security/AddRoles', Roles);
     }
   },
   methods: {
@@ -94,57 +97,57 @@ export default {
     },
     Create () {
       const Producto = {
-        Nombre: this.Nombre, 
-        UnidadDeMedida: this.UnidadDeMedida 
+        Nombre: this.Nombre,
+        UnidadDeMedida: this.UnidadDeMedida
       };
-      
+
       this.Reset ();
-      
+
       this.$apollo.mutate ({
-        mutation: CREATE_PRODUCTO, 
+        mutation: CREATE_PRODUCTO,
         variables: {
-          Nombre: Producto.Nombre, 
-          UnidadDeMedida: Producto.UnidadDeMedida 
+          Nombre: Producto.Nombre,
+          UnidadDeMedida: Producto.UnidadDeMedida
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
           //console.log(Ente);
           var data = {OneProducto: res.CreateProducto}
-          store.writeQuery({ 
-            query: ONE_PRODUCTO, 
+          store.writeQuery({
+            query: ONE_PRODUCTO,
             variables: {
-              Nombre: Producto.Nombre 
+              Nombre: Producto.Nombre
             },
             data: data
           })
-         
+
           try{
-            
+
             data = store.readQuery({
-              query: PRODUCTOS 
+              query: PRODUCTOS
             })
-          
+
             data.Productos.push(res.CreateProducto)
-          
-            store.writeQuery({
-              query: PRODUCTOS, 
-              data: data 
-            })
-          } catch (Err) {
-            
-            data = {Productos: []}
-            
-            data.Productos.push(res.CreateProducto)
-          
+
             store.writeQuery({
               query: PRODUCTOS,
               data: data
             })
-            
+          } catch (Err) {
+
+            data = {Productos: []}
+
+            data.Productos.push(res.CreateProducto)
+
+            store.writeQuery({
+              query: PRODUCTOS,
+              data: data
+            })
+
           }
-            
+
         },
-      }).then( data => {        
+      }).then( data => {
         //console.log(data)
       }).catch( Err => {
         //console.log(Err)
@@ -152,63 +155,63 @@ export default {
     },
     Update () {
       const Producto = {
-        Nombre: this.Nombre, 
-        UnidadDeMedida: this.UnidadDeMedida 
+        Nombre: this.Nombre,
+        UnidadDeMedida: this.UnidadDeMedida
       };
-      
+
       this.Reset ();
-      
+
       this.$apollo.mutate ({
-        mutation: UPDATE_PRODUCTO, 
+        mutation: UPDATE_PRODUCTO,
         variables: {
-          Nombre: Producto.Nombre, 
-          UnidadDeMedida: Producto.UnidadDeMedida 
+          Nombre: Producto.Nombre,
+          UnidadDeMedida: Producto.UnidadDeMedida
         },
         loadingKey: 'loading',
         update: (store, { data: res }) => {
           //console.log(Ente);
           var data = {OneProducto: res.UpdateProducto}
-          store.writeQuery({ 
-            query: ONE_PRODUCTO, 
+          store.writeQuery({
+            query: ONE_PRODUCTO,
             variables: {
-              Nombre: Producto.Nombre 
+              Nombre: Producto.Nombre
             },
             data: data
           })
-          
+
           try {
-            
+
             data = store.readQuery({
-              query: PRODUCTOS 
+              query: PRODUCTOS
             })
-            
+
             for (let i=0; i<data.Productos.length; i++) {
               if (data.Productos[i].Id === res.UpdateProducto.Id) {
                 data.Productos[i].Nombre = res.UpdateProducto.Nombre
                 data.Productos[i].UnidadDeMedida = res.UpdateProducto.UnidadDeMedida
               }
             }
-            
-            store.writeQuery({
-              query: PRODUCTOS, 
-              data: data 
-            })
-            
-          } catch (Err) {
-            
-            data = {Productos: []}
-            
-            data.Productos.push(res.UpdateProducto)
-          
+
             store.writeQuery({
               query: PRODUCTOS,
               data: data
             })
-            
+
+          } catch (Err) {
+
+            data = {Productos: []}
+
+            data.Productos.push(res.UpdateProducto)
+
+            store.writeQuery({
+              query: PRODUCTOS,
+              data: data
+            })
+
           }
-          
+
         }
-      }).then( data => {        
+      }).then( data => {
         //console.log(data)
       }).catch( Err => {
         //console.log(Err)
@@ -227,5 +230,5 @@ export default {
 <style lang="stylus" scoped>
   .alert-especial
     position absolute
-    
+
 </style>

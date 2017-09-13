@@ -11,21 +11,21 @@ v-layout( align-center justify-center )
     :multi-line="snackbar.mode === 'multi-line'"
     :vertical="snackbar.mode === 'vertical'"
     :top="true"
-    v-model="loading" ) 
+    v-model="loading" )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
-  
+
   v-flex( xs12 md8 lg6 )
     v-card
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
             h5(class="grey--text text--lighten-4") Producción
-            
+
           v-flex( xs12 )
-            
+
             v-text-field( label="Orden Nº" v-model="Orden" dark )
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu5"
@@ -34,25 +34,25 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+
               v-text-field( slot="activator"
                             label="Fecha"
                             v-model="Fecha"
                             readonly )
-              
+
               v-date-picker( :months="months"
                            :days="days"
                            first-day-of-week="D"
                            :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                           v-model="Fecha" 
-                           no-title 
+                           v-model="Fecha"
+                           no-title
                            dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-            
+
             v-text-field( label="Turno" v-model="Turno" dark )
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu1"
@@ -61,23 +61,23 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+
               v-text-field( slot="activator"
                             label="Fecha Inicial"
                             v-model="FechaInicial"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaInicial" 
-                             no-title 
+                             v-model="FechaInicial"
+                             no-title
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu2"
@@ -86,54 +86,54 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+
               v-text-field( slot="activator"
                             label="Fecha Final"
                             v-model="FechaFinal"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaFinal" 
-                             no-title 
+                             v-model="FechaFinal"
+                             no-title
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-            
+
             v-menu( lazy
                     :close-on-content-click="false"
                     v-model="menu3"
                     transition="scale-transition"
                     offset-y
                     :nudge-left="40" )
-                    
+
               v-text-field( slot="activator"
                             label="Hora Inicial"
                             v-model="HoraInicial"
                             readonly )
-          
+
               v-time-picker(v-model="HoraInicial" autosave)
-              
+
             v-menu( lazy
                     :close-on-content-click="false"
                     v-model="menu4"
                     transition="scale-transition"
                     offset-y
                     :nudge-left="40" )
-                    
+
               v-text-field( slot="activator"
                             label="Hora Final"
                             v-model="HoraFinal"
                             readonly )
-          
+
               v-time-picker(v-model="HoraFinal" autosave)
-            
-            
+
+
             v-text-field( label="Lote" v-model="Lote" dark readonly )
-            
+
             v-select( v-bind:items="ItemsProducto"
                       v-model="Producto"
                       label="Producto"
@@ -143,7 +143,7 @@ v-layout( align-center justify-center )
                       autocomplete
                       :disabled="!ChangeProducto"
                       dark )
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu6"
@@ -152,24 +152,24 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+
               v-text-field( slot="activator"
                             label="Fecha de Fabricacion"
                             v-model="FechaFabricacion"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaFabricacion" 
-                             no-title 
+                             v-model="FechaFabricacion"
+                             no-title
                              autosave
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="FechaFabricacion=null" ) Limpiar
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu7"
@@ -178,37 +178,37 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-          
+
               v-text-field( slot="activator"
                             label="Fecha de Vencimiento"
                             v-model="FechaVencimiento"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaVencimiento" 
-                             no-title 
+                             v-model="FechaVencimiento"
+                             no-title
                              autosave
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="FechaVencimiento=null" ) Limpiar
-            
+
             v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
-            
+
             v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
-            
+
             v-text-field( label="Observacion" v-model="Observacion" multi-line dark )
-            
+
             v-data-table( v-bind:headers="headers"
                           v-bind:items="items"
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
-              
+
               template(slot="items" scope="props")
                 td( class="text-xs-center subheading" ) {{ props.item.Envase.UnidadDeMedida }}
-                td( class="text-xs-center subheading" 
+                td( class="text-xs-center subheading"
                     style="border-left: 1px solid #999999" ) {{ props.item.Envase.Capacidad }}
                 td( style="border-left: 1px solid #999999" )
                    v-select( v-bind:items="ItemsFilteredEnvase"
@@ -223,9 +223,9 @@ v-layout( align-center justify-center )
                              style="width: 96px; font-size: 90%" )
                 td( style="border-left: 1px solid #999999" )
                     v-text-field( v-model="props.item.Cantidad"
-                                  light 
+                                  light
                                   @keyup.native="controlCantidad(props.item)"
-                                  style="width: 48px; height:31px; text-align-last: center" 
+                                  style="width: 48px; height:31px; text-align-last: center"
                                   class="pt-0 pb-0 mt-0 mb-0 " )
                 td( style="border-left: 1px solid #999999" class="pt-0 pb-0")
                   v-select( v-bind:items="ItemsCliente"
@@ -246,7 +246,7 @@ v-layout( align-center justify-center )
                          style="width: 16px; height:16px"
                          @click.native="guardar(props.item)")
                     v-icon(dark) {{ props.item.SaveUpdate }}
-                    
+
                   v-btn( fab
                          dark
                          small
@@ -255,7 +255,7 @@ v-layout( align-center justify-center )
                          @click.native="eliminar(props.item)"
                          :disabled="props.item.EliminarDisable")
                     v-icon remove
-                    
+
             v-btn(fab dark class="indigo" @click.native="agregar")
               v-icon(dark) add
       v-card-actions
@@ -311,25 +311,25 @@ export default {
     pagination: {
       sortBy: 'Numero'
     },
-    ItemsProducto: [], 
+    ItemsProducto: [],
     ItemsAllEnvase: [],
     ItemsFilteredEnvase: [],
     ItemsCliente: [],
     months: [
       'Enero',
-      'Febrero', 
-      'Marzo', 
-      'Abril', 
-      'Mayo', 
-      'Junio', 
-      'Julio', 
-      'Agosto', 
-      'Septiembre', 
-      'Octubre', 
-      'Noviembre', 
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-    
+
     menu1: false,
     menu2: false,
     menu3: false,
@@ -406,7 +406,7 @@ export default {
             }
             this.items.push(tmp)
           }
-          
+
         } else {
           this.reset ()
         }
@@ -429,6 +429,14 @@ export default {
       }
     }
   },
+  beforeMount () {
+    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
+      this.$router.push('/')
+    } else {
+      var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+      this.$store.commit('security/AddRoles', Roles);
+    }
+  },
   watch: {
     Producto: {
       handler: function () {
@@ -437,7 +445,6 @@ export default {
       deep: true
     }
   },
-  
   methods: {
     agregar () {
       var tmp = {
@@ -455,19 +462,19 @@ export default {
         Cantidad: null,
         SaveUpdate: 'save'
       }
-      
+
       this.items.push(tmp)
     },
     guardar (item) {
       //console.log(item)
       if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' && item.Cliente.Id !== null ) {
-        
+
         if ( item.Id === null ) {
-          
+
           item.SaveUpdate = 'update'
           item.EnvaseDisable = true
           item.ClienteDisable = true
-          
+
           const Produccion = {
             Orden: this.Orden,
             Turno: this.Turno,
@@ -488,7 +495,7 @@ export default {
             Observacion: this.Observacion,
             Despachado: 'No'
           }
-          
+
           this.$apollo.mutate ({
             mutation: CREATE_PRODUCCION,
             variables: {
@@ -515,7 +522,7 @@ export default {
             update (store, {data: res}) {
               //console.log ('guardar')
               //console.log ({store: store, res: res})
-              
+
               try{
                 const data = store.readQuery({
                   query: PRODUCCIONS,
@@ -523,9 +530,9 @@ export default {
                     Orden: Produccion.Orden,
                   }
                 })
-                
+
                 data.Produccions.push(res.CreateProduccion)
-                
+
                 store.writeQuery({
                   query: PRODUCCIONS,
                   variables: {
@@ -533,25 +540,25 @@ export default {
                   },
                   data
                 })
-                
+
               } catch (Err) {
-                
+
                 data = {Produccions: []}
-                
+
                 data.Produccions.push(res.CreateProduccion)
-                
+
                 store.writeQuery({
                   query: PRODUCCIONS,
                   data: data
                 })
-                
+
               }
-              
+
             }
           })
-          
+
         } else {
-        
+
           const Produccion = {
             Id: item.Id,
             Orden: this.Orden,
@@ -573,7 +580,7 @@ export default {
             Observacion: this.Observacion,
             Despachado: item.Despachado
           }
-          
+
           this.$apollo.mutate ({
             mutation: UPDATE_ONE_PRODUCCION,
             variables: {
@@ -600,7 +607,7 @@ export default {
             update (store, {data: res}) {
               //console.log('actualizar')
               //console.log ({store: store, res: res})
-              
+
               try{
                 const data = store.readQuery({
                   query: PRODUCCIONS,
@@ -608,7 +615,7 @@ export default {
                     Orden: Produccion.Orden,
                   }
                 })
-                
+
                 for (let i=0; i<data.Produccions.length; i++) {
                   if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
                     data.Produccions[i].Orden = res.UpdateOneProduccion.Orden
@@ -631,7 +638,7 @@ export default {
                     data.Produccions[i].Despachado = res.Despachado
                   }
                 }
-                
+
                 store.writeQuery({
                   query: PRODUCCIONS,
                   variables: {
@@ -639,26 +646,26 @@ export default {
                   },
                   data
                 })
-                
+
               } catch (Err) {
-                
+
                 data = {Produccions: []}
-                
+
                 data.Produccions.push(res.UpdateOneProduccion)
-                
+
                 store.writeQuery({
                   query: PRODUCCIONS,
                   data: data
                 })
-                
+
               }
-              
+
             }
-            
+
           })
-          
+
         }
-      
+
       }
     },
     controlCantidad (item) {
@@ -667,23 +674,23 @@ export default {
       }
     },
     eliminar (item) {
-      
-      if ( item.Id === null ) { 
-        
+
+      if ( item.Id === null ) {
+
         for (let i=0; i<this.items.length; i++) {
           if ( item.Envase.Id === this.items[i].Envase.Id ) {
             this.items.splice(i,1)
           }
         }
-        
+
       } else {
-        
+
         for (let i=0; i<this.items.length; i++) {
           if ( item.Id === this.items[i].Id ) {
             this.items.splice(i,1)
           }
         }
-        
+
         const Produccion = {
           Id: item.Id,
           Orden: this.Orden,
@@ -704,7 +711,7 @@ export default {
           PresionFinal: this.PresionFinal,
           Observacion: this.Observacion
         }
-        
+
         this.$apollo.mutate ({
           mutation: DELETE_PRODUCCION,
           variables: {
@@ -729,7 +736,7 @@ export default {
            loadingKey: 'loading',
            update (store, {data: res}) {
              //console.log ({store: store, res: res})
-             
+
              try{
                const data = store.readQuery({
                  query: PRODUCCIONS,
@@ -737,13 +744,13 @@ export default {
                    Orden: Produccion.Orden
                  }
                })
-               
+
                for (let i=0; i<data.Produccions.length; i++) {
                  if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
                    data.Produccions.splice(i, 1)
                  }
                }
-               
+
                store.writeQuery({
                  query: PRODUCCIONS,
                  variables: {
@@ -751,19 +758,19 @@ export default {
                  },
                  data
                })
-               
+
              } catch (Err) {
                //console.log("`Error controlado: ${Err}`")
              }
-             
+
            }
          })
-        
+
       }
-      
+
      },
     reset () {
-      
+
       this.ChangeProducto=true
       this.Fecha = null,
       this.Turno = null,
@@ -778,7 +785,7 @@ export default {
       this.PurezaFinal = null,
       this.PresionFinal = null,
       this.Observacion = null,
-      
+
       this.ItemsEnvase = []
       this.items = []
       this.ChangeProductoCounter=0
@@ -812,7 +819,7 @@ export default {
 
 .alert-especial
   position absolute
-  
+
 .input-group--select
   height: 31px
 

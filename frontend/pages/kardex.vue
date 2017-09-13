@@ -11,17 +11,17 @@ v-layout( align-center justify-center )
     :multi-line="snackbar.mode === 'multi-line'"
     :vertical="snackbar.mode === 'vertical'"
     :top="true"
-    v-model="loading" ) 
+    v-model="loading" )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
-  
+
   v-flex( xs12 md10 lg8 )
     v-card
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 mt-3 )
             h5(class="grey--text text--lighten-4") Kardéx
-            
+
           v-flex( xs12 )
             v-menu( lazy
                     :close-on-content-click="true"
@@ -31,30 +31,30 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-              
+
               v-text-field( slot="activator"
                             label="Fecha"
                             v-model="Fecha"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="Fecha" 
-                             no-title 
+                             v-model="Fecha"
+                             no-title
                              autosave
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-                    
+
             v-select( v-bind:items="ItemsTipoKardex"
                       v-model="TipoKardex"
                       label="Tipo"
                       item-value="text"
                       dark )
-            
+
             v-select( v-bind:items="ItemsEnvase"
                       v-model="Envase"
                       label="Envase"
@@ -64,7 +64,7 @@ v-layout( align-center justify-center )
                       autocomplete
                       v-if="esUnico"
                       dark )
-            
+
             v-select( v-bind:items="ItemsCliente"
                       v-model="Cliente"
                       label="Propietario"
@@ -76,7 +76,7 @@ v-layout( align-center justify-center )
                       persistent-hint
                       v-if="esCliente"
                       dark )
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu1"
@@ -85,24 +85,24 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-              
+
               v-text-field( slot="activator"
                             label="Fecha Inicial"
                             v-model="FechaInicial"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
                              :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaInicial" 
-                             no-title 
+                             v-model="FechaInicial"
+                             no-title
                              autosave
                              dark )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="FechaInicial=null" ) Limpiar
-            
+
             v-menu( lazy
                     :close-on-content-click="true"
                     v-model="menu2"
@@ -111,12 +111,12 @@ v-layout( align-center justify-center )
                     full-width
                     :nudge-left="40"
                     max-width="290px" )
-              
+
               v-text-field( slot="activator"
                             label="Fecha Final"
                             v-model="FechaFinal"
                             readonly )
-              
+
               v-date-picker( :months="months"
                              :days="days"
                              first-day-of-week="D"
@@ -128,13 +128,13 @@ v-layout( align-center justify-center )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( primary dark @click.native="cancel()" ) Cancel
-            
-            
-            
+
+
+
       v-card-actions
         v-spacer
         v-btn( dark primary @click.native="generar" ) Generar
-        
+
 </template>
 
 <script>
@@ -159,22 +159,22 @@ export default {
     esUnico: false,
     esCliente: false,
     ItemsTipoKardex: [{text: 'Todos'}, {text: 'Único'}, {text: 'Por Cliente'}],
-    
+
     months: [
       'Enero',
-      'Febrero', 
-      'Marzo', 
-      'Abril', 
-      'Mayo', 
-      'Junio', 
-      'Julio', 
-      'Agosto', 
-      'Septiembre', 
-      'Octubre', 
-      'Noviembre', 
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-    
+
     ItemsCliente: [],
     Cliente: {
       Id: null,
@@ -212,7 +212,7 @@ export default {
       FechaAlquiler: null,
       Observaciones: null
     },
-    
+
     menu1: false,
     menu2: false,
     menu3: false,
@@ -243,6 +243,9 @@ export default {
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
       this.$router.push('/')
+    } else {
+      var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+      this.$store.commit('security/AddRoles', Roles);
     }
   },
   methods: {
@@ -308,5 +311,5 @@ export default {
 <style lang="stylus" scoped>
   .alert-especial
     position absolute
-    
+
 </style>
