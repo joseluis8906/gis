@@ -1,4 +1,4 @@
-mutation Groups (
+query Groups (
   $Id: Int,
   $Name: String
 ) {

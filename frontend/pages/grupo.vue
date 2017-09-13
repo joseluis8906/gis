@@ -39,8 +39,6 @@ import GROUPS from '~/queries/Groups.gql'
 import CREATE_GROUP from '~/queries/CreateGroup.gql'
 import UPDATE_GROUP from '~/queries/UpdateGroup.gql'
 
-import axios from 'axios'
-
 export default {
   data: () => ({
     snackbar: {
@@ -218,7 +216,6 @@ export default {
           this.Id = null
         }
       }
-
     }
   }
 };

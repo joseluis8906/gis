@@ -1015,6 +1015,22 @@ var Mutation = new GraphQLObjectType({
           });
         }
       },
+      UpdateGroup: {
+        type: Group,
+        args: {
+          Id: {type: GraphQLInt},
+          Name: {type: GraphQLString},
+        },
+        resolve(_, args) {
+          return Db.models.Group.findOne({
+            where: {Id: args.Id}
+          }).then (R => {
+            R.Name = args.Name;
+            R.save();
+            return R;
+          });
+        }
+      },
       UserAddGroup: {
         type: User,
         args: {
