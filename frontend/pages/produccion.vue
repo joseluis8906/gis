@@ -635,7 +635,7 @@ export default {
                     data.Produccions[i].PurezaFinal = res.UpdateOneProduccion.PurezaFinal
                     data.Produccions[i].PresionFinal = res.UpdateOneProduccion.PresionFinal
                     data.Produccions[i].Observacion = res.UpdateOneProduccion.Observacion
-                    data.Produccions[i].Despachado = res.Despachado
+                    data.Produccions[i].Despachado = res.UpdateOneProduccion.Despachado
                   }
                 }
 
