@@ -1,15 +1,15 @@
 <template lang="pug">
 doctype html
 v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
-  v-navigation-drawer(v-model="primaryDrawer.model"
-                      :persistent="primaryDrawer.type === 'persistent'"
-                      :temporary="primaryDrawer.type === 'temporary'" )
+  v-navigation-drawer(v-model="drawer.model"
+                      :persistent="drawer.type === 'persistent'"
+                      :temporary="drawer.type === 'temporary'" )
     v-list(dense)
       template(v-for="(item, i) in items")
         v-list-tile( :key="i"
                      nuxt link :to="item.to"
                      v-if="EvaluarRoles(item.Roles)"
-                     @click.native.stop="primaryDrawer.model = !primaryDrawer.model")
+                     @click.native.stop="drawer.type==='temporary' ? drawer.model = !drawer.model : ''")
           v-list-tile-action
             v-icon {{ item.icon }}
 
@@ -24,7 +24,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           v-list-tile-title Salir
 
   v-toolbar(fixed)
-    v-toolbar-side-icon(  @click.native.stop="primaryDrawer.model = !primaryDrawer.model" )
+    v-toolbar-side-icon(  @click.native.stop="drawer.model = !drawer.model" )
     v-toolbar-title {{ title }}
 
   main
@@ -41,7 +41,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
     data: () => {
       return {
         dark: true,
-        primaryDrawer: {
+        drawer: {
           model: true,
           type: 'persistent',
         },
@@ -63,6 +63,15 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
       }
     },
     methods: {
+      handleResize () {
+        if (process.BROWSER_BUILD) {
+          if (window.screen.width < 768) {
+            this.drawer.type = "temporary"
+          } else if (window.screen.width >= 768) {
+            this.drawer.type = "persistent"
+          }
+        }
+      },
       logout () {
         sessionStorage.removeItem("x-access-token")
         sessionStorage.removeItem("x-access-roles")
@@ -77,6 +86,16 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
         return false;
       }
     },
+    created () {
+      if (process.BROWSER_BUILD) {
+        window.addEventListener('resize', this.handleResize)
+      }
+    },
+    destroyed () {
+      if (process.BROWSER_BUILD) {
+        window.removeEventListener('resize', this.handleResize)
+      }
+    }
   }
 </script>
 

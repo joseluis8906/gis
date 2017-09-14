@@ -319,6 +319,9 @@ export default {
     ItemsAllEnvase: [],
     ItemsFilteredEnvase: [],
     ItemsCliente: [],
+    EnvaseActual: null,
+    ClienteActual: null,
+    CantidadActual: null,
     months: [
       'Enero',
       'Febrero',
@@ -454,10 +457,9 @@ export default {
       var tmp = {
         Id: null,
         Envase: {
-          Id: null,
-          Numero: null,
-          Capacidad: null,
-          UnidadDeMedida: null
+          Id: this.EnvaseActual.Id,
+          Numero: this.EnvaseActual.Numero,
+          Capacidad: this.EnvaseActual.Capacidad,
         },
         Cliente: {
           Id: null,
