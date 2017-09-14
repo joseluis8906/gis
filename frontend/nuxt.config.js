@@ -44,6 +44,7 @@ module.exports = {
   },
   plugins: [
     '~plugins/vuetify.js',
+    '~plugins/vue2-filters.js',
     '~plugins/vue-awesome-swiper.js',
     {src: '~plugins/vue-chartjs.js', ssr: false},
     {src: '~plugins/apollo-client.js', injectAs: 'apolloProvider'}
@@ -52,5 +53,5 @@ module.exports = {
     'swiper/dist/css/swiper.css',
     { src: '~assets/style/app.styl', lang: 'styl' }
   ],
-  
+
 }

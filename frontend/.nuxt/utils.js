@@ -74,6 +74,7 @@ export function getContext (context) {
   
   
   
+  
       ctx['apolloProvider'] = app['apolloProvider']
     
   

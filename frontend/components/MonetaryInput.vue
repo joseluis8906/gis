@@ -1,5 +1,5 @@
 <template lang="pug">
-  input( v-model="displayValue"
+  v-text-field( v-model="displayValue"
          @blur="handleInputState"
          @focus="handleInputState" )
 </template>
@@ -54,7 +54,7 @@ export default {
           return this.mask(this.value)
         }
       },
-      set: function(modifiedValue) {        
+      set: function(modifiedValue) {
         this.$emit('input', this.unmask(modifiedValue))
       }
     }

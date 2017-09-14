@@ -87,6 +87,8 @@ let app = {
 
 require('~plugins/vuetify.js')
 
+require('~plugins/vue2-filters.js')
+
 require('~plugins/vue-awesome-swiper.js')
 
 if (process.browser) {

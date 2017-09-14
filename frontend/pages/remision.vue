@@ -86,48 +86,14 @@ v-layout( align-center justify-center )
 
               template(slot="items" scope="props")
                 td(class="text-xs-center") {{ props.item.Produccion.Cantidad }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre }}
-                td(class="text-xs-left" style="border-left: 1px solid #999999")
-                  v-select( v-bind:items="ItemsProduccion"
-                            v-model="props.item.Produccion"
-                            item-text="NumeroEnvase"
-                            item-value="Id"
-                            return-object
-                            autocomplete
-                            style="width: 64px"
-                            :disabled="props.item.ProduccionDisable"
-                            class="mb-0 mt-0 pb-0 select-especial"
-                            light )
+                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre }}
+                td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion.Envase.Numero }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
-                td(class="text-xs-left" style="border-left: 1px solid #999999")
-                  v-select( v-bind:items="ItemsEnvase"
-                            v-model="props.item.Envase"
-                            item-text="Numero"
-                            item-value="Id"
-                            return-object
-                            autocomplete
-                            style="width: 64px"
-                            :disabled="props.item.EnvaseDisable"
-                            class="mb-0 mt-0 pb-0 select-especial"
-                            light )
-                td(class="text-xs-right" style="border-left: 1px solid #999999")
-                  v-money( v-model="props.item.Total"
-                           style="width: 96px"
-                           class="input-tab mb-0 mt-0 pb-0"
-                           mask-type="currency"
-                           :focused="props.item.TotalFocus"
-                           maxlength=11)
-                td(style="width:64px; border-left: 1px solid #999999" class="pl-1 pr-1")
-                  v-btn( fab
-                         dark
-                         small
-                         success
-                         style="width: 16px; height:16px"
-                         @click.native="guardar(props.item);")
-                    v-icon(dark) {{ props.item.SaveUpdate }}
-
+                td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase.Numero }}
+                td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency }}
+                td(style="border-left: 1px solid #999999")
                   v-btn( fab
                          dark
                          small
@@ -136,8 +102,39 @@ v-layout( align-center justify-center )
                          @click.native="eliminar(props.item)")
                     v-icon(dark) remove
 
+            v-layout(row wrap mt-5)
+              v-flex(xs12 md3 lg2)
+                v-select( v-bind:items="ItemsProduccion"
+                          v-model="ProduccionActual"
+                          label="Sale"
+                          return-object
+                          dark )
+
+                  template(slot="selection" scope="props")
+                    v-list-tile-content(v-html="props.item.Envase ? props.item.Envase.Numero : 'No hay datos disponibles'")
+
+                  template(slot="item" scope="props")
+                    v-list-tile-content(v-html="props.item.Envase ? props.item.Envase.Numero : 'No hay datos disponibles'")
+
+              v-flex(xs12 md3 lg2)
+                v-text-field( label="Cantidad" v-model="CantidadActual")
+
+              v-flex(xs12 md3 lg2)
+                v-select( v-bind:items="ItemsEnvase"
+                          v-model="EnvaseActual"
+                          label="Entra"
+                          item-text="Numero"
+                          item-value="Id"
+                          return-object
+                          dark )
+
+              v-flex(xs12 md3 lg2)
+                v-money(label="Total" v-model="TotalActual" maskType="currency")
+
             v-btn(fab dark class="indigo mb-1 mt-3" @click.native="agregar")
               v-icon(dark) add
+
+            //- pre {{ ProduccionActual }}
 
       v-card-actions
         v-spacer
@@ -188,6 +185,10 @@ export default {
     ],
     ItemsProduccion: [],
     ItemsEnvase: [],
+    ProduccionActual: null,
+    CantidadActual: null,
+    EnvaseActual: null,
+    TotalActual: null,
     headers: [
       { text: 'Cant', align: 'left', sortable: true,  value: 'Cantidad' },
       { text: 'Producto', align: 'left', sortable: false, value: 'Producto' },
@@ -316,6 +317,7 @@ export default {
 
         if (data.Produccions.length > 0) {
           for ( let i=0; i<data.Produccions.length; i++ ) {
+
             var tmp = {
               Id: data.Produccions[i].Id,
               Cantidad: data.Produccions[i].Cantidad,
@@ -338,9 +340,9 @@ export default {
               },
               Despachado: data.Produccions[i].Despachado
             }
-            //if (tmp.Despachado === 'No') {
+            if (tmp.Despachado === 'No') {
               this.ItemsProduccion.push(tmp)
-            //}
+            }
 
           }
 
@@ -579,7 +581,7 @@ export default {
       const Remision = {
         Id: item.Id,
         Numero: this.Numero,
-        ProduccionId: item.ProduccionId
+        ProduccionId: item.Produccion.Id
       }
 
       if (item.Id !== null) {
