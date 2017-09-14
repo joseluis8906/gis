@@ -25,7 +25,7 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 )
-            v-text-field( label="Número" v-model="Numero" dark )
+            v-text-field( label="Número" v-model="Numero" @keyup.native.enter="AutoLLenar" dark )
 
             v-menu( lazy
                     :close-on-content-click="true"
@@ -162,6 +162,7 @@ import CREATE_KARDEX_SALE from '~/queries/CreateKardexSale.gql'
 import CREATE_KARDEX_ENTRA from '~/queries/CreateKardexEntra.gql'
 import DELETE_KARDEX_SALE from '~/queries/DeleteKardexSale.gql'
 import DELETE_KARDEX_ENTRA from '~/queries/DeleteKardexEntra.gql'
+import LAST_REMISION from '~/queries/LastRemision.gql'
 
 export default {
   data: () => ({
@@ -288,6 +289,19 @@ export default {
         }
       }
     },
+    LastRemision: {
+      query: LAST_REMISION,
+      loading: 'loading',
+      update (data) {
+        if(data.LastRemision === null) {
+          this.Numero = this.zfill(1, 4)
+        }
+        else {
+          this.Numero = this.zfill(Number(data.LastRemision.Numero) + 1, 4)
+        }
+
+      }
+    },
     OneEnte: {
       query: ONE_ENTE,
       variables () {
@@ -384,6 +398,14 @@ export default {
     }
   },
   methods: {
+    AutoLLenar () {
+      this.$apollo.queries.LastRemision.refetch()
+    },
+    zfill (num, size) {
+      var s = num+"";
+      while (s.length < size) s = "0" + s;
+      return s;
+    },
     CalcularCapacidad () {
       let Value = this.CantidadActual
       let MaxCant = this.ProduccionActual.Cantidad

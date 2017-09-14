@@ -916,6 +916,21 @@ var Query = new GraphQLObjectType({
           return Db.models.Remision.findOne({where: args})
         }
       },
+      LastRemision: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          ProduccionId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
+        },
+        resolve(root, args) {
+          return Db.models.Remision.findOne({where: args, order: [['Numero', 'DESC']]})
+        }
+      },
       Kardexs: {
         type: new GraphQLList(Kardex),
         args: {

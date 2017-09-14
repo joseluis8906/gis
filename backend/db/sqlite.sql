@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS "Produccion" (
   "PresionFinal" DECIMAL,
   "Observacion" TEXT,
   "Despachado" TEXT
-  UNIQUE(Orden, EnvaseId)
+  UNIQUE("Orden", "EnvaseId")
 );
 
 
@@ -98,7 +98,8 @@ CREATE TABLE IF NOT EXISTS "Remision" (
   "EnteId" INTEGER DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "ProduccionId" INTEGER DEFAULT NULL REFERENCES "Produccion"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
   "EnvaseId" INTEGER DEFAULT NULL REFERENCES "Envase"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
-  "Total" DECIMAL
+  "Total" DECIMAL,
+  UNIQUE("Numero", "ProduccionId")
 );
 
 
