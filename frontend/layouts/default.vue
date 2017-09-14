@@ -1,10 +1,15 @@
 <template lang="pug">
 doctype html
 v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
-  v-navigation-drawer(v-model="primaryDrawer.model" persistent='persistent')
+  v-navigation-drawer(v-model="primaryDrawer.model"
+                      :persistent="primaryDrawer.type === 'persistent'"
+                      :temporary="primaryDrawer.type === 'temporary'" )
     v-list(dense)
       template(v-for="(item, i) in items")
-        v-list-tile(:key="i" nuxt link :to="item.to" v-if="EvaluarRoles(item.Roles)")
+        v-list-tile( :key="i"
+                     nuxt link :to="item.to"
+                     v-if="EvaluarRoles(item.Roles)"
+                     @click.native.stop="primaryDrawer.model = !primaryDrawer.model")
           v-list-tile-action
             v-icon {{ item.icon }}
 
@@ -19,7 +24,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
           v-list-tile-title Salir
 
   v-toolbar(fixed)
-    v-toolbar-side-icon(@click.native.stop="primaryDrawer.model = !primaryDrawer.model" v-if="primaryDrawer.type !== 'permanent'")
+    v-toolbar-side-icon(  @click.native.stop="primaryDrawer.model = !primaryDrawer.model" )
     v-toolbar-title {{ title }}
 
   main
@@ -39,9 +44,6 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
         primaryDrawer: {
           model: true,
           type: 'persistent',
-          clipped: false,
-          floating: true,
-          mini: false
         },
         footer: {
           fixed: true

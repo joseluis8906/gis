@@ -52,18 +52,18 @@ v-layout( align-center justify-center )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
-            div(  style="border: 1px solid #555555; border-radius: 5px; padding: 12px;"
-                  class="mb-4"  )
+            div( style="border: 1px solid #555555; border-radius: 5px; padding: 12px;"
+                 class="mb-4"  )
               v-layout(row wrap)
                 v-flex(xs12)
                   h6(class="grey--text text--lighten-4") Cliente
 
                 v-flex(xs12)
-
                   v-select( v-bind:items="ItemsDocumento"
                       v-model="Cliente.TipoDocumento"
                       label="Tipo de Documento"
                       item-value="text"
+                      class="mb-5"
                       dark )
 
                   v-text-field( label="Nit/C.C" v-model="Cliente.NumeroDocumento" dark )
@@ -192,9 +192,9 @@ export default {
     EnvaseActual: null,
     TotalActual: null,
     headers: [
-      { text: 'Cant', align: 'left', sortable: true,  value: 'Cantidad' },
-      { text: 'Producto', align: 'left', sortable: false, value: 'Producto' },
-      { text: 'Sale', align: 'center', sortable: true,  value: 'Sale' },
+      { text: 'Cant', align: 'center', sortable: false,  value: 'Cantidad' },
+      { text: 'Producto', align: 'center', sortable: false, value: 'Producto' },
+      { text: 'Sale', align: 'center', sortable: false,  value: 'Sale' },
       { text: 'F.Elaboración', align: 'center', sortable: false,  value: 'Elaboración' },
       { text: 'F.Vencimiento', align: 'center', sortable: false,  value: 'Vencimiento' },
       { text: 'Lote', align: 'center', sortable: false,  value: 'Lote' },

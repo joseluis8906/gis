@@ -103,33 +103,36 @@ v-layout( align-center justify-center )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
-            v-menu( lazy
-                    :close-on-content-click="false"
-                    v-model="menu3"
-                    transition="scale-transition"
-                    offset-y
-                    :nudge-left="40" )
+            v-layout(row wrap)
+              v-flex(xs12)
+                v-menu( lazy
+                        :close-on-content-click="false"
+                        v-model="menu3"
+                        transition="scale-transition"
+                        offset-y
+                        :nudge-left="40" )
 
-              v-text-field( slot="activator"
-                            label="Hora Inicial"
-                            v-model="HoraInicial"
-                            readonly )
+                  v-text-field( slot="activator"
+                                label="Hora Inicial"
+                                v-model="HoraInicial"
+                                readonly )
 
-              v-time-picker(v-model="HoraInicial" autosave)
+                  v-time-picker(v-model="HoraInicial" autosave)
 
-            v-menu( lazy
-                    :close-on-content-click="false"
-                    v-model="menu4"
-                    transition="scale-transition"
-                    offset-y
-                    :nudge-left="40" )
+              v-flex(xs12)
+                v-menu( lazy
+                        :close-on-content-click="false"
+                        v-model="menu4"
+                        transition="scale-transition"
+                        offset-y
+                        :nudge-left="40" )
 
-              v-text-field( slot="activator"
-                            label="Hora Final"
-                            v-model="HoraFinal"
-                            readonly )
+                  v-text-field( slot="activator"
+                                label="Hora Final"
+                                v-model="HoraFinal"
+                                readonly )
 
-              v-time-picker(v-model="HoraFinal" autosave)
+                  v-time-picker(v-model="HoraFinal" autosave)
 
 
             v-text-field( label="Lote" v-model="Lote" dark )
@@ -142,6 +145,7 @@ v-layout( align-center justify-center )
                       return-object
                       autocomplete
                       :disabled="!ChangeProducto"
+                      class="mb-5"
                       dark )
 
             v-menu( lazy
@@ -256,7 +260,7 @@ v-layout( align-center justify-center )
                          :disabled="props.item.EliminarDisable")
                     v-icon remove
 
-            v-btn(fab dark class="indigo" @click.native="agregar")
+            v-btn(fab dark class="indigo mt-3" @click.native="agregar")
               v-icon(dark) add
       v-card-actions
         v-spacer
@@ -302,7 +306,7 @@ export default {
     headers: [
       { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
       { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
-      { text: 'Envase', align: 'left', sortable: true,  value: 'Numero' },
+      { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
       { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
       { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
       { text: 'Acción', align: 'center', sortable: false,  value: 'Acción' }
@@ -821,7 +825,7 @@ export default {
       this.ChangeProducto=true
       this.Fecha = null,
       this.Turno = null,
-      this.Lote = '01',
+      this.Lote = null,
       this.FechaInicial = null,
       this.FechaFinal = null,
       this.HoraInicial = null,
