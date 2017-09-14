@@ -17,13 +17,14 @@ v-layout( align-center justify-center )
 
   v-flex( xs12 md8 lg6 )
     v-card
+      v-layout(row wrap pt-3 light-blue)
+        v-flex( xs12 )
+          h5(class="grey--text text--lighten-4 text-xs-center bold")
+            v-icon(ma) settings
+            |  Producción
       v-card-text
         v-layout( row wrap )
-          v-flex( xs12 mt-3 )
-            h5(class="grey--text text--lighten-4") Producción
-
           v-flex( xs12 )
-
             v-text-field( label="Orden Nº" v-model="Orden" dark )
 
             v-menu( lazy
@@ -227,7 +228,7 @@ v-layout( align-center justify-center )
                     v-icon remove
 
 
-            v-layout(row wrap mt-5)
+            v-layout(row wrap mt-3)
               v-flex(xs12 md4)
                 v-select( v-bind:items="ItemsFilteredEnvase"
                           v-model="EnvaseActual"
@@ -253,7 +254,7 @@ v-layout( align-center justify-center )
                           return-object
                           dark )
 
-            v-btn(fab dark class="indigo mt-3" @click.native="agregar")
+            v-btn(fab dark class="indigo mt-1" @click.native="agregar")
               v-icon(dark) add
       v-card-actions
         v-spacer
@@ -391,7 +392,6 @@ export default {
                 Id: data.Produccions[i].Envase.Id,
                 Numero: data.Produccions[i].Envase.Numero,
                 Capacidad: data.Produccions[i].Envase.Capacidad,
-                UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
               },
               Cliente: {
                 Id: data.Produccions[i].Cliente.Id,
@@ -399,8 +399,6 @@ export default {
               },
               Cantidad: data.Produccions[i].Cantidad,
               SaveUpdate: 'update',
-              ClienteDisable: true,
-              EnvaseDisable: true,
               EliminarDisable: data.Produccions[i].Despachado === 'Si' ? true : false,
               Despachado: data.Produccions[i].Despachado
             }
@@ -472,6 +470,8 @@ export default {
       }
 
       this.items.push(tmp)
+      this.guardar(tmp)
+
       this.EnvaseActual = null
       this.ClienteActual = null
       this.CantidadActual = null
@@ -484,8 +484,6 @@ export default {
         if ( item.Id === null ) {
 
           item.SaveUpdate = 'update'
-          item.EnvaseDisable = true
-          item.ClienteDisable = true
 
           const Produccion = {
             Orden: this.Orden,
@@ -660,7 +658,8 @@ export default {
               ClienteId: Produccion.ClienteId,
               PurezaFinal: Produccion.PurezaFinal,
               PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion
+              Observacion: Produccion.Observacion,
+              Despachado: Produccion.Despachado
             },
             loadingKey: 'loading',
             update (store, {data: res}) {
@@ -738,7 +737,7 @@ export default {
 
         for (let i=0; i<this.items.length; i++) {
           if ( item.Envase.Id === this.items[i].Envase.Id ) {
-            this.items.splice(i,1)
+            this.items.splice(i, 1)
           }
         }
 
@@ -746,7 +745,7 @@ export default {
 
         for (let i=0; i<this.items.length; i++) {
           if ( item.Id === this.items[i].Id ) {
-            this.items.splice(i,1)
+            this.items.splice(i, 1)
           }
         }
 
@@ -768,7 +767,8 @@ export default {
           ClienteId: item.Cliente.Id,
           PurezaFinal: this.PurezaFinal,
           PresionFinal: this.PresionFinal,
-          Observacion: this.Observacion
+          Observacion: this.Observacion,
+          Despachado: 'No'
         }
 
         this.$apollo.mutate ({
@@ -790,7 +790,8 @@ export default {
             EnvaseId: Produccion.EnvaseId,
             PurezaFinal: Produccion.PurezaFinal,
             PresionFinal: Produccion.PresionFinal,
-            Observacion: Produccion.Observacion
+            Observacion: Produccion.Observacion,
+            Despachado: Produccion.Despachado
           },
            loadingKey: 'loading',
            update (store, {data: res}) {
@@ -818,8 +819,47 @@ export default {
                  data
                })
 
+
              } catch (Err) {
                //console.log("`Error controlado: ${Err}`")
+             }
+
+
+             //por cliente
+             try {
+
+               var data = store.readQuery({
+                 query: PRODUCCIONS,
+                 variables: {
+                   ClienteId: res.DeleteProduccion.Cliente.Id,
+                 }
+               })
+
+               //console.log(data)
+               data.Produccions.push(res.DeleteProduccion)
+
+               store.writeQuery({
+                 query: PRODUCCIONS,
+                 variables: {
+                   ClienteId: res.DeleteProduccion.Cliente.Id,
+                 },
+                 data: data
+               })
+
+             } catch (Err) {
+
+               var data = {Produccions: []}
+
+               data.Produccions.push(res.DeleteProduccion)
+
+               store.writeQuery({
+                 query: PRODUCCIONS,
+                 variables: {
+                   ClienteId: res.DeleteProduccion.Cliente.Id,
+                 },
+                 data: data
+               })
+
              }
 
            }
@@ -875,6 +915,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
+h5.bold
+  font-weight bold
 
 .alert-especial
   position absolute

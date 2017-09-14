@@ -17,11 +17,13 @@ v-layout( align-center justify-center )
 
   v-flex( xs12 md8 lg6 )
     v-card
+      v-layout(row wrap pt-3 light-blue)
+        v-flex( xs12 )
+          h5(class="grey--text text--lighten-4 text-xs-center bold")
+            v-icon(ma) subtitles
+            |  Ente
       v-card-text
         v-layout( row wrap )
-          v-flex( xs12 mt-3 )
-            h5(class="grey--text text--lighten-4") Ente
-
           v-flex( xs12 )
             v-select( v-bind:items="ItemsDocumento"
                       v-model="TipoDocumento"
@@ -291,6 +293,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+h5.bold
+  font-weight bold
+
 .alert-especial
   position absolute
 
