@@ -211,46 +211,13 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
               template(slot="items" scope="props")
-                td( class="text-xs-center subheading" ) {{ props.item.Envase.UnidadDeMedida }}
                 td( class="text-xs-center subheading"
-                    style="border-left: 1px solid #999999" ) {{ props.item.Envase.Capacidad }}
-                td( style="border-left: 1px solid #999999" )
-                   v-select( v-bind:items="ItemsFilteredEnvase"
-                             v-model="props.item.Envase"
-                             item-text="Numero"
-                             item-value="Id"
-                             return-object
-                             autocomplete
-                             :disabled="props.item.EnvaseDisable"
-                             light
-                             class="input-tab mb-0 mt-0 pb-0"
-                             style="width: 96px; font-size: 90%" )
-                td( style="border-left: 1px solid #999999" )
-                    v-text-field( v-model="props.item.Cantidad"
-                                  light
-                                  @keyup.native="controlCantidad(props.item)"
-                                  style="width: 48px; height:31px; text-align-last: center"
-                                  class="pt-0 pb-0 mt-0 mb-0 " )
-                td( style="border-left: 1px solid #999999" class="pt-0 pb-0")
-                  v-select( v-bind:items="ItemsCliente"
-                      v-model="props.item.Cliente"
-                      item-value="Id"
-                      item-text="Nombre"
-                      autocomplete
-                      return-object
-                      :disabled="props.item.ClienteDisable"
-                      light
-                      class="input-tab mb-0 mt-0 pb-0"
-                      style="width: 148px" )
-                td(style="width: 64px; border-left: 1px solid #999999" class="pl-1 pr-1")
-                  v-btn( fab
-                         dark
-                         small
-                         success
-                         style="width: 16px; height:16px"
-                         @click.native="guardar(props.item)")
-                    v-icon(dark) {{ props.item.SaveUpdate }}
-
+                  style="border-left: 1px solid #999999" ) {{ props.item.Envase.Capacidad }}
+                td( class="text-xs-center subheading" ) {{ props.item.Envase.UnidadDeMedida }}
+                td( style="border-left: 1px solid #999999" ) {{ props.item.Envase.Numero }}
+                td( style="border-left: 1px solid #999999" ) {{ props.item.Cantidad }}
+                td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Cliente.Nombre }}
+                td(style="border-left: 1px solid #999999" class="pl-3 pr-3")
                   v-btn( fab
                          dark
                          small
@@ -259,6 +226,33 @@ v-layout( align-center justify-center )
                          @click.native="eliminar(props.item)"
                          :disabled="props.item.EliminarDisable")
                     v-icon remove
+
+
+            v-layout(row wrap mt-5)
+              v-flex(xs12 md4)
+                v-select( v-bind:items="ItemsEnvase"
+                          v-model="EnvaseActual"
+                          label="Envase"
+                          item-text="Numero"
+                          item-value="Id"
+                          return-object
+                          dark )
+
+              v-flex(xs12 md4)
+                v-text-field( label="Cantidad"
+                              v-model="CantidadActual"
+                              :hint="ProduccionActual ? ProduccionActual.Producto.UnidadDeMedida : ''"
+                              persistent-hint
+                              @keyup.native="CalcularCapacidad")
+
+              v-flex(xs12 md4)
+                v-select( v-bind:items="ItemsCliente"
+                          v-model="ClienteActual"
+                          label="Cliente"
+                          item-text="Nombre"
+                          item-value="Id"
+                          return-object
+                          dark )
 
             v-btn(fab dark class="indigo mt-3" @click.native="agregar")
               v-icon(dark) add
@@ -304,12 +298,12 @@ export default {
     ChangeProducto: true,
     ChangeProductoCounter: 0,
     headers: [
-      { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
       { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
+      { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
       { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
       { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
       { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
-      { text: 'Acción', align: 'center', sortable: false,  value: 'Acción' }
+      { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
     ],
     items: [],
     pagination: {
@@ -459,13 +453,13 @@ export default {
         Envase: {
           Id: this.EnvaseActual.Id,
           Numero: this.EnvaseActual.Numero,
-          Capacidad: this.EnvaseActual.Capacidad,
+          Capacidad: this.EnvaseActual.Capacidad
         },
         Cliente: {
-          Id: null,
-          Nombre: null
+          Id: this.ClienteActual.Id,
+          Nombre: this.ClienteActual.Nombre
         },
-        Cantidad: null,
+        Cantidad: this.CantidadActual,
         SaveUpdate: 'save'
       }
 

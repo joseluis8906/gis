@@ -103,7 +103,7 @@ v-layout( align-center justify-center )
                     v-icon(dark) remove
 
             v-layout(row wrap mt-5)
-              v-flex(xs12 md3 lg2)
+              v-flex(xs12 md3)
                 v-select( v-bind:items="ItemsProduccion"
                           v-model="ProduccionActual"
                           label="Sale"
@@ -116,14 +116,14 @@ v-layout( align-center justify-center )
                   template(slot="item" scope="props")
                     v-list-tile-content(v-html="props.item.Envase ? props.item.Envase.Numero : 'No hay datos disponibles'")
 
-              v-flex(xs12 md3 lg2)
+              v-flex(xs12 md3)
                 v-text-field( label="Cantidad"
                               v-model="CantidadActual"
                               :hint="ProduccionActual ? ProduccionActual.Producto.UnidadDeMedida : ''"
                               persistent-hint
                               @keyup.native="CalcularCapacidad")
 
-              v-flex(xs12 md3 lg2)
+              v-flex(xs12 md3)
                 v-select( v-bind:items="ItemsEnvase"
                           v-model="EnvaseActual"
                           label="Entra"
@@ -132,7 +132,7 @@ v-layout( align-center justify-center )
                           return-object
                           dark )
 
-              v-flex(xs12 md3 lg2)
+              v-flex(xs12 md3)
                 v-money(label="Total" v-model="TotalActual" maskType="currency")
 
             v-btn(fab dark class="indigo mt-0" @click.native="agregar")
