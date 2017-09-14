@@ -51,7 +51,7 @@ v-layout( align-center justify-center )
       v-card-actions
         v-spacer
         v-btn( dark @click.native="Reset" ) Cancelar
-        v-btn( dark primary @click.native="CheckGroups" ) Guardar
+        v-btn( dark primary @click.native="CryptPassword" ) Guardar
 </template>
 
 <script>
