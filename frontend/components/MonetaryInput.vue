@@ -1,5 +1,6 @@
 <template lang="pug">
   v-text-field( v-model="displayValue"
+          :label="label"
          @blur="handleInputState"
          @focus="handleInputState" )
 </template>
@@ -22,7 +23,8 @@ export default {
   props: {
     value: null,
     maskType: String,
-    focused: false
+    focused: false,
+    label: String
   },
   data: function() {
     return {

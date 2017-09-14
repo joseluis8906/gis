@@ -1,7 +1,7 @@
-mutation CreateProduccion ( 
+mutation CreateProduccion (
   $Orden: String!,
   $Turno: String,
-  $Fecha: String, 
+  $Fecha: String,
   $Lote: String,
   $FechaInicial: String,
   $FechaFinal: String,
@@ -15,7 +15,8 @@ mutation CreateProduccion (
   $ClienteId: Int!,
   $PurezaFinal: Float!,
   $PresionFinal: Float!
-  $Observacion: String
+  $Observacion: String,
+  $Despachado: String
 ) {
   CreateProduccion (
     Orden: $Orden,
@@ -34,7 +35,8 @@ mutation CreateProduccion (
     ClienteId: $ClienteId,
     PurezaFinal: $PurezaFinal,
     PresionFinal: $PresionFinal,
-    Observacion: $Observacion
+    Observacion: $Observacion,
+    Despachado: $Despachado
   ){
     Id
     Orden

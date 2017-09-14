@@ -117,7 +117,11 @@ v-layout( align-center justify-center )
                     v-list-tile-content(v-html="props.item.Envase ? props.item.Envase.Numero : 'No hay datos disponibles'")
 
               v-flex(xs12 md3 lg2)
-                v-text-field( label="Cantidad" v-model="CantidadActual")
+                v-text-field( label="Cantidad"
+                              v-model="CantidadActual"
+                              :hint="ProduccionActual ? ProduccionActual.Producto.UnidadDeMedida : ''"
+                              persistent-hint
+                              @keyup.native="CalcularCapacidad")
 
               v-flex(xs12 md3 lg2)
                 v-select( v-bind:items="ItemsEnvase"
@@ -131,10 +135,8 @@ v-layout( align-center justify-center )
               v-flex(xs12 md3 lg2)
                 v-money(label="Total" v-model="TotalActual" maskType="currency")
 
-            v-btn(fab dark class="indigo mb-1 mt-3" @click.native="agregar")
+            v-btn(fab dark class="indigo mt-0" @click.native="agregar")
               v-icon(dark) add
-
-            //- pre {{ ProduccionActual }}
 
       v-card-actions
         v-spacer
@@ -272,8 +274,6 @@ export default {
               },
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update',
-              ProduccionDisable: true,
-              EnvaseDisable: data.Remisions[i].Envase.Id ? true : false
             }
 
             this.items.push(tmp)
@@ -346,7 +346,7 @@ export default {
 
           }
 
-          //console.log(this.ItemsProduccion)
+          this.FiltrarEnvases()
 
         } else {
 
@@ -383,34 +383,59 @@ export default {
     }
   },
   methods: {
+    CalcularCapacidad () {
+      let Value = this.CantidadActual
+      let MaxCant = this.ProduccionActual.Cantidad
+      if (Number(MaxCant) <= Number(Value)) {
+        this.CantidadActual = MaxCant
+      } else {
+        this.CantidadActual = Value
+      }
+    },
     agregar () {
       var tmp = {
         Id: null,
         Produccion: {
-          Id: null,
-          Cantidad: null,
-          FechaFabricacion: null,
-          FechaVencimiento: null,
-          Lote: null,
+          Id: this.ProduccionActual.Id,
+          Cantidad: this.CantidadActual,
+          FechaFabricacion: this.ProduccionActual.FechaFabricacion,
+          FechaVencimiento: this.ProduccionActual.FechaVencimiento,
+          Lote: this.ProduccionActual.Lote,
           Envase: {
-            Id: null,
-            Numero: null
+            Id: this.ProduccionActual.Envase.Id,
+            Numero: this.ProduccionActual.Envase.Numero
           },
           Producto: {
-            Id: null,
-            Nombre: null,
-            UnidadDeMedida: null
+            Id: this.ProduccionActual.Producto.Id,
+            Nombre: this.ProduccionActual.Producto.Nombre,
+            UnidadDeMedida: this.ProduccionActual.Producto.UnidadDeMedida
           },
           Cliente: {
-            Id: null,
-            Nombre: null
+            Id: this.Cliente.Id,
+            Nombre: this.Cliente.Nombre
           }
         },
-        Total: null,
+        Envase: {
+          Id: this.EnvaseActual.Id,
+          Numero: this.EnvaseActual.Numero
+        },
+        Total: this.TotalActual,
         SaveUpdate: 'save'
       }
 
       this.items.push(tmp)
+      this.guardar(tmp)
+
+      this.ItemsProduccion = this.ItemsProduccion.filter( Item => {
+        return tmp.Produccion.Id != Item.Id
+      })
+
+      this.ProduccionActual = null,
+      this.CantidadActual = null,
+      this.EnvaseActual = null,
+      this.TotalActual = null;
+
+
     },
     guardar (item) {
       //console.log('Entrando a crear')
@@ -423,9 +448,6 @@ export default {
           item.Total !== null &&
           item.Total !== '') {
 
-        item.ProduccionDisable = true
-        item.EnvaseDisable = true
-
         const Remision = {
           Numero: this.Numero,
           Fecha: this.Fecha,
@@ -435,7 +457,8 @@ export default {
           Total: item.Total
         }
 
-        //console.log(item)
+        //console.log(Remision)
+
         this.$apollo.mutate ({
           mutation: CREATE_REMISION,
           variables: {
@@ -629,6 +652,7 @@ export default {
 
           }
         })
+
         this.UpdateProduccion(item.Produccion, 'No')
         this.EliminarKardex(item)
 
@@ -785,6 +809,7 @@ export default {
           //console.log ({store: store, res: res})
 
           try{
+
             var data = store.readQuery({
               query: PRODUCCIONS,
               variables: {
@@ -807,6 +832,36 @@ export default {
               data: data
             })
 
+            //console.log('Por Orden:');
+            //console.log(data);
+
+            //producciones por cliente
+            var data = store.readQuery({
+              query: PRODUCCIONS,
+              variables: {
+                ClienteId: res.UpdateOneProduccion.Cliente.Id,
+              }
+            })
+
+            //console.log(data)
+
+            for (let i=0; i<data.Produccions.length; i++) {
+              if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
+                data.Produccions[i].Despachado = res.UpdateOneProduccion.Despachado
+              }
+            }
+
+            store.writeQuery({
+              query: PRODUCCIONS,
+              variables: {
+                ClienteId: res.UpdateOneProduccion.Cliente.Id,
+              },
+              data: data
+            })
+
+            //console.log('Por cliente:');
+            //console.log(data);
+
           } catch (Err) {
 
             var data = {Produccions: []}
@@ -826,6 +881,14 @@ export default {
         }
 
       })
+    },
+    FiltrarEnvases () {
+      for (let i=0; i<this.ItemsProduccion.length; i++){
+        let tmpId = this.ItemsProduccion[i].Envase.Id
+        this.ItemsEnvase = this.ItemsEnvase.filter(function (item) {
+          return tmpId != item.Id;
+        });
+      }
     },
   },
   components: {

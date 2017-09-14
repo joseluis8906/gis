@@ -132,7 +132,7 @@ v-layout( align-center justify-center )
               v-time-picker(v-model="HoraFinal" autosave)
 
 
-            v-text-field( label="Lote" v-model="Lote" dark readonly )
+            v-text-field( label="Lote" v-model="Lote" dark )
 
             v-select( v-bind:items="ItemsProducto"
                       v-model="Producto"
@@ -285,7 +285,7 @@ export default {
     Orden: null,
     Turno: null,
     Fecha: null,
-    Lote: '01',
+    Lote: null,
     FechaInicial: null,
     FechaFinal: null,
     HoraInicial: null,
@@ -524,7 +524,7 @@ export default {
               //console.log ({store: store, res: res})
 
               try{
-                const data = store.readQuery({
+                var data = store.readQuery({
                   query: PRODUCCIONS,
                   variables: {
                     Orden: Produccion.Orden,
@@ -541,14 +541,61 @@ export default {
                   data
                 })
 
+
               } catch (Err) {
 
-                data = {Produccions: []}
+                var data = {Produccions: []}
 
                 data.Produccions.push(res.CreateProduccion)
 
                 store.writeQuery({
                   query: PRODUCCIONS,
+                  data: data
+                })
+
+                store.writeQuery({
+                  query: PRODUCCIONS,
+                  variables: {
+                    Orden: Produccion.Orden,
+                  },
+                  data: data
+                })
+
+              }
+
+
+              //por cliente
+              try {
+
+                var data = store.readQuery({
+                  query: PRODUCCIONS,
+                  variables: {
+                    ClienteId: res.CreateProduccion.Cliente.Id,
+                  }
+                })
+
+                //console.log(data)
+                data.Produccions.push(res.CreateProduccion)
+
+                store.writeQuery({
+                  query: PRODUCCIONS,
+                  variables: {
+                    ClienteId: res.CreateProduccion.Cliente.Id,
+                  },
+                  data: data
+                })
+
+              } catch (Err) {
+
+                var data = {Produccions: []}
+
+                data.Produccions.push(res.CreateProduccion)
+
+                store.writeQuery({
+                  query: PRODUCCIONS,
+                  variables: {
+                    ClienteId: res.CreateProduccion.Cliente.Id,
+                  },
                   data: data
                 })
 
