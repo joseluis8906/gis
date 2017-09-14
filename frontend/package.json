@@ -20,7 +20,7 @@
     "vue-awesome-swiper": "^2.5.4",
     "vue-chartjs": "^2.7.2",
     "vue-server-renderer": "latest",
-    "vue2-filters": "^0.2.1",
+    "vue2-filters": "^0.1.9",
     "vuetify": "^0.13.0"
   },
   "devDependencies": {
