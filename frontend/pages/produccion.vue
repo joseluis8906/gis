@@ -211,13 +211,12 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
               template(slot="items" scope="props")
-                td( class="text-xs-center subheading"
-                  style="border-left: 1px solid #999999" ) {{ props.item.Envase.Capacidad }}
-                td( class="text-xs-center subheading" ) {{ props.item.Envase.UnidadDeMedida }}
-                td( style="border-left: 1px solid #999999" ) {{ props.item.Envase.Numero }}
-                td( style="border-left: 1px solid #999999" ) {{ props.item.Cantidad }}
+                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
+                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
+                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Capacidad }}
+                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
                 td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Cliente.Nombre }}
-                td(style="border-left: 1px solid #999999" class="pl-3 pr-3")
+                td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
                   v-btn( fab
                          dark
                          small
@@ -230,7 +229,7 @@ v-layout( align-center justify-center )
 
             v-layout(row wrap mt-5)
               v-flex(xs12 md4)
-                v-select( v-bind:items="ItemsEnvase"
+                v-select( v-bind:items="ItemsFilteredEnvase"
                           v-model="EnvaseActual"
                           label="Envase"
                           item-text="Numero"
@@ -241,7 +240,7 @@ v-layout( align-center justify-center )
               v-flex(xs12 md4)
                 v-text-field( label="Cantidad"
                               v-model="CantidadActual"
-                              :hint="ProduccionActual ? ProduccionActual.Producto.UnidadDeMedida : ''"
+                              :hint="Producto ? Producto.UnidadDeMedida : ''"
                               persistent-hint
                               @keyup.native="CalcularCapacidad")
 
@@ -298,9 +297,9 @@ export default {
     ChangeProducto: true,
     ChangeProductoCounter: 0,
     headers: [
-      { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
-      { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
       { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
+      { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
+      { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
       { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
       { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
       { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
@@ -447,6 +446,15 @@ export default {
     }
   },
   methods: {
+    CalcularCapacidad () {
+      let Value = this.CantidadActual
+      let MaxCant = this.EnvaseActual.Capacidad
+      if (Number(MaxCant) <= Number(Value)) {
+        this.CantidadActual = MaxCant
+      } else {
+        this.CantidadActual = Value
+      }
+    },
     agregar () {
       var tmp = {
         Id: null,
@@ -464,6 +472,10 @@ export default {
       }
 
       this.items.push(tmp)
+      this.EnvaseActual = null
+      this.ClienteActual = null
+      this.CantidadActual = null
+
     },
     guardar (item) {
       //console.log(item)
