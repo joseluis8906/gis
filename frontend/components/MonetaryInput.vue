@@ -10,7 +10,7 @@
 const masks = {
   currency: {
     mask (value) {
-      return '$' + (value !== null ? value.toLocaleString() : ''.toLocaleString())
+      return (value !== null ? '$' + value.toLocaleString() : null)
     },
     unmask (value) {
       value = parseFloat(value.replace(/[^\d\.]/g, ""))
