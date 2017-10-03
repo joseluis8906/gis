@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS "Envase" (
   "PruebaHidrostatica" DATE,
   "EquipoAlquilado" TEXT,
   "FechaAlquiler" DATE,
-  "Observaciones" TEXT
+  "Observaciones" TEXT,
+  "Disponible" TEXT
 );
 
 

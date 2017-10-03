@@ -1,5 +1,5 @@
-mutation UpdateEnvase ( 
-  $Estado: String, 
+mutation UpdateEnvase (
+  $Estado: String,
   $EnteId: Int!,
   $Material: String,
   $ProductoId: Int,
@@ -20,7 +20,8 @@ mutation UpdateEnvase (
   $PruebaHidrostatica: String,
   $EquipoAlquilado: String,
   $FechaAlquiler: String,
-  $Observaciones: String
+  $Observaciones: String,
+  $Disponible: String
 ) {
   UpdateEnvase (
     Estado: $Estado,
@@ -44,7 +45,8 @@ mutation UpdateEnvase (
     PruebaHidrostatica: $PruebaHidrostatica,
     EquipoAlquilado: $EquipoAlquilado,
     FechaAlquiler: $FechaAlquiler,
-    Observaciones: $Observaciones
+    Observaciones: $Observaciones,
+    Disponible: $Disponible
   ){
     Id
     Estado
@@ -69,6 +71,7 @@ mutation UpdateEnvase (
     EquipoAlquilado
     FechaAlquiler
     Observaciones
+    Disponible
     Propietario {
       Id
       TipoDocumento
@@ -84,4 +87,3 @@ mutation UpdateEnvase (
     }
   }
 }
-

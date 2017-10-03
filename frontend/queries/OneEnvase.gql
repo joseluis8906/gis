@@ -23,6 +23,7 @@ query OneEnvase ($Numero: String!) {
     EquipoAlquilado
     FechaAlquiler
     Observaciones
+    Disponible
     Propietario {
       Id
       TipoDocumento
@@ -38,5 +39,3 @@ query OneEnvase ($Numero: String!) {
     }
   }
 }
-
-

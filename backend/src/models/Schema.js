@@ -311,6 +311,12 @@ var Envase = new GraphQLObjectType({
           return Envase.Observaciones;
         }
       },
+      Disponible: {
+        type: GraphQLString,
+        resolve(Envase) {
+          return Envase.Disponible;
+        }
+      },
       Propietario: {
         type: Ente,
         resolve(Envase) {
@@ -770,7 +776,8 @@ var Query = new GraphQLObjectType({
           PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
           FechaAlquiler: {type: GraphQLString},
-          Observaciones: {type: GraphQLString}
+          Observaciones: {type: GraphQLString},
+          Disponible: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Envase.findAll({where: args});
@@ -801,7 +808,8 @@ var Query = new GraphQLObjectType({
           PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
           FechaAlquiler: {type: GraphQLString},
-          Observaciones: {type: GraphQLString}
+          Observaciones: {type: GraphQLString},
+          Disponible: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Envase.findOne({where: args}).then(R => {
@@ -1209,7 +1217,8 @@ var Mutation = new GraphQLObjectType({
           PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
           FechaAlquiler: {type: GraphQLString},
-          Observaciones: {type: GraphQLString}
+          Observaciones: {type: GraphQLString},
+          Disponible: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Envase.create({
@@ -1266,7 +1275,8 @@ var Mutation = new GraphQLObjectType({
           PruebaHidrostatica: {type: GraphQLString},
           EquipoAlquilado: {type: GraphQLString},
           FechaAlquiler: {type: GraphQLString},
-          Observaciones: {type: GraphQLString}
+          Observaciones: {type: GraphQLString},
+          Disponible: {type: GraphQLString}
         },
         resolve(_, args) {
           return Db.models.Envase.findOne({where: {
@@ -1294,6 +1304,7 @@ var Mutation = new GraphQLObjectType({
               R.EquipoAlquilado = args.EquipoAlquilado;
               R.FechaAlquiler = args.FechaAlquiler;
               R.Observaciones = args.Observaciones;
+              R.Disponible = args.Disponible;
               R.save();
               R.Propietario = R.getEnte();
               R.Producto = R.getProducto();

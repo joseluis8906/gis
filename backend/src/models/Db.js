@@ -94,7 +94,8 @@ const Envase = Db.define('Envase', {
   PruebaHidrostatica: Sequelize.DATEONLY,
   EquipoAlquilado: Sequelize.STRING,
   FechaAlquiler: Sequelize.DATEONLY,
-  Observaciones: Sequelize.STRING
+  Observaciones: Sequelize.STRING,
+  Disponible: Sequelize.STRING
 },
 {
   timestamps: false,
