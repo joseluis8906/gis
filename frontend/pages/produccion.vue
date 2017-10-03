@@ -265,6 +265,8 @@ v-layout( align-center justify-center )
 <script>
 
 import ENVASES from '~/queries/Envases.gql'
+import ONE_ENVASE from '~/queries/OneEnvase.gql'
+import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
 import PRODUCCIONS from '~/queries/Produccions.gql'
 import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql'
 import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
@@ -350,12 +352,13 @@ export default {
           this.ItemsAllEnvase = []
           for (let i=0; i<data.Envases.length; i++) {
             var tmp = {}
-            tmp.Id = data.Envases[i].Id
-            tmp.Numero = data.Envases[i].Numero
-            tmp.Capacidad = data.Envases[i].Capacidad
-            tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida
-            tmp.ProductoId = data.Envases[i].Producto.Id
-            this.ItemsAllEnvase.push(tmp)
+            tmp.Id = data.Envases[i].Id;
+            tmp.Numero = data.Envases[i].Numero;
+            tmp.Capacidad = data.Envases[i].Capacidad;
+            tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida;
+            tmp.ProductoId = data.Envases[i].Producto.Id;
+            tmp.Disponible = data.Envases[i].Disponible;
+            this.ItemsAllEnvase.push(tmp);
           }
         }
       }
@@ -438,12 +441,79 @@ export default {
   watch: {
     Producto: {
       handler: function () {
+        this.changeProductoCounter ();
         this.filtrarEnvases ()
       },
       deep: true
     }
   },
   methods: {
+    UpdateEnvase (_Envase, Value) {
+      const Envase = {
+        Numero: _Envase.Numero,
+        Disponible: Value
+      };
+
+      this.$apollo.mutate ({
+        mutation: UPDATE_ENVASE,
+        variables: {
+          Numero: Envase.Numero,
+          Disponible: Envase.Disponible
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          //console.log(res, 'linea 463');
+
+          var data = {OneEnvase: res.UpdateEnvase}
+          store.writeQuery({
+            query: ONE_ENVASE,
+            variables: {
+              Numero: res.UpdateEnvase.Numero
+            },
+            data: data
+          })
+
+          try {
+
+            data = store.readQuery({
+              query: ENVASES
+            })
+
+            for (let i=0; i<data.Envases.length; i++) {
+              if (data.Envases[i].Id === res.UpdateEnvase.Id) {
+                data.Envases[i] = res.UpdateEnvase
+              }
+            }
+
+            store.writeQuery({
+              query: ENVASES,
+              data: data
+            })
+
+          } catch (Err) {
+
+            data = {Envases: []}
+
+            data.Envases.push(res.UpdateEnvase)
+
+            store.writeQuery({
+              query: ENVASES,
+              data: data
+            })
+
+          }
+
+          for (let i=0; i<this.ItemsAllEnvase.length; i++){
+            if(res.UpdateEnvase.Id === this.ItemsAllEnvase[i].Id){
+              this.ItemsAllEnvase[i].Disponible = res.UpdateEnvase.Disponible;
+            }
+          }
+          this.filtrarEnvases()
+
+        }
+      })
+
+    },
     CalcularCapacidad () {
       let Value = this.CantidadActual
       let MaxCant = this.EnvaseActual.Capacidad
@@ -529,7 +599,7 @@ export default {
               Despachado: Produccion.Despachado
             },
             loadingKey: 'loading',
-            update (store, {data: res}) {
+            update: (store, {data: res}) => {
               //console.log ('guardar')
               //console.log ({store: store, res: res})
 
@@ -608,11 +678,12 @@ export default {
                   },
                   data: data
                 })
-
               }
 
             }
           })
+
+          this.UpdateEnvase(item.Envase, 'No');
 
         } else {
 
@@ -788,13 +859,14 @@ export default {
             Cantidad: Produccion.Cantidad,
             ProductoId: Produccion.ProductoId,
             EnvaseId: Produccion.EnvaseId,
+            ClienteId: Produccion.ClienteId,
             PurezaFinal: Produccion.PurezaFinal,
             PresionFinal: Produccion.PresionFinal,
             Observacion: Produccion.Observacion,
             Despachado: Produccion.Despachado
           },
            loadingKey: 'loading',
-           update (store, {data: res}) {
+           update: (store, {data: res}) => {
              //console.log ({store: store, res: res})
 
              try{
@@ -836,7 +908,11 @@ export default {
                })
 
                //console.log(data)
-               data.Produccions.push(res.DeleteProduccion)
+               for (let i=0; i<data.Produccions.length; i++) {
+                 if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
+                   data.Produccions.splice(i, 1)
+                 }
+               }
 
                store.writeQuery({
                  query: PRODUCCIONS,
@@ -847,23 +923,13 @@ export default {
                })
 
              } catch (Err) {
-
-               var data = {Produccions: []}
-
-               data.Produccions.push(res.DeleteProduccion)
-
-               store.writeQuery({
-                 query: PRODUCCIONS,
-                 variables: {
-                   ClienteId: res.DeleteProduccion.Cliente.Id,
-                 },
-                 data: data
-               })
-
+               //console.log("`Error controlado: ${Err}`")
              }
 
            }
          })
+
+         this.UpdateEnvase(item.Envase, 'Si');
 
       }
 
@@ -893,15 +959,17 @@ export default {
       this.Orden = null
       this.reset ()
     },
-    filtrarEnvases () {
+    changeProductoCounter (){
       this.ChangeProductoCounter++
       if( this.ChangeProductoCounter === 2 ) {
         this.ChangeProducto=false
-        this.ItemsFilteredEnvase = []
-        for (let i=0; i<this.ItemsAllEnvase.length; i++) {
-          if ( this.Producto.Id === this.ItemsAllEnvase[i].ProductoId ) {
-            this.ItemsFilteredEnvase.push(this.ItemsAllEnvase[i])
-          }
+      }
+    },
+    filtrarEnvases () {
+      this.ItemsFilteredEnvase = []
+      for (let i=0; i<this.ItemsAllEnvase.length; i++) {
+        if ( this.Producto.Id === this.ItemsAllEnvase[i].ProductoId && this.ItemsAllEnvase[i].Disponible === 'Si' ) {
+          this.ItemsFilteredEnvase.push(this.ItemsAllEnvase[i])
         }
       }
     },

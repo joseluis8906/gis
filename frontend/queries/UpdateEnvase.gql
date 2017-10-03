@@ -1,6 +1,6 @@
 mutation UpdateEnvase (
   $Estado: String,
-  $EnteId: Int!,
+  $EnteId: Int,
   $Material: String,
   $ProductoId: Int,
   $Capacidad: Float,

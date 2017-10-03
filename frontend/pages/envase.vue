@@ -274,7 +274,7 @@ export default {
     EquipoAlquilado: '',
     FechaAlquiler: null,
     Observaciones: '',
-
+    Disponible: '',
     ItemsEstado: [
       {text: 'Nuevo'},
       {text: 'En Uso'},
@@ -354,6 +354,7 @@ export default {
         this.EquipoAlquilado = data.OneEnvase ? data.OneEnvase.EquipoAlquilado : ''
         this.FechaAlquiler = data.OneEnvase ? data.OneEnvase.FechaAlquiler : ''
         this.Observaciones = data.OneEnvase ? data.OneEnvase.Observaciones : ''
+        this.Disponible = data.OneEnvase ? data.OneEnvase.Disponible : ''
 
         this.update = data.OneEnvase ? true : false
       }
@@ -416,6 +417,7 @@ export default {
         EquipoAlquilado: this.EquipoAlquilado,
         FechaAlquiler: this.FechaAlquiler !== '' ? this.FechaAlquiler : null,
         Observaciones: this.Observaciones,
+        Disponible: 'Si',
         Propietario: this.Propietario
       };
 
@@ -446,6 +448,7 @@ export default {
           EquipoAlquilado: Envase.EquipoAlquilado,
           FechaAlquiler: Envase.FechaAlquiler,
           Observaciones: Envase.Observaciones,
+          Disponible: Envase.Disponible,
           Propietario: Envase.Propietario
         },
         loadingKey: 'loading',
@@ -517,6 +520,7 @@ export default {
         EquipoAlquilado: this.EquipoAlquilado,
         FechaAlquiler: this.FechaAlquiler !== '' ? this.FechaAlquiler : null,
         Observaciones: this.Observaciones,
+        Disponible: this.Disponible,
         Propietario: this.Propietario
       };
 
@@ -547,6 +551,7 @@ export default {
           EquipoAlquilado: Envase.EquipoAlquilado,
           FechaAlquiler: Envase.FechaAlquiler,
           Observaciones: Envase.Observaciones,
+          Disponible: Envase.Disponible,
           Propietario: Envase.Propietario
         },
         loadingKey: 'loading',
@@ -591,6 +596,7 @@ export default {
                 data.Envases[i].EquipoAlquilado = res.UpdateEnvase.EquipoAlquilado
                 data.Envases[i].FechaAlquiler = res.UpdateEnvase.FechaAlquiler
                 data.Envases[i].Observaciones = res.UpdateEnvase.Observaciones
+                data.Envases[i].Disponible = res.UpdateEnvase.Disponible
                 data.Envases[i].Propietario = res.UpdateEnvase.Propietario
               }
             }
@@ -644,6 +650,7 @@ export default {
       this.EquipoAlquilado = '';
       this.FechaAlquiler = '';
       this.Observaciones = '';
+      this.Disponible = '';
     },
     ResetPropietario () {
       this.Propietario = {Nombre: null, NumeroDocumento: null, Id: null}
