@@ -10,11 +10,11 @@ v-container(fluid pt-0 pb-0 pr-0 pl-0)
             div(class="swiper-slide" v-for="(item, i) in items" v-bind:key="i")
               v-layout(row wrap)
                 v-flex(xs12 md6 offset-md3)
-                  div(class="img-people text-xs-center md6")
+                  div(class="img-people text-xs-center")
                     p(class="g-testimonios-msg") "{{ item.msg }}"
                     v-layout(row wrap pt-4)
                       v-flex(md-6 text-xs-right)
-                        img(v-bind:src="item.src" class="g-testimonios-image-people") 
+                        img(v-bind:src="item.src" class="g-testimonios-image-people")
                       v-flex(md-6 text-xs-left class="g-testimonios-container-name")
                         p(class="g-testimonios-name") {{ item.name }}
                           br
@@ -85,12 +85,12 @@ export default {
   padding 0 5%
   font-family 'Roboto', sans-serif
   font-weight 400
-  
+
 .my-swiper
     height 300px;
     width 100%;
-    
-.swiper-slide 
+
+.swiper-slide
   text-align center
   display flex
   justify-content center
