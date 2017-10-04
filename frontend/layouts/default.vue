@@ -28,7 +28,7 @@ v-app(id="sandbox" :dark="dark" :light="!dark" standalone)
     v-toolbar-title {{ title }}
 
   main
-    v-container(fluid mb-5 pt-0)
+    v-container(fluid mb-5 pt-4)
       nuxt
 
   v-footer(fixed)

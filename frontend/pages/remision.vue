@@ -94,7 +94,7 @@ v-layout( align-center justify-center )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase.Numero }}
                 td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency }}
-                td(style="border-left: 1px solid #999999")
+                td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
                   v-btn( fab
                          dark
                          small
@@ -188,6 +188,7 @@ export default {
       {text: 'Cédula'}
     ],
     ItemsProduccion: [],
+    ItemsAllEnvase: [],
     ItemsEnvase: [],
     ProduccionActual: null,
     CantidadActual: null,
@@ -355,9 +356,8 @@ export default {
               },
               Despachado: data.Produccions[i].Despachado
             }
-            if (tmp.Despachado === 'No') {
-              this.ItemsProduccion.push(tmp)
-            }
+
+            tmp.Despachado === 'No' ? this.ItemsProduccion.push(tmp) : null
 
           }
 
@@ -380,10 +380,11 @@ export default {
           for (let i=0; i<data.Envases.length; i++) {
             var tmp = {
               Id: data.Envases[i].Id,
-              Numero: data.Envases[i].Numero
+              Numero: data.Envases[i].Numero,
+              Disponible: data.Envases[i].Disponible
             }
 
-            this.ItemsEnvase.push(tmp)
+            tmp.Disponible === 'Si' ? this.ItemsEnvase.push(tmp) : null
           }
         }
       }
@@ -450,7 +451,11 @@ export default {
       this.guardar(tmp)
 
       this.ItemsProduccion = this.ItemsProduccion.filter( Item => {
-        return tmp.Produccion.Id != Item.Id
+        return tmp.Produccion.Id !== Item.Id
+      })
+
+      this.ItemsEnvase = this.ItemsEnvase.filter( Item => {
+        return tmp.Envase.Id !== Item.Id
       })
 
       this.ProduccionActual = null,
@@ -531,96 +536,11 @@ export default {
           }
         })
 
-        this.UpdateProduccion(item.Produccion, 'Si')
+        this.UpdateProduccion(item, 'Si')
         this.CreateKardexEntra(item)
         this.CreateKardexSale(item)
 
-      } else {
-
-        if( this.Fecha !== null &&
-            this.Cliente.Id !== null &&
-            item.ProduccionId !== null &&
-            item.EnvaseId !== null &&
-            item.Total !== null &&
-            item.Total !== '') {
-
-            const Remision = {
-              Id: item.Id,
-              EnteId: this.Cliente.Id,
-              ProduccionId: item.Produccion.Id,
-              EnvaseId: item.Envase.Id,
-              Total: item.Total
-            }
-
-            //console.log(item)
-            this.$apollo.mutate ({
-              mutation: UPDATE_REMISION,
-              variables: {
-                Id: Remision.Id,
-                EnteId: Remision.EnteId,
-                ProduccionId: Remision.ProduccionId,
-                EnvaseId: Remision.EnvaseId,
-                Total: Remision.Total
-              },
-              loadingKey: 'loading',
-              update (store, {data: res}) {
-
-                try{
-
-                  var data = store.readQuery({
-                    query: REMISIONS,
-                    variables: {
-                      Numero: res.UpdateRemision.Numero
-                    }
-                  })
-
-                  for (let i=0; i<data.Remisions.length; i++){
-                    if ( res.UpdateRemision.Id === data.Remisions[i].Id ) {
-                      data.Remisions[i].EnteId = res.UpdateRemision.EnteId
-                      data.Remisions[i].ProduccionId = res.UpdateRemision.ProduccionId
-                      data.Remisions[i].EnvaseId = res.UpdateRemision.EnvaseId
-                      data.Remisions[i].Total = res.UpdateRemision.Total
-                      break
-                    }
-                  }
-
-                  store.writeQuery({
-                    query: REMISIONS,
-                    variables: {
-                      Numero: res.UpdateRemision.Numero
-                    },
-                    data: data
-                  })
-
-                } catch (Err) {
-
-                  console.log (`Error encontrado: ${Err}`)
-
-                  data = {Remisions: []}
-
-                  data.Remisions.push(res.UpdateRemision)
-
-                  store.writeQuery({
-                    query: REMISIONS,
-                    data: data
-                  })
-
-                }
-
-                var newData = store.readQuery({
-                  query: REMISIONS,
-                  variables: {
-                    Numero: res.UpdateRemision.Numero
-                  }
-                })
-
-
-              }
-            })
-
-          }
-        }
-
+      }
     },
     eliminar (item) {
 
@@ -676,7 +596,7 @@ export default {
           }
         })
 
-        this.UpdateProduccion(item.Produccion, 'No')
+        this.UpdateProduccion(item, 'No')
         this.EliminarKardex(item)
 
       } else {
@@ -810,12 +730,12 @@ export default {
     },
     UpdateProduccion (item, Tipo) {
       const Produccion = {
-            Id: item.Id,
-            Cantidad: item.Cantidad,
-            EnvaseId: item.Envase.Id,
-            ClienteId: item.Cliente.Id,
-            Despachado: Tipo
-          }
+        Id: item.Produccion.Id,
+        Cantidad: item.Produccion.Cantidad,
+        EnvaseId: item.Produccion.Envase.Id,
+        ClienteId: item.Produccion.Cliente.Id,
+        Despachado: Tipo
+      }
 
       this.$apollo.mutate ({
         mutation: UPDATE_ONE_PRODUCCION,
@@ -902,8 +822,41 @@ export default {
           }
 
         }
-
       })
+
+      var tmp = {
+        Id: item.Produccion.Id,
+        Cantidad: item.Produccion.Cantidad,
+        FechaFabricacion: item.Produccion.FechaFabricacion,
+        FechaVencimiento: item.Produccion.FechaVencimiento,
+        Lote: item.Produccion.Lote,
+        NumeroEnvase: item.Produccion.Envase.Numero,
+        Envase: {
+          Id: item.Produccion.Envase.Id,
+          Numero: item.Produccion.Envase.Numero
+        },
+        Producto: {
+          Id: item.Produccion.Producto.Id,
+          Nombre: item.Produccion.Producto.Nombre,
+          UnidadDeMedida: item.Produccion.Producto.UnidadDeMedida
+        },
+        Cliente: {
+          Id: item.Produccion.Cliente.Id,
+          Nombre: item.Produccion.Cliente.Nombre
+        },
+        Despachado: 'No'
+      }
+
+      this.ItemsProduccion.push(tmp)
+
+      tmp = {
+        Id: item.Envase.Id,
+        Numero: item.Envase.Numero,
+        Disponible: item.Envase.Disponible
+      }
+
+      this.ItemsEnvase.push(tmp)
+
     },
     FiltrarEnvases () {
       for (let i=0; i<this.ItemsProduccion.length; i++){
