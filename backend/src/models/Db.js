@@ -35,7 +35,7 @@ const Group = Db.define('Group', {
 });
 
 const UserGroup = Db.define('UserGroup', {
-  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  //Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
   UserId: {type: Sequelize.INTEGER, references: {model: User, key: 'Id'}},
   GroupId: {type: Sequelize.INTEGER, references: {model: Group, key: 'Id'}}
 },
