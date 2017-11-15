@@ -476,24 +476,9 @@ export default {
               data: data
             })
 
-          } catch (Err) {
-
-            data = {Envases: []}
-
-            data.Envases.push(res.CreateEnvase)
-
-            store.writeQuery({
-              query: ENVASES,
-              data: data
-            })
-
-          }
+          } catch (Err) { console.log(Err) }
         }
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Update () {
 
@@ -606,25 +591,9 @@ export default {
               data: data
             })
 
-          } catch (Err) {
-
-            data = {Envases: []}
-
-            data.Envases.push(res.UpdateEnvase)
-
-            store.writeQuery({
-              query: ENVASES,
-              data: data
-            })
-
-          }
-
+          } catch (Err) { console.log(Err) }
         }
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Reset () {
       this.Estado = '';

@@ -492,14 +492,7 @@ export default {
 
           } catch (Err) {
 
-            data = {Envases: []}
-
-            data.Envases.push(res.UpdateEnvase)
-
-            store.writeQuery({
-              query: ENVASES,
-              data: data
-            })
+            console.log(Err)
 
           }
 
@@ -623,24 +616,7 @@ export default {
 
 
               } catch (Err) {
-
-                var data = {Produccions: []}
-
-                data.Produccions.push(res.CreateProduccion)
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  data: data
-                })
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  },
-                  data: data
-                })
-
+                console.log(Err)
               }
 
 
@@ -666,18 +642,7 @@ export default {
                 })
 
               } catch (Err) {
-
-                var data = {Produccions: []}
-
-                data.Produccions.push(res.CreateProduccion)
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    ClienteId: res.CreateProduccion.Cliente.Id,
-                  },
-                  data: data
-                })
+                console.log(Err)
               }
 
             }
@@ -777,16 +742,7 @@ export default {
                 })
 
               } catch (Err) {
-
-                data = {Produccions: []}
-
-                data.Produccions.push(res.UpdateOneProduccion)
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  data: data
-                })
-
+                console.log(Err)
               }
 
             }
@@ -893,7 +849,7 @@ export default {
 
 
              } catch (Err) {
-               //console.log("`Error controlado: ${Err}`")
+               console.log(Err)
              }
 
 
@@ -923,7 +879,7 @@ export default {
                })
 
              } catch (Err) {
-               //console.log("`Error controlado: ${Err}`")
+               console.log(Err)
              }
 
            }

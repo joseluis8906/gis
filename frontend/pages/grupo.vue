@@ -109,25 +109,9 @@ export default {
             data: data
           })
 
-        } catch (Err) {
-
-          var data = {Groups: []}
-
-          data.Groups.push(res.CreateGroup)
-
-          store.writeQuery({
-            query: GROUPS,
-            data: data
-          })
-
-        }
-
-      },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+        } catch (Err) { console.log(Err) }
+       },
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Update () {
       //console.log(this.Password)
@@ -163,25 +147,9 @@ export default {
               data: data
             })
 
-          } catch (Err) {
-
-            var data = {Groups: []}
-
-            data.Groups.push(res.UpdateGroup)
-
-            store.writeQuery({
-              query: GROUPS,
-              data: data
-            })
-
-          }
-
+          } catch (Err) { console.log(Err) }
         },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Reset () {
       this.Id = null

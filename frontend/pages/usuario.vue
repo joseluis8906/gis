@@ -187,11 +187,7 @@ export default {
               }
 
             },
-            }).then( data => {
-              //console.log(data)
-            }).catch( Err => {
-              //console.log(Err)
-            })
+            }).then( data => {}).catch( Err => { console.log(Err) })
             this.OldSelectedGroups = this.SelectedGroups
           }
           else if (this.SelectedGroups.length < this.OldSelectedGroups.length) {
@@ -236,27 +232,12 @@ export default {
                     })
 
                   } catch (Err) {
-
-                    var data = {Users: []}
-
-                    data.Users.push(res.UserRemoveGroup)
-
-                    store.writeQuery({
-                      query: USERS,
-                      variables: {
-                        UserName: res.UserRemoveGroup.UserName
-                      },
-                      data: data
-                    })
-
+                    console.log(Err)
                   }
 
                 },
-                }).then( data => {
-                  //console.log(data)
-                }).catch( Err => {
-                  //console.log(Err)
-                })
+                }).then( data => {}).catch( Err => { console.log(Err) })
+
                 break
               }
             }
@@ -323,27 +304,11 @@ export default {
           })
 
         } catch (Err) {
-
-          var data = {Users: []}
-
-          data.Users.push(res.CreateUser)
-
-          store.writeQuery({
-            query: USERS,
-            variables: {
-              UserName: res.CreateUser.UserName
-            },
-            data: data
-          })
-
+          console.log(Err)
         }
 
       },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Update () {
       //console.log(this.Password)
@@ -392,27 +357,10 @@ export default {
             })
 
           } catch (Err) {
-
-            var data = {Users: []}
-
-            data.Users.push(res.UpdateUser)
-
-            store.writeQuery({
-              query: USERS,
-              variables: {
-                UserName: res.UpdateUser.UserName
-              },
-              data: data
-            })
-
+            console.log(Err)
           }
-
         },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Reset () {
       this.Id = null
@@ -451,7 +399,6 @@ export default {
           this.OldSelectedGroups = []
         }
       }
-
     }
   }
 };

@@ -521,16 +521,7 @@ export default {
               })
 
             } catch (Err) {
-
-              data = {Remisions: []}
-
-              data.Remisions.push(res.CreateRemision)
-
-              store.writeQuery({
-                query: REMISIONS,
-                data: data
-              })
-
+              console.log(Err)
             }
 
           }
@@ -590,7 +581,7 @@ export default {
               })
 
             } catch (Err) {
-
+              console.log(Err)
             }
 
           }
@@ -806,19 +797,7 @@ export default {
             //console.log(data);
 
           } catch (Err) {
-
-            var data = {Produccions: []}
-
-            data.Produccions.push(res.UpdateOneProduccion)
-
-            store.writeQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: res.UpdateOneProduccion.Orden,
-              },
-              data: data
-            })
-
+            console.log(Err)
           }
 
         }

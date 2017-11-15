@@ -136,24 +136,11 @@ export default {
               data: data
             })
           } catch (Err) {
-
-            data = {Productos: []}
-
-            data.Productos.push(res.CreateProducto)
-
-            store.writeQuery({
-              query: PRODUCTOS,
-              data: data
-            })
-
+            console.log(Err)
           }
 
         },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Update () {
       const Producto = {
@@ -200,24 +187,11 @@ export default {
             })
 
           } catch (Err) {
-
-            data = {Productos: []}
-
-            data.Productos.push(res.UpdateProducto)
-
-            store.writeQuery({
-              query: PRODUCTOS,
-              data: data
-            })
-
+            console.log(Err)
           }
 
         }
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Reset () {
       this.Nombre = null

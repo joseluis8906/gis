@@ -176,26 +176,10 @@ export default {
             data: data
           })
 
-        } catch (Err) {
-
-
-          data = {Entes: []}
-
-          data.Entes.push(res.CreateEnte)
-
-          store.writeQuery({
-            query: ENTES,
-            data: data
-          })
-
-        }
+        } catch (Err) { console.log(Err) }
 
       },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Update () {
       const Ente = {
@@ -257,25 +241,9 @@ export default {
             data: data
           })
 
-        } catch (Err) {
-
-          data = {Entes: []}
-
-          data.Entes.push(res.UpdateEnte)
-
-          store.writeQuery({
-            query: ENTES,
-            data: data
-          })
-
-        }
-
+        } catch (Err) { console.log(Err) }
       },
-      }).then( data => {
-        //console.log(data)
-      }).catch( Err => {
-        //console.log(Err)
-      })
+      }).then( data => {}).catch( Err => { console.log(Err) })
     },
     Reset () {
       this.TipoDocumento = ''
