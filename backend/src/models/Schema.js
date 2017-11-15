@@ -1243,7 +1243,8 @@ var Mutation = new GraphQLObjectType({
             PruebaHidrostatica: args.PruebaHidrostatica,
             EquipoAlquilado: args.EquipoAlquilado,
             FechaAlquiler: args.FechaAlquiler,
-            Observaciones: args.Observaciones
+            Observaciones: args.Observaciones,
+            Disponible: args.Disponible
           }).then( R => {
             R.Propietario = R.getEnte();
             R.Producto = R.getProducto();
