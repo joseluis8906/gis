@@ -764,7 +764,6 @@ export default {
            update: (store, {data: res}) => {
 
              try{
-
                const data = store.readQuery({
                  query: PRODUCCIONS,
                  variables: {

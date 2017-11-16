@@ -1,41 +1,11 @@
-mutation DeleteKardexEntra ( 
+mutation DeleteKardexEntra (
   $EnvaseId: Int!
   $NumeroFacturaEntra: String
 ) {
-  DeleteKardexEntra ( 
+  DeleteKardexEntra (
     EnvaseId: $EnvaseId
     NumeroFacturaEntra: $NumeroFacturaEntra
   ){
-    Id
-    Cantidad
-    ProductoId
-    Producto {
-      Id
-      Nombre
-      UnidadDeMedida
-    }
-    EnvaseId
-    Envase {
-      Id
-      NumeroInterno
-      Capacidad
-    }
-    FechaElaboracion
-    Lote
-    FechaVencimiento
-    EnteId
-    Ente {
-      Id
-      TipoDocumento
-      NumeroDocumento
-      Nombre
-      Ciudad
-      Direccion
-      Telefono
-    }
-    FechaSale
-    NumeroFacturaSale
-    FechaEntra
-    NumeroFacturaEntra
+    Id    
   }
 }

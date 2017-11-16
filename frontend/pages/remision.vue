@@ -104,36 +104,25 @@ v-layout( align-center justify-center )
                     v-icon(dark) remove
 
             v-layout(row wrap mt-5)
-              v-flex(xs12 md3)
+              v-flex(xs12 md4)
                 v-select( v-bind:items="ItemsProduccion"
                           v-model="ProduccionActual"
                           label="Sale"
+                          item-text="Buscar"
                           return-object
+                          autocomplete
                           dark )
 
-                  template(slot="selection" scope="props")
-                    v-list-tile-content(v-html="props.item.Envase ? props.item.Envase.Numero : 'No hay datos disponibles'")
-
-                  template(slot="item" scope="props")
-                    v-list-tile-content(v-html="props.item.Envase ? props.item.Envase.Numero : 'No hay datos disponibles'")
-
-              v-flex(xs12 md3)
-                v-text-field( label="Cantidad"
-                              v-model="CantidadActual"
-                              :hint="ProduccionActual ? ProduccionActual.Producto.UnidadDeMedida : ''"
-                              persistent-hint
-                              @keyup.native="CalcularCapacidad")
-
-              v-flex(xs12 md3)
+              v-flex(xs12 md4)
                 v-select( v-bind:items="ItemsEnvase"
                           v-model="EnvaseActual"
                           label="Entra"
                           item-text="Numero"
-                          item-value="Id"
                           return-object
+                          autocomplete
                           dark )
 
-              v-flex(xs12 md3)
+              v-flex(xs12 md4)
                 v-money(label="Total" v-model="TotalActual" maskType="currency")
 
             v-btn(fab dark class="indigo mt-0" @click.native="agregar")
@@ -191,7 +180,6 @@ export default {
     ItemsAllEnvase: [],
     ItemsEnvase: [],
     ProduccionActual: null,
-    CantidadActual: null,
     EnvaseActual: null,
     TotalActual: null,
     headers: [
@@ -239,7 +227,6 @@ export default {
         //console.log(data)
 
         if (data.Remisions.length > 0) {
-
           this.Fecha = data.Remisions[0].Fecha
           this.Cliente.TipoDocumento = data.Remisions[0].Ente.TipoDocumento
           this.Cliente.NumeroDocumento = data.Remisions[0].Ente.NumeroDocumento
@@ -256,18 +243,12 @@ export default {
                 Lote: data.Remisions[i].Produccion.Lote,
                 Envase: {
                   Id: data.Remisions[i].Produccion.Envase.Id,
-                  Numero: data.Remisions[i].Produccion.Envase.Numero
+                  Numero: data.Remisions[i].Produccion.Envase.Numero,
                 },
                 Producto: {
                   Id: data.Remisions[i].Produccion.Producto.Id,
                   Nombre: data.Remisions[i].Produccion.Producto.Nombre,
                   UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
-                },
-                Cliente: {
-                  Id: data.Remisions[i].Ente.Id,
-                  TipoDocumento: data.Remisions[i].TipoDocumento,
-                  NumeroDocumento: data.Remisions[i].NumeroDocumento,
-                  Nombre: data.Remisions[i].Ente.Nombre
                 },
                 Despachado: data.Remisions[i].Despachado
               },
@@ -325,7 +306,7 @@ export default {
       variables () {
         //console.log(this.Cliente)
         return {
-          ClienteId: this.Cliente.Id !== null ? this.Cliente.Id : 0,
+          Despachado: 'No',
         }
       },
       loadingKey: 'loading',
@@ -335,6 +316,7 @@ export default {
           for ( let i=0; i<data.Produccions.length; i++ ) {
 
             var tmp = {
+              Buscar: data.Produccions[i].Envase.Numero,
               Id: data.Produccions[i].Id,
               Cantidad: data.Produccions[i].Cantidad,
               FechaFabricacion: data.Produccions[i].FechaFabricacion,
@@ -349,10 +331,6 @@ export default {
                 Id: data.Produccions[i].Producto.Id,
                 Nombre: data.Produccions[i].Producto.Nombre,
                 UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
-              },
-              Cliente: {
-                Id: data.Produccions[i].Cliente.Id,
-                Nombre: data.Produccions[i].Cliente.Nombre
               },
               Despachado: data.Produccions[i].Despachado
             }
@@ -407,24 +385,15 @@ export default {
       while (s.length < size) s = "0" + s;
       return s;
     },
-    CalcularCapacidad () {
-      let Value = this.CantidadActual
-      let MaxCant = this.ProduccionActual.Cantidad
-      if (Number(MaxCant) <= Number(Value)) {
-        this.CantidadActual = MaxCant
-      } else {
-        this.CantidadActual = Value
-      }
-    },
     agregar () {
       var tmp = {
         Id: null,
         Produccion: {
           Id: this.ProduccionActual.Id,
-          Cantidad: this.CantidadActual,
           FechaFabricacion: this.ProduccionActual.FechaFabricacion,
           FechaVencimiento: this.ProduccionActual.FechaVencimiento,
           Lote: this.ProduccionActual.Lote,
+          Cantidad: this.ProduccionActual.Cantidad,
           Envase: {
             Id: this.ProduccionActual.Envase.Id,
             Numero: this.ProduccionActual.Envase.Numero
@@ -433,10 +402,6 @@ export default {
             Id: this.ProduccionActual.Producto.Id,
             Nombre: this.ProduccionActual.Producto.Nombre,
             UnidadDeMedida: this.ProduccionActual.Producto.UnidadDeMedida
-          },
-          Cliente: {
-            Id: this.Cliente.Id,
-            Nombre: this.Cliente.Nombre
           }
         },
         Envase: {
@@ -459,7 +424,6 @@ export default {
       })
 
       this.ProduccionActual = null,
-      this.CantidadActual = null,
       this.EnvaseActual = null,
       this.TotalActual = null;
 
@@ -485,8 +449,6 @@ export default {
           Total: item.Total
         }
 
-        //console.log(Remision)
-
         this.$apollo.mutate ({
           mutation: CREATE_REMISION,
           variables: {
@@ -499,8 +461,6 @@ export default {
           },
           loadingKey: 'loading',
           update (store, {data: res}) {
-
-            //console.log ({store: store, res: res})
 
             try{
               var data = store.readQuery({
@@ -535,6 +495,20 @@ export default {
     },
     eliminar (item) {
 
+      if ( item.Id === null ) {
+        for (let i=0; i<this.items.length; i++) {
+          if ( item.ProduccionId === this.items[i].ProduccionId ) {
+            this.items.splice(i, 1)
+          }
+        }
+      } else {
+        for (let i=0; i<this.items.length; i++) {
+          if ( item.Id === this.items[i].Id ) {
+            this.items.splice(i, 1)
+          }
+        }
+      }
+
       const Remision = {
         Id: item.Id,
         Numero: this.Numero,
@@ -551,21 +525,17 @@ export default {
           loadingKey: 'loading',
           update (store, {data: res}) {
 
-            //console.log('eliminar')
-            //console.log ({store: store, res: res})
-
             try{
               var data = store.readQuery({
                 query: REMISIONS,
                 variables: {
                   Numero: Remision.Numero,
-                  ProduccionId: Remision.ProduccionId
                 }
               })
 
 
               for (let i=0; i<data.Remisions.length; i++) {
-                if (data.Remisions[i].ProduccionId === res.DeleteRemision.ProduccionId) {
+                if (data.Remisions[i].ProduccionId === Remision.ProduccionId) {
                   //console.log('Eliminado de cache')
                   data.Remisions.splice(i, 1)
                 }
@@ -575,7 +545,6 @@ export default {
                 query: REMISIONS,
                 variables: {
                   Numero: Remision.Numero,
-                  ProduccionId: Remision.ProduccionId
                 },
                 data
               })
@@ -626,7 +595,7 @@ export default {
       this.$router.push('/reporte/remision');
     },
     CreateKardexSale (item) {
-
+      console.log(item)
       var kardex = {
         Cantidad: item.Produccion.Cantidad,
         ProductoId: item.Produccion.Producto.Id,
@@ -724,7 +693,6 @@ export default {
         Id: item.Produccion.Id,
         Cantidad: item.Produccion.Cantidad,
         EnvaseId: item.Produccion.Envase.Id,
-        ClienteId: item.Produccion.Cliente.Id,
         Despachado: Tipo
       }
 
@@ -734,13 +702,10 @@ export default {
           Id: Produccion.Id,
           Cantidad: Produccion.Cantidad,
           EnvaseId: Produccion.EnvaseId,
-          ClienteId: Produccion.ClienteId,
           Despachado: Produccion.Despachado
         },
         loadingKey: 'loading',
         update (store, {data: res}) {
-          //console.log('actualizar')
-          //console.log ({store: store, res: res})
 
           try{
 
@@ -766,36 +731,6 @@ export default {
               data: data
             })
 
-            //console.log('Por Orden:');
-            //console.log(data);
-
-            //producciones por cliente
-            var data = store.readQuery({
-              query: PRODUCCIONS,
-              variables: {
-                ClienteId: res.UpdateOneProduccion.Cliente.Id,
-              }
-            })
-
-            //console.log(data)
-
-            for (let i=0; i<data.Produccions.length; i++) {
-              if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
-                data.Produccions[i].Despachado = res.UpdateOneProduccion.Despachado
-              }
-            }
-
-            store.writeQuery({
-              query: PRODUCCIONS,
-              variables: {
-                ClienteId: res.UpdateOneProduccion.Cliente.Id,
-              },
-              data: data
-            })
-
-            //console.log('Por cliente:');
-            //console.log(data);
-
           } catch (Err) {
             console.log(Err)
           }
@@ -818,10 +753,6 @@ export default {
           Id: item.Produccion.Producto.Id,
           Nombre: item.Produccion.Producto.Nombre,
           UnidadDeMedida: item.Produccion.Producto.UnidadDeMedida
-        },
-        Cliente: {
-          Id: item.Produccion.Cliente.Id,
-          Nombre: item.Produccion.Cliente.Nombre
         },
         Despachado: 'No'
       }
