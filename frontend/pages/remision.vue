@@ -430,7 +430,7 @@ export default {
 
     },
     guardar (item) {
-      //console.log('Entrando a crear')
+
       //console.log(item);
       if( item.Id === null &&
           this.Fecha !== null &&
@@ -739,6 +739,7 @@ export default {
       })
 
       var tmp = {
+        Buscar: item.Produccion.Envase.Numero,
         Id: item.Produccion.Id,
         Cantidad: item.Produccion.Cantidad,
         FechaFabricacion: item.Produccion.FechaFabricacion,
