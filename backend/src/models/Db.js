@@ -4,7 +4,7 @@ import Sequelize from 'sequelize';
 //var db = Path.resolve(__dirname, '../../db/Db.sqlite');
 //const Db = new Sequelize(`sqlite://${db}`);
 
-const Db = new Sequelize('unixjs01', 'unixjs', 'K3J9 8LMN 02F3 B3LW', {
+const Db = new Sequelize('unixjs03', 'unixjs', 'K3J9 8LMN 02F3 B3LW', {
   host: 'localhost',
   dialect: 'postgres',
   pool: {
@@ -134,7 +134,6 @@ const Produccion = Db.define('Produccion', {
   Cantidad: Sequelize.DECIMAL,
   ProductoId: {type: Sequelize.INTEGER, references: {model: Producto, key: "Id"}},
   EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
-  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
   PurezaFinal: Sequelize.DECIMAL,
   PresionFinal: Sequelize.DECIMAL,
   Observacion: Sequelize.TEXT,
@@ -150,9 +149,6 @@ Produccion.belongsTo(Envase);
 
 Producto.hasMany(Produccion);
 Produccion.belongsTo(Producto);
-
-Ente.hasMany(Produccion);
-Produccion.belongsTo(Ente);
 
 
 //remision

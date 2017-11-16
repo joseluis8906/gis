@@ -1,7 +1,7 @@
-query Produccions ( 
+query Produccions (
   $Orden: String,
   $Turno: String,
-  $Fecha: String, 
+  $Fecha: String,
   $Lote: String,
   $FechaInicial: String,
   $FechaFinal: String,
@@ -12,7 +12,6 @@ query Produccions (
   $Cantidad: Float,
   $ProductoId: Int,
   $EnvaseId: Int,
-  $ClienteId: Int,
   $PurezaFinal: Float,
   $PresionFinal: Float
   $Observacion: String
@@ -31,7 +30,6 @@ query Produccions (
     Cantidad: $Cantidad,
     ProductoId: $ProductoId,
     EnvaseId: $EnvaseId,
-    EnteId: $ClienteId,
     PurezaFinal: $PurezaFinal,
     PresionFinal: $PresionFinal,
     Observacion: $Observacion
@@ -50,7 +48,6 @@ query Produccions (
     Cantidad
     ProductoId
     EnvaseId
-    ClienteId
     PurezaFinal
     PresionFinal
     Observacion
@@ -64,10 +61,6 @@ query Produccions (
       Id
       Nombre
       UnidadDeMedida
-    }
-    Cliente {
-      Id
-      Nombre
     }
   }
 }

@@ -1,9 +1,8 @@
-mutation UpdateOneProduccion ( 
+mutation UpdateOneProduccion (
   $Id: Int,
   $Orden: String,
   $Cantidad: Float,
   $EnvaseId: Int,
-  $ClienteId: Int,
   $Despachado: String,
 ) {
   UpdateOneProduccion (
@@ -11,7 +10,6 @@ mutation UpdateOneProduccion (
     Orden: $Orden,
     Cantidad: $Cantidad,
     EnvaseId: $EnvaseId,
-    ClienteId: $ClienteId,
     Despachado: $Despachado
   ){
     Id
@@ -28,7 +26,6 @@ mutation UpdateOneProduccion (
     Cantidad
     ProductoId
     EnvaseId
-    ClienteId
     PurezaFinal
     PresionFinal
     Observacion
@@ -42,10 +39,6 @@ mutation UpdateOneProduccion (
       Id
       Nombre
       UnidadDeMedida
-    }
-    Cliente {
-      Id
-      Nombre
     }
   }
 }

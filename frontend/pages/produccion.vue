@@ -15,7 +15,7 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
-  v-flex( xs12 md8 lg6 )
+  v-flex( xs12 md10 )
     v-card
       v-layout(row wrap pt-3 light-blue)
         v-flex( xs12 )
@@ -216,7 +216,7 @@ v-layout( align-center justify-center )
                 td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
                 td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Capacidad }}
                 td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
-                td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Cliente.Nombre }}
+                td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
                 td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
                   v-btn( fab
                          dark
@@ -229,13 +229,14 @@ v-layout( align-center justify-center )
 
 
             v-layout(row wrap mt-3)
-              v-flex(xs12 md4)
+              v-flex(xs12 md8)
                 v-select( v-bind:items="ItemsFilteredEnvase"
                           v-model="EnvaseActual"
                           label="Envase"
                           item-text="Numero"
                           item-value="Id"
                           return-object
+                          autocomplete
                           dark )
 
               v-flex(xs12 md4)
@@ -244,15 +245,6 @@ v-layout( align-center justify-center )
                               :hint="Producto ? Producto.UnidadDeMedida : ''"
                               persistent-hint
                               @keyup.native="CalcularCapacidad")
-
-              v-flex(xs12 md4)
-                v-select( v-bind:items="ItemsCliente"
-                          v-model="ClienteActual"
-                          label="Cliente"
-                          item-text="Nombre"
-                          item-value="Id"
-                          return-object
-                          dark )
 
             v-btn(fab dark class="indigo mt-1" @click.native="agregar")
               v-icon(dark) add
@@ -314,9 +306,7 @@ export default {
     ItemsProducto: [],
     ItemsAllEnvase: [],
     ItemsFilteredEnvase: [],
-    ItemsCliente: [],
     EnvaseActual: null,
-    ClienteActual: null,
     CantidadActual: null,
     months: [
       'Enero',
@@ -396,10 +386,6 @@ export default {
                 Numero: data.Produccions[i].Envase.Numero,
                 Capacidad: data.Produccions[i].Envase.Capacidad,
               },
-              Cliente: {
-                Id: data.Produccions[i].Cliente.Id,
-                Nombre: data.Produccions[i].Cliente.Nombre
-              },
               Cantidad: data.Produccions[i].Cantidad,
               SaveUpdate: 'update',
               EliminarDisable: data.Produccions[i].Despachado === 'Si' ? true : false,
@@ -419,14 +405,6 @@ export default {
       update (data) {
         //console.log(data)
         this.ItemsProducto = data.Productos
-      }
-    },
-    Entes: {
-      query: ENTES,
-      loadingKey: 'loading',
-      update (data) {
-        //console.log(data)
-        this.ItemsCliente = data.Entes
       }
     }
   },
@@ -524,10 +502,6 @@ export default {
           Numero: this.EnvaseActual.Numero,
           Capacidad: this.EnvaseActual.Capacidad
         },
-        Cliente: {
-          Id: this.ClienteActual.Id,
-          Nombre: this.ClienteActual.Nombre
-        },
         Cantidad: this.CantidadActual,
         SaveUpdate: 'save'
       }
@@ -536,13 +510,12 @@ export default {
       this.guardar(tmp)
 
       this.EnvaseActual = null
-      this.ClienteActual = null
       this.CantidadActual = null
 
     },
     guardar (item) {
-      //console.log(item)
-      if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' && item.Cliente.Id !== null ) {
+      console.log(item)
+      if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' ) {
 
         if ( item.Id === null ) {
 
@@ -562,7 +535,6 @@ export default {
             Cantidad: item.Cantidad,
             ProductoId: this.Producto.Id,
             EnvaseId: item.Envase.Id,
-            ClienteId: item.Cliente.Id,
             PurezaFinal: this.PurezaFinal,
             PresionFinal: this.PresionFinal,
             Observacion: this.Observacion,
@@ -585,7 +557,6 @@ export default {
               Cantidad: Produccion.Cantidad,
               ProductoId: Produccion.ProductoId,
               EnvaseId: Produccion.EnvaseId,
-              ClienteId: Produccion.ClienteId,
               PurezaFinal: Produccion.PurezaFinal,
               PresionFinal: Produccion.PresionFinal,
               Observacion: Produccion.Observacion,
@@ -619,32 +590,6 @@ export default {
                 console.log(Err)
               }
 
-
-              //por cliente
-              try {
-
-                var data = store.readQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    ClienteId: res.CreateProduccion.Cliente.Id,
-                  }
-                })
-
-                //console.log(data)
-                data.Produccions.push(res.CreateProduccion)
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    ClienteId: res.CreateProduccion.Cliente.Id,
-                  },
-                  data: data
-                })
-
-              } catch (Err) {
-                console.log(Err)
-              }
-
             }
           })
 
@@ -667,7 +612,6 @@ export default {
             Cantidad: item.Cantidad,
             ProductoId: this.Producto.Id,
             EnvaseId: item.Envase.Id,
-            ClienteId: item.Cliente.Id,
             PurezaFinal: this.PurezaFinal,
             PresionFinal: this.PresionFinal,
             Observacion: this.Observacion,
@@ -691,7 +635,6 @@ export default {
               Cantidad: Produccion.Cantidad,
               ProductoId: Produccion.ProductoId,
               EnvaseId: Produccion.EnvaseId,
-              ClienteId: Produccion.ClienteId,
               PurezaFinal: Produccion.PurezaFinal,
               PresionFinal: Produccion.PresionFinal,
               Observacion: Produccion.Observacion,
@@ -725,7 +668,6 @@ export default {
                     data.Produccions[i].Cantidad = res.UpdateOneProduccion.Cantidad
                     data.Produccions[i].ProductoId = res.UpdateOneProduccion.ProductoId
                     data.Produccions[i].EnvaseId = res.UpdateOneProduccion.EnvaseId
-                    data.Produccions[i].ClienteId = res.UpdateOneProduccion.ClienteId
                     data.Produccions[i].PurezaFinal = res.UpdateOneProduccion.PurezaFinal
                     data.Produccions[i].PresionFinal = res.UpdateOneProduccion.PresionFinal
                     data.Produccions[i].Observacion = res.UpdateOneProduccion.Observacion
@@ -791,7 +733,6 @@ export default {
           Cantidad: item.Cantidad,
           ProductoId: this.Producto.Id,
           EnvaseId: item.Envase.Id,
-          ClienteId: item.Cliente.Id,
           PurezaFinal: this.PurezaFinal,
           PresionFinal: this.PresionFinal,
           Observacion: this.Observacion,
@@ -815,7 +756,6 @@ export default {
             Cantidad: Produccion.Cantidad,
             ProductoId: Produccion.ProductoId,
             EnvaseId: Produccion.EnvaseId,
-            ClienteId: Produccion.ClienteId,
             PurezaFinal: Produccion.PurezaFinal,
             PresionFinal: Produccion.PresionFinal,
             Observacion: Produccion.Observacion,
@@ -851,37 +791,6 @@ export default {
              } catch (Err) {
                console.log(Err)
              }
-
-
-             //por cliente
-             try {
-
-               var data = store.readQuery({
-                 query: PRODUCCIONS,
-                 variables: {
-                   ClienteId: res.DeleteProduccion.Cliente.Id,
-                 }
-               })
-
-               //console.log(data)
-               for (let i=0; i<data.Produccions.length; i++) {
-                 if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
-                   data.Produccions.splice(i, 1)
-                 }
-               }
-
-               store.writeQuery({
-                 query: PRODUCCIONS,
-                 variables: {
-                   ClienteId: res.DeleteProduccion.Cliente.Id,
-                 },
-                 data: data
-               })
-
-             } catch (Err) {
-               console.log(Err)
-             }
-
            }
          })
 
@@ -906,7 +815,6 @@ export default {
       this.PurezaFinal = null,
       this.PresionFinal = null,
       this.Observacion = null,
-
       this.ItemsEnvase = []
       this.items = []
       this.ChangeProductoCounter=0

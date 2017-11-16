@@ -1,4 +1,4 @@
-mutation UpdateProduccion ( 
+mutation UpdateProduccion (
   $Orden: String!,
   $Turno: String,
   $Fecha: String,
@@ -12,7 +12,6 @@ mutation UpdateProduccion (
   $Cantidad: Float!,
   $ProductoId: Int!,
   $EnvaseId: Int!,
-  $ClienteId: Int!,
   $PurezaFinal: Float!,
   $PresionFinal: Float!
   $Observacion: String
@@ -31,7 +30,6 @@ mutation UpdateProduccion (
     Cantidad: $Cantidad,
     ProductoId: $ProductoId,
     EnvaseId: $EnvaseId,
-    ClienteId: $ClienteId,
     PurezaFinal: $PurezaFinal,
     PresionFinal: $PresionFinal,
     Observacion: $Observacion
@@ -50,7 +48,6 @@ mutation UpdateProduccion (
     Cantidad
     ProductoId
     EnvaseId
-    ClienteId
     PurezaFinal
     PresionFinal
     Observacion
@@ -64,10 +61,6 @@ mutation UpdateProduccion (
       Id
       Nombre
       UnidadDeMedida
-    }
-    Cliente {
-      Id
-      Nombre
     }
   }
 }

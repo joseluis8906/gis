@@ -18,7 +18,6 @@ mutation DeleteProduccion (
     Cantidad
     ProductoId
     EnvaseId
-    ClienteId
     PurezaFinal
     PresionFinal
     Observacion
@@ -32,10 +31,6 @@ mutation DeleteProduccion (
       Id
       Nombre
       UnidadDeMedida
-    }
-    Cliente {
-      Id
-      Nombre
     }
   }
 }
