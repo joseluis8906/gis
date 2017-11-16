@@ -93,7 +93,7 @@ v-layout( align-center justify-center )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase.Numero }}
-                td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency }}
+                td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
                 td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
                   v-btn( fab
                          dark
@@ -412,7 +412,7 @@ export default {
         SaveUpdate: 'save'
       }
 
-      this.items.push(tmp)
+      //this.items.push(tmp)
       this.guardar(tmp)
 
       this.ItemsProduccion = this.ItemsProduccion.filter( Item => {
