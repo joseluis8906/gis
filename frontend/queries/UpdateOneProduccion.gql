@@ -34,6 +34,14 @@ mutation UpdateOneProduccion (
       Id
       Numero
       Capacidad
+      Propietario {
+        Id
+        TipoDocumento
+        NumeroDocumento
+        Nombre
+        Direccion
+        Telefono
+      }
     }
     Producto {
       Id

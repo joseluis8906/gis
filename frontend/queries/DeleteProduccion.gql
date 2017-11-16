@@ -5,32 +5,5 @@ mutation DeleteProduccion (
     Id: $Id
   ){
     Id
-    Orden
-    Turno
-    Fecha
-    Lote
-    FechaInicial
-    FechaFinal
-    HoraInicial
-    HoraFinal
-    FechaFabricacion
-    FechaVencimiento
-    Cantidad
-    ProductoId
-    EnvaseId
-    PurezaFinal
-    PresionFinal
-    Observacion
-    Despachado
-    Envase {
-      Id
-      Numero
-      Capacidad
-    }
-    Producto {
-      Id
-      Nombre
-      UnidadDeMedida
-    }
   }
 }

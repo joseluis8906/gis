@@ -348,6 +348,7 @@ export default {
             tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida;
             tmp.ProductoId = data.Envases[i].Producto.Id;
             tmp.Disponible = data.Envases[i].Disponible;
+            tmp.Cliente = data.Envases[i].Propietario;
             this.ItemsAllEnvase.push(tmp);
           }
         }
@@ -385,6 +386,7 @@ export default {
                 Id: data.Produccions[i].Envase.Id,
                 Numero: data.Produccions[i].Envase.Numero,
                 Capacidad: data.Produccions[i].Envase.Capacidad,
+                Cliente: data.Produccions[i].Envase.Propietario,
               },
               Cantidad: data.Produccions[i].Cantidad,
               SaveUpdate: 'update',
@@ -500,13 +502,14 @@ export default {
         Envase: {
           Id: this.EnvaseActual.Id,
           Numero: this.EnvaseActual.Numero,
-          Capacidad: this.EnvaseActual.Capacidad
+          Capacidad: this.EnvaseActual.Capacidad,
+          Cliente: this.EnvaseActual.Cliente
         },
         Cantidad: this.CantidadActual,
         SaveUpdate: 'save'
       }
 
-      this.items.push(tmp)
+      //this.items.push(tmp)
       this.guardar(tmp)
 
       this.EnvaseActual = null
@@ -514,7 +517,7 @@ export default {
 
     },
     guardar (item) {
-      console.log(item)
+      //console.log(item)
       if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' ) {
 
         if ( item.Id === null ) {
@@ -564,8 +567,6 @@ export default {
             },
             loadingKey: 'loading',
             update: (store, {data: res}) => {
-              //console.log ('guardar')
-              //console.log ({store: store, res: res})
 
               try{
                 var data = store.readQuery({
@@ -642,8 +643,6 @@ export default {
             },
             loadingKey: 'loading',
             update (store, {data: res}) {
-              //console.log('actualizar')
-              //console.log ({store: store, res: res})
 
               try{
                 const data = store.readQuery({
@@ -763,18 +762,18 @@ export default {
           },
            loadingKey: 'loading',
            update: (store, {data: res}) => {
-             //console.log ({store: store, res: res})
 
              try{
+
                const data = store.readQuery({
                  query: PRODUCCIONS,
                  variables: {
-                   Orden: Produccion.Orden
+                   Orden: Produccion.Orden,
                  }
-               })
+               });
 
-               for (let i=0; i<data.Produccions.length; i++) {
-                 if (data.Produccions[i].Id === res.DeleteProduccion.Id) {
+               for(let i=0; i<data.Produccions.length; i++){
+                 if(data.Produccions[i].Id === Produccion.Id){
                    data.Produccions.splice(i, 1)
                  }
                }
@@ -782,16 +781,14 @@ export default {
                store.writeQuery({
                  query: PRODUCCIONS,
                  variables: {
-                   Orden: Produccion.Orden
+                   Orden: Produccion.Orden,
                  },
                  data
                })
 
-
-             } catch (Err) {
-               console.log(Err)
-             }
+             } catch (Err) { console.log(Err) }
            }
+
          })
 
          this.UpdateEnvase(item.Envase, 'Si');
