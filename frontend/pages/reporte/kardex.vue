@@ -20,21 +20,21 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           td(class="lado") Fecha
           td(class="lado") {{ Fecha }}
-            
+
     table(style="width: 100%; height: auto" class="table-kardex" )
       thead
         tr(class="green lighten-3")
           th(style="width: 5%") Cant
-          th(style="width: 12%") Producto
+          th(style="width: 13%") Producto
           th(style="width: 6%") Número
-          th(style="width: 8%") Fecha
+          th(style="width: 7.5%") Fecha
             br
             | Elaboración
           th Lote
-          th(style="width: 8%") Fecha
+          th(style="width: 7.5%") Fecha
             br
             | Vencimiento
-          th(style="width: 16%") Cliente
+          th(style="width: 17.5%") Cliente
           th(style="width: 12%") Ciudad
           th(style="width: 8%") Fecha
             br
@@ -42,7 +42,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th Factura
             br
             | Sale
-          th(style="width: 8%") Fecha
+          th(style="width: 7.5%") Fecha
             br
             | Entra
           th Factura
@@ -50,18 +50,18 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
             | Entra
       tbody
         tr(v-for="(item, j) in items" :key="j")
-          td(style="text-align: right") {{ item.Cantidad }}
-          td(style="text-align: left") {{ item.Producto.Nombre }}
-          td(style="text-align: right") {{ item.Envase.Numero }}
-          td(style="text-align: right") {{ item.FechaElaboracion }}
-          td(style="text-align: center") {{ item.Lote }}
-          td(style="text-align: right") {{ item.FechaVencimiento }}
-          td(style="text-align: right") {{ item.Ente.Nombre }}
-          td(style="text-align: right") {{ item.Ente.Ciudad }}
-          td(style="text-align: left") {{ item.FechaSale }}
-          td(style="text-align: left") {{ item.NumeroFacturaSale }}
-          td(style="text-align: left") {{ item.FechaEntra }}
-          td(style="text-align: left") {{ item.NumeroFacturaEntra }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.Cantidad }} {{ item.Producto.UnidadDeMedida }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.Producto.Nombre }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.Envase.Numero }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaElaboracion }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.Lote }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaVencimiento }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.Ente.Nombre }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.Ente.Ciudad }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaSale }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.NumeroFacturaSale }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaEntra }}
+          td(style="text-align: right; font-size: 7.5pt") {{ item.NumeroFacturaEntra }}
 </template>
 
 <script>
@@ -136,10 +136,10 @@ export default {
             }
             this.items.push(tmp)
           }
-          
+
         }
-        if (this.items.length < 34) {
-          for (let k=this.items.length; k<=34; k++) {
+        if (this.items.length < 33) {
+          for (let k=this.items.length; k<=33; k++) {
             var tmp = {
               Cantidad: null,
               Producto: {Nombre: null},
