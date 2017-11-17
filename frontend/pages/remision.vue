@@ -15,7 +15,7 @@ v-layout( align-center justify-center )
       h6(class="grey--text text--lighten-4 mb-0") {{ snackbar.text }}
       v-icon autorenew
 
-  v-flex( xs12 md10 lg8 )
+  v-flex( xs12 )
     v-card
       v-layout(row wrap pt-3 light-blue)
         v-flex( xs12 )
