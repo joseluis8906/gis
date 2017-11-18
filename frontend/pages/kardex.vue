@@ -69,7 +69,7 @@ v-layout( align-center justify-center )
 
             v-select( v-bind:items="ItemsCliente"
                       v-model="Cliente"
-                      label="Propietario"
+                      label="Cliente"
                       item-value="Id"
                       item-text="Nombre"
                       autocomplete

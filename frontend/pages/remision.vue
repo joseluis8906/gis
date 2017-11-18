@@ -269,7 +269,7 @@ export default {
         }
       }
     },
-    LastRemision: {
+    /*LastRemision: {
       query: LAST_REMISION,
       loading: 'loading',
       update (data) {
@@ -281,7 +281,7 @@ export default {
         }
 
       }
-    },
+    },*/
     OneEnte: {
       query: ONE_ENTE,
       variables () {
@@ -666,6 +666,11 @@ export default {
           //console.log(res)
         }
       })
+
+      if(!item.Envase)
+      {
+        return
+      }
 
       if (item.Envase.Id) {
 

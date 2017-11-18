@@ -912,7 +912,7 @@ var Query = new GraphQLObjectType({
           FechaFinal: {type: GraphQLString}
         },
         resolve(root, args) {
-          console.log(args)
+          //console.log(args)
           if(args.Tipo === "Único") {
             return Db.models.Kardex.findAll({
               where: {
