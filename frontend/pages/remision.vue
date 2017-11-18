@@ -436,7 +436,7 @@ export default {
           this.Fecha !== null &&
           this.Cliente.Id !== null &&
           item.Produccion.Id !== null &&
-          item.Envase.Id !== null &&
+          //item.Envase.Id !== null &&
           item.Total !== null &&
           item.Total !== '') {
 
@@ -595,7 +595,7 @@ export default {
       this.$router.push('/reporte/remision');
     },
     CreateKardexSale (item) {
-      console.log(item)
+      //console.log(item)
       var kardex = {
         Cantidad: item.Produccion.Cantidad,
         ProductoId: item.Produccion.Producto.Id,
@@ -628,6 +628,9 @@ export default {
       })
     },
     CreateKardexEntra (item) {
+      if(item === null){
+        return
+      }
       var kardex = {
         EnvaseId: item.Envase.Id,
         EnteId: this.Cliente.Id,

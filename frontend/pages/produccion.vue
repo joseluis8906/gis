@@ -214,7 +214,6 @@ v-layout( align-center justify-center )
               template(slot="items" scope="props")
                 td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
                 td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
-                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Capacidad }}
                 td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
                 td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
                 td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
@@ -229,7 +228,7 @@ v-layout( align-center justify-center )
 
 
             v-layout(row wrap mt-3)
-              v-flex(xs12 md8)
+              v-flex(xs12)
                 v-select( v-bind:items="ItemsFilteredEnvase"
                           v-model="EnvaseActual"
                           label="Envase"
@@ -238,13 +237,6 @@ v-layout( align-center justify-center )
                           return-object
                           autocomplete
                           dark )
-
-              v-flex(xs12 md4)
-                v-text-field( label="Cantidad"
-                              v-model="CantidadActual"
-                              :hint="Producto ? Producto.UnidadDeMedida : ''"
-                              persistent-hint
-                              @keyup.native="CalcularCapacidad")
 
             v-btn(fab dark class="indigo mt-1" @click.native="agregar")
               v-icon(dark) add
@@ -294,7 +286,6 @@ export default {
     headers: [
       { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
       { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
-      { text: 'Capacidad', align: 'center', sortable: false,  value: 'Capacidad' },
       { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
       { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
       { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
@@ -307,7 +298,6 @@ export default {
     ItemsAllEnvase: [],
     ItemsFilteredEnvase: [],
     EnvaseActual: null,
-    CantidadActual: null,
     months: [
       'Enero',
       'Febrero',
@@ -487,15 +477,6 @@ export default {
       })
 
     },
-    CalcularCapacidad () {
-      let Value = this.CantidadActual
-      let MaxCant = this.EnvaseActual.Capacidad
-      if (Number(MaxCant) <= Number(Value)) {
-        this.CantidadActual = MaxCant
-      } else {
-        this.CantidadActual = Value
-      }
-    },
     agregar () {
       var tmp = {
         Id: null,
@@ -505,7 +486,7 @@ export default {
           Capacidad: this.EnvaseActual.Capacidad,
           Cliente: this.EnvaseActual.Cliente
         },
-        Cantidad: this.CantidadActual,
+        Cantidad: this.EnvaseActual.Capacidad,,
         SaveUpdate: 'save'
       }
 
@@ -513,7 +494,6 @@ export default {
       this.guardar(tmp)
 
       this.EnvaseActual = null
-      this.CantidadActual = null
 
     },
     guardar (item) {
@@ -692,11 +672,6 @@ export default {
 
         }
 
-      }
-    },
-    controlCantidad (item) {
-      if (Number(item.Cantidad) >= item.Envase.Capacidad) {
-        item.Cantidad = item.Envase.Capacidad
       }
     },
     eliminar (item) {
