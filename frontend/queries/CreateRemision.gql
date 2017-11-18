@@ -1,9 +1,9 @@
-mutation CreateRemision ( 
-  $Numero: String!
-  $Fecha: String!
-  $EnteId: Int!
-  $ProduccionId: Int!
-  $EnvaseId: Int!
+mutation CreateRemision (
+  $Numero: String
+  $Fecha: String
+  $EnteId: Int
+  $ProduccionId: Int
+  $EnvaseId: Int
   $Total: Float
 ) {
   CreateRemision (

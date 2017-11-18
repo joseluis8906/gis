@@ -92,7 +92,7 @@ v-layout( align-center justify-center )
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
-                td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase.Numero }}
+                td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase ? props.item.Envase.Numero : '' }}
                 td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
                 td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
                   v-btn( fab
@@ -147,6 +147,7 @@ import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
 import DELETE_REMISION from '~/queries/DeleteRemision.gql'
 import ONE_ENTE from '~/queries/OneEnte.gql'
 import ENVASES from '~/queries/Envases.gql'
+import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
 import CREATE_KARDEX_SALE from '~/queries/CreateKardexSale.gql'
 import CREATE_KARDEX_ENTRA from '~/queries/CreateKardexEntra.gql'
 import DELETE_KARDEX_SALE from '~/queries/DeleteKardexSale.gql'
@@ -252,10 +253,7 @@ export default {
                 },
                 Despachado: data.Remisions[i].Despachado
               },
-              Envase: {
-                Id: data.Remisions[i].Envase.Id,
-                Numero: data.Remisions[i].Envase.Numero
-              },
+              Envase: data.Remisions[i].Envase ? { Id: data.Remisions[i].Envase.Id,  Numero: data.Remisions[i].Envase.Numero } : null,
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update',
             }
@@ -404,10 +402,7 @@ export default {
             UnidadDeMedida: this.ProduccionActual.Producto.UnidadDeMedida
           }
         },
-        Envase: {
-          Id: this.EnvaseActual.Id,
-          Numero: this.EnvaseActual.Numero
-        },
+        Envase: this.EnvaseActual ? { Id: this.EnvaseActual.Id,  Numero: this.EnvaseActual.Numero } : null,
         Total: this.TotalActual,
         SaveUpdate: 'save'
       }
@@ -420,13 +415,12 @@ export default {
       })
 
       this.ItemsEnvase = this.ItemsEnvase.filter( Item => {
-        return tmp.Envase.Id !== Item.Id
+        return Item.Id !== (tmp.Envase ? tmp.Envase.Id : null);
       })
 
       this.ProduccionActual = null,
       this.EnvaseActual = null,
       this.TotalActual = null;
-
 
     },
     guardar (item) {
@@ -445,7 +439,7 @@ export default {
           Fecha: this.Fecha,
           EnteId: this.Cliente.Id,
           ProduccionId: item.Produccion.Id,
-          EnvaseId: item.Envase.Id,
+          EnvaseId: item.Envase ? item.Envase.Id : null,
           Total: item.Total
         }
 
@@ -488,6 +482,7 @@ export default {
         })
 
         this.UpdateProduccion(item, 'Si')
+        item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'Si') : null;
         this.CreateKardexEntra(item)
         this.CreateKardexSale(item)
 
@@ -557,6 +552,7 @@ export default {
         })
 
         this.UpdateProduccion(item, 'No')
+        item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'No') : null;
         this.EliminarKardex(item)
 
       } else {
@@ -628,7 +624,7 @@ export default {
       })
     },
     CreateKardexEntra (item) {
-      if(item === null){
+      if(item.Envase === null){
         return
       }
       var kardex = {
@@ -763,13 +759,63 @@ export default {
 
       this.ItemsProduccion.push(tmp)
 
-      tmp = {
+      tmp = item.Envase ? {
         Id: item.Envase.Id,
         Numero: item.Envase.Numero,
         Disponible: item.Envase.Disponible
-      }
+      } : null;
 
-      this.ItemsEnvase.push(tmp)
+      tmp ? this.ItemsEnvase.push(tmp) : null;
+
+    },
+    UpdateEnvase (_Envase, Value) {
+      const Envase = {
+        Numero: _Envase.Numero,
+        Disponible: Value
+      };
+
+      this.$apollo.mutate ({
+        mutation: UPDATE_ENVASE,
+        variables: {
+          Numero: Envase.Numero,
+          Disponible: Envase.Disponible
+        },
+        loadingKey: 'loading',
+        update: (store, { data: res }) => {
+          //console.log(res, 'linea 463');
+
+          try {
+
+            data = store.readQuery({
+              query: ENVASES
+            })
+
+            for (let i=0; i<data.Envases.length; i++) {
+              if (data.Envases[i].Id === res.UpdateEnvase.Id) {
+                data.Envases[i] = res.UpdateEnvase
+              }
+            }
+
+            store.writeQuery({
+              query: ENVASES,
+              data
+            })
+
+          } catch (Err) {
+
+            console.log(Err)
+
+          }
+
+          /*for (let i=0; i<this.ItemsAllEnvase.length; i++){
+            if(res.UpdateEnvase.Id === this.ItemsAllEnvase[i].Id){
+              this.ItemsAllEnvase[i].Disponible = res.UpdateEnvase.Disponible;
+            }
+          }*/
+          this.FiltrarEnvases()
+
+        }
+      })
 
     },
     FiltrarEnvases () {

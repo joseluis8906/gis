@@ -486,7 +486,7 @@ export default {
           Capacidad: this.EnvaseActual.Capacidad,
           Cliente: this.EnvaseActual.Cliente
         },
-        Cantidad: this.EnvaseActual.Capacidad,,
+        Cantidad: this.EnvaseActual.Capacidad,
         SaveUpdate: 'save'
       }
 
