@@ -50,18 +50,18 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
             | Entra
       tbody
         tr(v-for="(item, j) in items" :key="j")
-          td(style="text-align: right; font-size: 7.5pt") {{ item.Cantidad }} {{ item.Producto.UnidadDeMedida }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.Producto.Nombre }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.Envase.Numero }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaElaboracion }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.Lote }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaVencimiento }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.Ente.Nombre }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.Ente.Ciudad }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaSale }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.NumeroFacturaSale }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.FechaEntra }}
-          td(style="text-align: right; font-size: 7.5pt") {{ item.NumeroFacturaEntra }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Producto.UnidadDeMedida }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Producto.Nombre }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase ? item.Envase.Numero : '' }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.FechaElaboracion }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Lote }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.FechaVencimiento }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength(item.Ente.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Ente.Ciudad }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.FechaSale }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.NumeroFacturaSale }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.FechaEntra }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.NumeroFacturaEntra }}
 </template>
 
 <script>
@@ -156,6 +156,14 @@ export default {
             this.items.push (tmp)
           }
         }
+      }
+    }
+  },
+  methods: {
+    MaxLength (value) {
+      if(value){
+        console.log(value.length)
+        return value.length > 32 ? value.substr(0, 26)+'...'+value.substr(-6, 6) : value;
       }
     }
   }

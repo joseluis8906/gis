@@ -20,7 +20,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           td(class="lado") Fecha
           td(class="lado") {{ Fecha }}
-          
+
     table(style="width: 49%; height: auto; display: inline-block; vertical-align: top;" class="table-kardex" )
       tbody
         tr
@@ -41,7 +41,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           td(style="text-align: left") Fecha Final:
           td(style="text-align: right") {{ FechaFinal }}
-        
+
     table(style="width: 49%; margin-left: 2%; height: auto; display: inline-block;" class="table-kardex" )
       tbody
         tr
@@ -65,7 +65,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           td(style="text-align: left") Hora Final:
           td(style="text-align: right") {{ HoraFinal }}
-    
+
     table(style="width: 49%; height: auto; display: inline-block;" class="table-kardex" )
       thead
         tr(class="green lighten-3")
@@ -73,14 +73,14 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(style="width: 12%") Producto
           th(style="width: 6%") Número
           th(style="width: 16%") Cliente
-          
+
       tbody
         tr(v-for="(item, j) in items1" :key="j")
-          td(style="text-align: right") {{ item.Envase.Capacidad }}
-          td(style="text-align: center") {{ item.Producto.Nombre }}
-          td(style="text-align: center") {{ item.Envase.Numero }}
-          td(style="text-align: center") {{ item.Cliente.Nombre }}
-          
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Capacidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Numero }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre) }}
+
     table(style="width: 49%; margin-left: 2%; height: auto; display: inline-block;")
       thead
         tr(class="green lighten-3")
@@ -88,30 +88,30 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(style="width: 12%") Producto
           th(style="width: 6%") Número
           th(style="width: 16%") Cliente
-          
+
       tbody
         tr(v-for="(item, k) in items2" :key="k")
-          td(style="text-align: right") {{ item.Envase.Capacidad }}
-          td(style="text-align: center") {{ item.Producto.Nombre }}
-          td(style="text-align: center") {{ item.Envase.Numero }}
-          td(style="text-align: center") {{ item.Cliente.Nombre }}
-          
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Capacidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Numero }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre) }}
+
     div(style="width: 49%; height:40mm; margin-top: 3mm; display: inline-block; vertical-align: top;")
       h6(class="headlines") Observación: {{ Observacion }}
-      
+
     table(style="width: 25%; height: auto; display:inline-block; margin-top: 15mm; margin-left: 25%;")
       tbody
         tr
-          td(style="text-align: left") % Pureza Final:
-          td(style="text-align: right") {{ PurezaFinal }}
+          td(style="text-align: left") Pureza Final:
+          td(style="text-align: left") {{ PurezaFinal }} %
         tr
           td(style="text-align: left") Presión Final:
-          td(style="text-align: right") {{ PresionFinal }}
-          
+          td(style="text-align: left") {{ PresionFinal }} psi
+
     div(style="width: 49%; height:40mm; margin-top: 5mm; display: inline-block; vertical-align: top;")
       h6(class="body-2") Elaboró ___________________________________
       p(class="body-2") Jefe de Producción y Mantenimiento
-      
+
     div(style="width: 49%; margin-left: 2%; height:40mm; margin-top: 5mm; display: inline-block; vertical-align: top;")
       h6(class="body-2") Revisó ____________________________________
       p(class="body-2") Dirección Técnica y Jefe de Control de Calidad
@@ -144,7 +144,7 @@ export default {
       PurezaFinal: null,
       PresionFinal: null,
       Observacion: null,
-      
+
       items1: [],
       items2: [],
       loading: 0
@@ -169,7 +169,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
+        //console.log(data)
         if (data.Produccions.length > 0) {
           this.Turno = data.Produccions[0].Turno
           this.Fecha = data.Produccions[0].Fecha
@@ -184,13 +184,13 @@ export default {
           this.PurezaFinal = data.Produccions[0].PurezaFinal
           this.PresionFinal = data.Produccions[0].PresionFinal
           this.Observacion = data.Produccions[0].Observacion
-          
+
           this.items1 = []
           this.Cantidad = 0
           this.CantidadM3 = 0.0
           this.UnidadDeMedida = data.Produccions[0].Producto.UnidadDeMedida
           var length = data.Produccions.length;
-          
+
           for ( let i=0; i<=21; i++ ) {
             if( i < length ) {
               var tmp = {
@@ -202,18 +202,15 @@ export default {
                   Id: data.Produccions[i].Envase.Id,
                   Numero: data.Produccions[i].Envase.Numero,
                   Capacidad: data.Produccions[i].Envase.Capacidad,
-                  UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
-                },
-                Cliente: {
-                  Id: data.Produccions[i].Cliente.Id,
-                  Nombre: data.Produccions[i].Cliente.Nombre
+                  UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida,
+                  Cliente: data.Produccions[i].Envase.Propietario
                 },
                 Cantidad: data.Produccions[i].Cantidad,
               }
-              
+
               this.Cantidad++
               this.CantidadM3 += data.Produccions[i].Cantidad
-              
+
             } else {
               var tmp = {
                 Producto: {
@@ -224,21 +221,18 @@ export default {
                   Id: null,
                   Numero: null,
                   Capacidad: null,
-                  UnidadDeMedida: null
-                },
-                Cliente: {
-                  Id: null,
-                  Nombre: null
+                  UnidadDeMedida: null,
+                  Cliente: {Nombre: null},
                 },
                 Cantidad: null
               }
             }
-            
+
             this.items1.push(tmp)
           }
-          
+
           this.items2 = []
-          
+
           for ( let i=21; i<43; i++ ) {
             if( i < length ) {
               var tmp = {
@@ -250,18 +244,15 @@ export default {
                   Id: data.Produccions[i-21].Envase.Id,
                   Numero: data.Produccions[i-21].Envase.Numero,
                   Capacidad: data.Produccions[i-21].Envase.Capacidad,
-                  UnidadDeMedida: data.Produccions[i-21].Producto.UnidadDeMedida
-                },
-                Cliente: {
-                  Id: data.Produccions[i-21].Cliente.Id,
-                  Nombre: data.Produccions[i-21].Cliente.Nombre
+                  UnidadDeMedida: data.Produccions[i-21].Producto.UnidadDeMedida,
+                  Cliente: data.Produccions[i-21].Envase.Propietario
                 },
                 Cantidad: data.Produccions[i-21].Cantidad,
               }
-              
+
               this.Cantidad++
               this.CantidadM3 += data.Produccions[i].Cantidad
-              
+
             } else {
               var tmp = {
                 Producto: {
@@ -272,20 +263,25 @@ export default {
                   Id: null,
                   Numero: null,
                   Capacidad: null,
-                  UnidadDeMedida: null
-                },
-                Cliente: {
-                  Id: null,
-                  Nombre: null
+                  UnidadDeMedida: null,
+                  Cliente: {Nombre: null}
                 },
                 Cantidad: null
               }
             }
-            
+
             this.items2.push(tmp)
           }
-          
-        } 
+
+        }
+      }
+    }
+  },
+  methods: {
+    MaxLength (value) {
+      if(value){
+        //console.log(value.length)
+        return value.length > 24 ? value.substr(0, 16)+'...'+value.substr(-6, 6) : value;
       }
     }
   }
@@ -322,5 +318,5 @@ td
   padding-left 1mm
   padding-right 1mm
   text-align right
-  
+
 </style>

@@ -46,7 +46,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right") {{ item.Produccion.Cantidad }} {{ item.Produccion.Producto.UnidadDeMedida }}
           td(style="text-align: left") {{ item.Produccion.Producto.Nombre }}
           td(style="text-align: center") {{ item.Produccion.Envase.Numero }}
-          td(style="text-align: center") {{ item.Envase.Numero }}
+          td(style="text-align: center") {{ item.Envase ? item.Envase.Numero : '' }}
           td(style="text-align: center") {{ item.Produccion.FechaFabricacion }}
           td(style="text-align: center") {{ item.Produccion.FechaVencimiento }}
           td(style="text-align: center") {{ item.Produccion.Lote }}
@@ -139,9 +139,9 @@ export default {
                   UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
                 }
               },
-              Envase: {
+              Envase: data.Remisions[i].Envase ?  {
                 Numero: data.Remisions[i].Envase.Numero
-              },
+              } : null,
               Total: data.Remisions[i].Total
             }
 
