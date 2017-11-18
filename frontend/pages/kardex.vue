@@ -77,7 +77,6 @@ v-layout( align-center justify-center )
                       :hint="`${Cliente.TipoDocumento || ''}: ${Cliente.NumeroDocumento || ''}`"
                       persistent-hint
                       v-if="esCliente"
-                      autocomplete
                       dark )
 
             v-menu( lazy
