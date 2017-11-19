@@ -49,7 +49,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
             br
             | Entra
       tbody
-        tr(v-for="(item, j) in items" :key="j")
+        tr(v-for="(item, j) in page.Items" :key="j")
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Producto.UnidadDeMedida }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Producto.Nombre }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase ? item.Envase.Numero : '' }}
@@ -72,10 +72,7 @@ import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
-      pages: [
-        {Size: 'Letter', Layout: 'Landscape'}
-      ],
-      items: [],
+      pages: [],
       loading: 0
     }
   },
@@ -117,44 +114,28 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
-        this.items = []
-        if (data.Kardexs.length>0) {
-          for(let i=0; i<data.Kardexs.length; i++) {
-            var tmp = {
-              Cantidad: data.Kardexs[i].Cantidad,
-              Producto: data.Kardexs[i].Producto,
-              Envase: data.Kardexs[i].Envase,
-              FechaElaboracion: data.Kardexs[i].FechaElaboracion,
-              Lote: data.Kardexs[i].Lote,
-              FechaVencimiento: data.Kardexs[i].FechaVencimiento,
-              Ente: data.Kardexs[i].Ente,
-              FechaSale: data.Kardexs[i].FechaSale,
-              NumeroFacturaSale: data.Kardexs[i].NumeroFacturaSale,
-              FechaEntra: data.Kardexs[i].FechaEntra,
-              NumeroFacturaEntra: data.Kardexs[i].NumeroFacturaEntra
-            }
-            this.items.push(tmp)
+
+        let page = 0;
+        for(let i=0; i<data.Kardexs.length; i++) {
+          var tmp = {
+            Cantidad: data.Kardexs[i].Cantidad,
+            Producto: data.Kardexs[i].Producto,
+            Envase: data.Kardexs[i].Envase,
+            FechaElaboracion: data.Kardexs[i].FechaElaboracion,
+            Lote: data.Kardexs[i].Lote,
+            FechaVencimiento: data.Kardexs[i].FechaVencimiento,
+            Ente: data.Kardexs[i].Ente,
+            FechaSale: data.Kardexs[i].FechaSale,
+            NumeroFacturaSale: data.Kardexs[i].NumeroFacturaSale,
+            FechaEntra: data.Kardexs[i].FechaEntra,
+            NumeroFacturaEntra: data.Kardexs[i].NumeroFacturaEntra
           }
 
-        }
-        if (this.items.length < 33) {
-          for (let k=this.items.length; k<=33; k++) {
-            var tmp = {
-              Cantidad: null,
-              Producto: {Nombre: null},
-              Envase: {Numero: null},
-              FechaElaboracion: null,
-              Lote: null,
-              FechaVencimiento: null,
-              Ente: {Nombre: null, Ciudad: null},
-              FechaSale: null,
-              NumeroFacturaSale: null,
-              FechaEntra: null,
-              NumeroFacturaEntra: null
-            }
-            this.items.push (tmp)
+          if( Number.isInteger(i / 34) ){
+            page = Math.trunc(i / 34);
+            this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []})
           }
+          this.pages[page].Items.push(tmp)
         }
       }
     }
@@ -162,8 +143,8 @@ export default {
   methods: {
     MaxLength (value) {
       if(value){
-        console.log(value.length)
-        return value.length > 32 ? value.substr(0, 26)+'...'+value.substr(-6, 6) : value;
+        //console.log(value.length)
+        return value.length >= 26 ? value.substr(0, 20)+'...'+value.substr(-6, 6) : value;
       }
     }
   }

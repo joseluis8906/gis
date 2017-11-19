@@ -60,17 +60,16 @@ v-layout( align-center justify-center )
                   h6(class="grey--text text--lighten-4") Cliente
 
                 v-flex(xs12)
-                  v-select( v-bind:items="ItemsDocumento"
-                      v-model="Cliente.TipoDocumento"
-                      label="Tipo de Documento"
-                      item-value="text"
-                      class="mb-5"
-                      dark )
-
-                  v-text-field( label="Nit/C.C" v-model="Cliente.NumeroDocumento" dark )
+                  v-select( v-bind:items="ItemsCliente"
+                            v-model="Cliente"
+                            label="Cliente"
+                            item-text="Nombre"
+                            autocomplete
+                            return-object
+                            dark )
 
                 v-flex(xs12 md6)
-                  v-text-field( label="Nombre" v-model="Cliente.Nombre" readonly )
+                  v-text-field( label="Documento" v-model="Cliente.NumeroDocumento" :hint="`${Cliente.TipoDocumento || ''}`" persistent-hint readonly )
 
                 v-flex(xs12 md6)
                   v-text-field( label="Ciudad" v-model="Cliente.Ciudad" readonly )
@@ -145,6 +144,7 @@ import CREATE_REMISION from '~/queries/CreateRemision.gql'
 import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
 import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
 import DELETE_REMISION from '~/queries/DeleteRemision.gql'
+import ENTES from '~/queries/Entes.gql'
 import ONE_ENTE from '~/queries/OneEnte.gql'
 import ENVASES from '~/queries/Envases.gql'
 import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
@@ -177,6 +177,7 @@ export default {
       {text: 'Nit'},
       {text: 'Cédula'}
     ],
+    ItemsCliente: [],
     ItemsProduccion: [],
     ItemsAllEnvase: [],
     ItemsEnvase: [],
@@ -229,8 +230,14 @@ export default {
 
         if (data.Remisions.length > 0) {
           this.Fecha = data.Remisions[0].Fecha
-          this.Cliente.TipoDocumento = data.Remisions[0].Ente.TipoDocumento
-          this.Cliente.NumeroDocumento = data.Remisions[0].Ente.NumeroDocumento
+          for(let i=0; i<this.ItemsCliente.length; i++){
+            if(data.Remisions[0].Ente.Id === this.ItemsCliente[i].Id){
+              this.Cliente = this.ItemsCliente[i];
+              break;
+            }
+
+          }
+
           this.items = []
           for (let i=0; i<data.Remisions.length; i++) {
 
@@ -282,7 +289,7 @@ export default {
 
       }
     },*/
-    OneEnte: {
+    /*OneEnte: {
       query: ONE_ENTE,
       variables () {
         return {
@@ -298,7 +305,7 @@ export default {
         this.Cliente.Direccion = data.OneEnte ? data.OneEnte.Direccion : null
         this.Cliente.Telefono = data.OneEnte ? data.OneEnte.Telefono : null
       }
-    },
+    },*/
     Produccions: {
       query: PRODUCCIONS,
       variables () {
@@ -362,6 +369,16 @@ export default {
 
             tmp.Disponible === 'Si' ? this.ItemsEnvase.push(tmp) : null
           }
+        }
+      }
+    },
+    Entes: {
+      query: ENTES,
+      loadingKey: 'loading',
+      update (data) {
+        //console.log(data)
+        if (data.Entes) {
+          this.ItemsCliente = data.Entes
         }
       }
     }
@@ -736,7 +753,7 @@ export default {
             })
 
           } catch (Err) {
-            console.log(Err)
+            //console.log(Err)
           }
 
         }

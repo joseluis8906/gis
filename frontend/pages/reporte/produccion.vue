@@ -76,7 +76,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 
       tbody
         tr(v-for="(item, j) in items1" :key="j")
-          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Capacidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
           td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre) }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Numero }}
           td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre) }}
@@ -91,7 +91,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 
       tbody
         tr(v-for="(item, k) in items2" :key="k")
-          td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Capacidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
           td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre) }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Numero }}
           td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre) }}
@@ -191,7 +191,7 @@ export default {
           this.UnidadDeMedida = data.Produccions[0].Producto.UnidadDeMedida
           var length = data.Produccions.length;
 
-          for ( let i=0; i<=21; i++ ) {
+          for ( let i=0; i<=19; i++ ) {
             if( i < length ) {
               var tmp = {
                 Producto: {
@@ -233,21 +233,21 @@ export default {
 
           this.items2 = []
 
-          for ( let i=21; i<43; i++ ) {
+          for ( let i=20; i<=39; i++ ) {
             if( i < length ) {
               var tmp = {
                 Producto: {
-                  Id: data.Produccions[i-21].Producto.Id,
-                  Nombre: data.Produccions[i-21].Producto.Nombre
+                  Id: data.Produccions[i-20].Producto.Id,
+                  Nombre: data.Produccions[i-20].Producto.Nombre
                 },
                 Envase: {
-                  Id: data.Produccions[i-21].Envase.Id,
-                  Numero: data.Produccions[i-21].Envase.Numero,
-                  Capacidad: data.Produccions[i-21].Envase.Capacidad,
-                  UnidadDeMedida: data.Produccions[i-21].Producto.UnidadDeMedida,
-                  Cliente: data.Produccions[i-21].Envase.Propietario
+                  Id: data.Produccions[i-20].Envase.Id,
+                  Numero: data.Produccions[i-20].Envase.Numero,
+                  Capacidad: data.Produccions[i-20].Envase.Capacidad,
+                  UnidadDeMedida: data.Produccions[i-20].Producto.UnidadDeMedida,
+                  Cliente: data.Produccions[i-20].Envase.Propietario
                 },
-                Cantidad: data.Produccions[i-21].Cantidad,
+                Cantidad: data.Produccions[i-20].Cantidad,
               }
 
               this.Cantidad++
