@@ -42,7 +42,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(style="width: 7%") Lote
           th Total
       tbody
-        tr(v-for="(item, j) in items" :key="j")
+        tr(v-for="(item, j) in page.Items" :key="j")
           td(style="text-align: right") {{ item.Produccion.Cantidad }} {{ item.Produccion.Producto.UnidadDeMedida }}
           td(style="text-align: left") {{ item.Produccion.Producto.Nombre }}
           td(style="text-align: center") {{ item.Produccion.Envase.Numero }}
@@ -74,9 +74,7 @@ import REMISIONS from '~/queries/Remisions.gql'
 export default {
   data () {
     return {
-      pages: [
-        {Size: 'Letter', Layout: 'Portrait'}
-      ],
+      pages: [],
       Fecha: {
         AAAA: null,
         MM: null,
@@ -123,6 +121,7 @@ export default {
 
           this.items = []
 
+          let page = 0;
           for (let i=0; i<data.Remisions.length; i++) {
 
             let tmp = {
@@ -145,76 +144,25 @@ export default {
               Total: data.Remisions[i].Total
             }
 
-            this.items.push(tmp)
-
-          }
-
-          if (this.items.length<12) {
-            this.pages[0] = {Size: 'MidLetter', Layout: 'Landscape'}
-
-            for (let i=this.items.length; i<12; i++)
-            {
-              let tmp = {
-                Produccion: {
-                  Cantidad: null,
-                  FechaFabricacion: null,
-                  FechaVencimiento: null,
-                  Lote: null,
-                  Envase: {
-                    Numero: null
-                  },
-                  Producto: {
-                    Nombre: null,
-                    UnidadDeMedida: null
-                  }
-                },
-                Envase: {
-                  Numero: null
-                },
-                Total: null
+            if(data.Remisions.length < 12){
+              if( Number.isInteger(i / 12) ){
+                page = Math.trunc(i / 12);
+                this.pages.push({Size: 'MidLetter', Layout: 'Landscape', Items: []})
               }
-
-              this.items.push(tmp)
-
+            }
+            else {
+              if( Number.isInteger(i / 40) ){
+                page = Math.trunc(i / 40);
+                this.pages.push({Size: 'Letter', Layout: 'Portrait', Items: []})
+              }
             }
 
-            console.log(this.items)
-
-          } else if (this.items.length>=12 && this.items.length<40) {
-
-            for (let i=this.items.length; i<40; i++)
-            {
-              let tmp = {
-                Produccion: {
-                  Cantidad: null,
-                  FechaFabricacion: null,
-                  FechaVencimiento: null,
-                  Lote: null,
-                  Envase: {
-                    Numero: null
-                  },
-                  Producto: {
-                    Nombre: null,
-                    UnidadDeMedida: null
-                  }
-                },
-                Envase: {
-                  Numero: null
-                },
-                Total: null
-              }
-
-              this.items.push(tmp)
-
-            }
+            this.pages[page].Items.push(tmp)
 
           }
-
-
-        } else {
-
-          console.log('error')
-
+        }
+        else {
+          console.log('no hay items')
         }
       }
     }
