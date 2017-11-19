@@ -685,7 +685,7 @@ var Query = new GraphQLObjectType({
           Relacion: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Ente.findAll({where: args});
+          return Db.models.Ente.findAll({ where: args, order: [['Nombre', 'ASC']] });
         }
       },
       EntesByNombre: {
@@ -697,7 +697,8 @@ var Query = new GraphQLObjectType({
           return Db.models.Ente.findAll({
             where: {
               Nombre: {$like: ("%"+args.Nombre+"%")}
-            }
+            },
+            order: [['Nombre', 'ASC']]
           });
         }
       },
@@ -714,7 +715,7 @@ var Query = new GraphQLObjectType({
           Relacion: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Ente.findOne({where: args});
+          return Db.models.Ente.findOne({ where: args, order: [['Nombre', 'ASC']] });
         }
       },
       Productos: {
@@ -725,7 +726,7 @@ var Query = new GraphQLObjectType({
           UnidadDeMedida: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Producto.findAll({where: args});
+          return Db.models.Producto.findAll({ where: args, order: [['Nombre', 'ASC']] });
         }
       },
       OneProducto: {
@@ -736,7 +737,7 @@ var Query = new GraphQLObjectType({
           UnidadDeMedida: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Producto.findOne({where: args});
+          return Db.models.Producto.findOne({ where: args, order: [['Nombre', 'ASC']] });
         }
       },
       Envases: {
@@ -768,7 +769,7 @@ var Query = new GraphQLObjectType({
           Disponible: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Envase.findAll({where: args});
+          return Db.models.Envase.findAll({ where: args, order: [['Numero', 'DESC']] });
         }
       },
       OneEnvase: {
@@ -800,7 +801,7 @@ var Query = new GraphQLObjectType({
           Disponible: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Envase.findOne({where: args}).then(R => {
+          return Db.models.Envase.findOne({ where: args, order: [['Numero', 'DESC']] }).then(R => {
             return R;
           });
         }
@@ -828,7 +829,7 @@ var Query = new GraphQLObjectType({
           Despachado: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Produccion.findAll({where: args},);
+          return Db.models.Produccion.findAll({ where: args, order: [['Orden', 'ASC']] });
         }
       },
       OneProduccion: {
@@ -854,7 +855,7 @@ var Query = new GraphQLObjectType({
           Despachado: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Produccion.findOne({where: args});
+          return Db.models.Produccion.findOne({ where: args, order: [['Orden', 'ASC']] });
         }
       },
       Remisions: {
@@ -869,7 +870,7 @@ var Query = new GraphQLObjectType({
           Total: {type: GraphQLFloat}
         },
         resolve(root, args) {
-          return Db.models.Remision.findAll({where: args})
+          return Db.models.Remision.findAll({ where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
         }
       },
       OneRemision: {
@@ -884,7 +885,7 @@ var Query = new GraphQLObjectType({
           Total: {type: GraphQLFloat}
         },
         resolve(root, args) {
-          return Db.models.Remision.findOne({where: args})
+          return Db.models.Remision.findOne({where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
         }
       },
       LastRemision: {
@@ -921,7 +922,8 @@ var Query = new GraphQLObjectType({
                   {FechaEntra: {$between: [args.FechaInicial, args.FechaFinal]}},
                   {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
                 ]
-              }
+              },
+              order: [['NumeroFacturaSale', 'DESC']]
             })
           } else if(args.Tipo === "Por Cliente") {
             return Db.models.Kardex.findAll({
@@ -931,7 +933,8 @@ var Query = new GraphQLObjectType({
                   {FechaEntra: {$between: [args.FechaInicial, args.FechaFinal]}},
                   {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
                 ]
-              }
+              },
+              order: [['NumeroFacturaSale', 'DESC']]
             })
           } else {
             return Db.models.Kardex.findAll({
@@ -940,7 +943,8 @@ var Query = new GraphQLObjectType({
                   {FechaEntra: {$between: [args.FechaInicial, args.FechaFinal]}},
                   {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
                 ]
-              }
+              },
+              order: [['NumeroFacturaSale', 'DESC']]
             })
           }
         }
