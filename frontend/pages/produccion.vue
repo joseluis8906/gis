@@ -833,5 +833,5 @@ h5.bold
   height: 31px
 
 .application .theme--dark.btn:disabled:not(.btn--icon):not(.btn--flat)
-  background-color rgba(25,25,25, 1) !important
+  background-color black !important
 </style>
