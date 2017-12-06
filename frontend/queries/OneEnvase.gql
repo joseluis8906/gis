@@ -1,4 +1,4 @@
-query OneEnvase ($Numero: String!) {
+query OneEnvase ($Numero: String) {
   OneEnvase(Numero: $Numero) {
     Id
     Estado

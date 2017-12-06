@@ -4,7 +4,7 @@ mutation UpdateEnvase (
   $Material: String,
   $ProductoId: Int,
   $Capacidad: Float,
-  $Numero: String!,
+  $Numero: String,
   $NumeroInterno: String,
   $Presion: Float,
   $AlturaConValvula: Float,

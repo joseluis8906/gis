@@ -85,12 +85,12 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
               template(slot="items" scope="props")
-                td(class="text-xs-center") {{ props.item.Produccion.Cantidad }}
-                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre }}
-                td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion.Envase.Numero }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaFabricacion }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.FechaVencimiento }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion.Lote }}
+                td(class="text-xs-center") {{ props.item.Produccion ? props.item.Produccion.Cantidad : '0' }}
+                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Producto.Nombre : '' }}
+                td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : '' }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : '' }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : '' }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccionv ? props.item.Produccion.Lote : '' }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase ? props.item.Envase.Numero : '' }}
                 td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
                 td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
@@ -244,19 +244,19 @@ export default {
             var tmp = {
               Id: data.Remisions[i].Id,
               Produccion: {
-                Id: data.Remisions[i].Produccion.Id,
-                Cantidad: data.Remisions[i].Produccion.Cantidad,
-                FechaFabricacion: data.Remisions[i].Produccion.FechaFabricacion,
-                FechaVencimiento: data.Remisions[i].Produccion.FechaVencimiento,
-                Lote: data.Remisions[i].Produccion.Lote,
+                Id: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Id : null,
+                Cantidad: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Cantidad : null,
+                FechaFabricacion: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.FechaFabricacion : null,
+                FechaVencimiento: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.FechaVencimiento : null,
+                Lote: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Lote : null,
                 Envase: {
-                  Id: data.Remisions[i].Produccion.Envase.Id,
-                  Numero: data.Remisions[i].Produccion.Envase.Numero,
+                  Id: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Envase.Id : null,
+                  Numero: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Envase.Numero : null,
                 },
                 Producto: {
-                  Id: data.Remisions[i].Produccion.Producto.Id,
-                  Nombre: data.Remisions[i].Produccion.Producto.Nombre,
-                  UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
+                  Id: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.Id : null,
+                  Nombre: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.Nombre : null,
+                  UnidadDeMedida: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.UnidadDeMedida : null
                 },
                 Despachado: data.Remisions[i].Despachado
               },
@@ -404,19 +404,19 @@ export default {
       var tmp = {
         Id: null,
         Produccion: {
-          Id: this.ProduccionActual.Id,
-          FechaFabricacion: this.ProduccionActual.FechaFabricacion,
-          FechaVencimiento: this.ProduccionActual.FechaVencimiento,
-          Lote: this.ProduccionActual.Lote,
-          Cantidad: this.ProduccionActual.Cantidad,
+          Id: this.ProduccionActual ? this.ProduccionActual.Id : null,
+          FechaFabricacion: this.ProduccionActual ? this.ProduccionActual.FechaFabricacion : null,
+          FechaVencimiento: this.ProduccionActual ? this.ProduccionActual.FechaVencimiento : null,
+          Lote: this.ProduccionActual ? this.ProduccionActual.Lote : null,
+          Cantidad: this.ProduccionActual ? this.ProduccionActual.Cantidad : null,
           Envase: {
-            Id: this.ProduccionActual.Envase.Id,
-            Numero: this.ProduccionActual.Envase.Numero
+            Id: this.ProduccionActual ? this.ProduccionActual.Envase.Id : null,
+            Numero: this.ProduccionActual ? this.ProduccionActual.Envase.Numero : null,
           },
           Producto: {
-            Id: this.ProduccionActual.Producto.Id,
-            Nombre: this.ProduccionActual.Producto.Nombre,
-            UnidadDeMedida: this.ProduccionActual.Producto.UnidadDeMedida
+            Id: this.ProduccionActual ? this.ProduccionActual.Producto.Id : null,
+            Nombre: this.ProduccionActual ? this.ProduccionActual.Producto.Nombre : null,
+            UnidadDeMedida: this.ProduccionActual ? this.ProduccionActual.Producto.UnidadDeMedida : null,
           }
         },
         Envase: this.EnvaseActual ? { Id: this.EnvaseActual.Id,  Numero: this.EnvaseActual.Numero } : null,
@@ -443,19 +443,20 @@ export default {
     guardar (item) {
 
       //console.log(item);
-      if( item.Id === null &&
+      if( //item.Id === null &&
           this.Fecha !== null &&
-          this.Cliente.Id !== null &&
+          this.Cliente.Id !== null
           //item.Produccion.Id !== null &&
           //item.Envase.Id !== null &&
-          item.Total !== null &&
-          item.Total !== '') {
+          //item.Total !== null &&
+         //item.Total !== ''
+      ) {
 
         const Remision = {
           Numero: this.Numero,
           Fecha: this.Fecha,
           EnteId: this.Cliente.Id,
-          ProduccionId: item.Produccion.Id ? item.Produccion.Id : null,
+          ProduccionId: item.Produccion ? item.Produccion.Id : null,
           EnvaseId: item.Envase ? item.Envase.Id : null,
           Total: item.Total
         }
@@ -498,10 +499,10 @@ export default {
           }
         })
 
-        this.UpdateProduccion(item, 'Si')
+        this.UpdateProduccion(item, 'Si');
         item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'Si') : null;
-        this.CreateKardexEntra(item)
-        this.CreateKardexSale(item)
+        this.CreateKardexEntra(item);
+        this.CreateKardexSale(item);
 
       }
     },
@@ -609,8 +610,8 @@ export default {
     },
     CreateKardexSale (item) {
       //console.log(item)
-      if(item.Produccion === null){
-        return
+      if(item.Produccion.Id === null){
+        return;
       }
       var kardex = {
         Cantidad: item.Produccion.Cantidad,
@@ -669,7 +670,9 @@ export default {
       })
     },
     EliminarKardex (item) {
-
+      if(item.Produccion.Id === null){
+        return;
+      }
       var kardex1 = {
         EnvaseId: item.Produccion.Envase.Id,
         NumeroFacturaSale: this.Numero
@@ -713,6 +716,10 @@ export default {
       }
     },
     UpdateProduccion (item, Tipo) {
+      if(item.Produccion.Id === null){
+        return;
+      }
+
       const Produccion = {
         Id: item.Produccion.Id,
         Cantidad: item.Produccion.Cantidad,
@@ -794,6 +801,9 @@ export default {
 
     },
     UpdateEnvase (_Envase, Value) {
+      if(_Envase.Id === null){
+        return;
+      }
       const Envase = {
         Numero: _Envase.Numero,
         Disponible: Value

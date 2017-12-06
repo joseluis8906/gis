@@ -693,6 +693,10 @@ export default {
           }
         }
 
+        if(this.Produccion.Id === null){
+          return;
+        }
+
         const Produccion = {
           Id: item.Id,
           Orden: this.Orden,
