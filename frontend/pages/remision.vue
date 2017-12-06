@@ -344,11 +344,11 @@ export default {
 
           }
 
-          this.FiltrarEnvases()
+          this.FiltrarEnvases();
 
         } else {
 
-          this.ItemsProduccion = []
+          this.ItemsProduccion = [];
 
         }
       }
@@ -446,7 +446,7 @@ export default {
       if( item.Id === null &&
           this.Fecha !== null &&
           this.Cliente.Id !== null &&
-          item.Produccion.Id !== null &&
+          //item.Produccion.Id !== null &&
           //item.Envase.Id !== null &&
           item.Total !== null &&
           item.Total !== '') {
@@ -455,7 +455,7 @@ export default {
           Numero: this.Numero,
           Fecha: this.Fecha,
           EnteId: this.Cliente.Id,
-          ProduccionId: item.Produccion.Id,
+          ProduccionId: item.Produccion.Id ? item.Produccion.Id : null,
           EnvaseId: item.Envase ? item.Envase.Id : null,
           Total: item.Total
         }
@@ -609,6 +609,9 @@ export default {
     },
     CreateKardexSale (item) {
       //console.log(item)
+      if(item.Produccion === null){
+        return
+      }
       var kardex = {
         Cantidad: item.Produccion.Cantidad,
         ProductoId: item.Produccion.Producto.Id,

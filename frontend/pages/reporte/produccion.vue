@@ -118,7 +118,6 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 </template>
 
 <script>
-
 import PRODUCCIONS from '~/queries/Produccions.gql'
 import { mapMutations } from 'vuex'
 
@@ -237,17 +236,17 @@ export default {
             if( i < length ) {
               var tmp = {
                 Producto: {
-                  Id: data.Produccions[i-20].Producto.Id,
-                  Nombre: data.Produccions[i-20].Producto.Nombre
+                  Id: data.Produccions[i].Producto.Id,
+                  Nombre: data.Produccions[i].Producto.Nombre
                 },
                 Envase: {
-                  Id: data.Produccions[i-20].Envase.Id,
-                  Numero: data.Produccions[i-20].Envase.Numero,
-                  Capacidad: data.Produccions[i-20].Envase.Capacidad,
-                  UnidadDeMedida: data.Produccions[i-20].Producto.UnidadDeMedida,
-                  Cliente: data.Produccions[i-20].Envase.Propietario
+                  Id: data.Produccions[i].Envase.Id,
+                  Numero: data.Produccions[i].Envase.Numero,
+                  Capacidad: data.Produccions[i].Envase.Capacidad,
+                  UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida,
+                  Cliente: data.Produccions[i].Envase.Propietario
                 },
-                Cantidad: data.Produccions[i-20].Cantidad,
+                Cantidad: data.Produccions[i].Cantidad,
               }
 
               this.Cantidad++
