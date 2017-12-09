@@ -126,16 +126,16 @@ export default {
 
             let tmp = {
               Produccion: {
-                Cantidad: data.Remisions[i].Produccion.Cantidad,
-                FechaFabricacion: data.Remisions[i].Produccion.FechaFabricacion,
-                FechaVencimiento: data.Remisions[i].Produccion.FechaVencimiento,
-                Lote: data.Remisions[i].Produccion.Lote,
+                Cantidad: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Cantidad : null,
+                FechaFabricacion: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.FechaFabricacion : null,
+                FechaVencimiento: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.FechaVencimiento : null,
+                Lote: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Lote : null,
                 Envase: {
-                  Numero: data.Remisions[i].Produccion.Envase.Numero,
+                  Numero: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Envase.Numero : null,
                 },
                 Producto: {
-                  Nombre: data.Remisions[i].Produccion.Producto.Nombre,
-                  UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
+                  Nombre: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.Nombre : null,
+                  UnidadDeMedida: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.UnidadDeMedida : null
                 }
               },
               Envase: data.Remisions[i].Envase ?  {
