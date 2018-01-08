@@ -693,7 +693,7 @@ export default {
           }
         }
 
-        if(this.Produccion.Id === null){
+        if(item.Id === null){
           return;
         }
 

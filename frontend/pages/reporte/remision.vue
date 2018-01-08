@@ -114,12 +114,12 @@ export default {
 
         if (data.Remisions.length > 0) {
 
-          this.Fecha.AAAA = data.Remisions[0].Fecha.split('-')[0]
-          this.Fecha.MM = data.Remisions[0].Fecha.split('-')[1]
-          this.Fecha.DD = data.Remisions[0].Fecha.split('-')[2]
-          this.Cliente = data.Remisions[0].Ente
+          this.Fecha.AAAA = data.Remisions[0].Fecha.split('-')[0];
+          this.Fecha.MM = data.Remisions[0].Fecha.split('-')[1];
+          this.Fecha.DD = data.Remisions[0].Fecha.split('-')[2];
+          this.Cliente = data.Remisions[0].Ente;
 
-          this.items = []
+          this.items = [];
 
           let page = 0;
           for (let i=0; i<data.Remisions.length; i++) {
@@ -147,13 +147,13 @@ export default {
             if(data.Remisions.length < 12){
               if( Number.isInteger(i / 12) ){
                 page = Math.trunc(i / 12);
-                this.pages.push({Size: 'MidLetter', Layout: 'Landscape', Items: []})
+                this.pages.push({Size: 'MidLetter', Layout: 'Landscape', Items: []});
               }
             }
             else {
               if( Number.isInteger(i / 40) ){
                 page = Math.trunc(i / 40);
-                this.pages.push({Size: 'Letter', Layout: 'Portrait', Items: []})
+                this.pages.push({Size: 'Letter', Layout: 'Portrait', Items: []});
               }
             }
 
@@ -162,7 +162,7 @@ export default {
           }
         }
         else {
-          console.log('no hay items')
+          console.log('no hay items');
         }
       }
     }
