@@ -161,6 +161,7 @@ export default {
   apollo: {
     Produccions: {
       query: PRODUCCIONS,
+      fetchPolicy: 'network-only',
       variables () {
         return {
           Orden: this.Orden !== null ? this.Orden : '',

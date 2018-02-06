@@ -223,6 +223,7 @@ export default {
   apollo: {
     Entes: {
       query: ENTES,
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
         //console.log(data)
@@ -233,6 +234,7 @@ export default {
     },
     Envases: {
       query: ENVASES,
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
         //console.log(data)

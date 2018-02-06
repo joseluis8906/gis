@@ -326,35 +326,34 @@ export default {
   apollo: {
     Envases: {
       query: ENVASES,
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
-        if (data.Envases) {
-          this.ItemsAllEnvase = []
-          for (let i=0; i<data.Envases.length; i++) {
-            var tmp = {}
-            tmp.Id = data.Envases[i].Id;
-            tmp.Numero = data.Envases[i].Numero;
-            tmp.Capacidad = data.Envases[i].Capacidad;
-            tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida;
-            tmp.ProductoId = data.Envases[i].Producto.Id;
-            tmp.Disponible = data.Envases[i].Disponible;
-            tmp.Cliente = data.Envases[i].Propietario;
-            this.ItemsAllEnvase.push(tmp);
-          }
+        this.ItemsAllEnvase = []
+        for (let i=0; i<data.Envases.length; i++) {
+          var tmp = {}
+          tmp.Id = data.Envases[i].Id;
+          tmp.Numero = data.Envases[i].Numero;
+          tmp.Capacidad = data.Envases[i].Capacidad;
+          tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida;
+          tmp.ProductoId = data.Envases[i].Producto.Id;
+          tmp.Disponible = data.Envases[i].Disponible;
+          tmp.Cliente = data.Envases[i].Propietario;
+          this.ItemsAllEnvase.push(tmp);
         }
       }
     },
     Produccions: {
       query: PRODUCCIONS,
+      fetchPolicy: 'network-only',
       variables () {
         return {
-          Orden: this.Orden !== null ? this.Orden : '',
+          Orden: this.Orden,
         }
       },
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
+        this.items = [];
         if (data.Produccions.length > 0) {
           this.Turno = data.Produccions[0].Turno
           this.Fecha = data.Produccions[0].Fecha
@@ -390,14 +389,16 @@ export default {
         } else {
           this.reset ()
         }
+
       }
     },
     Productos: {
       query: PRODUCTOS,
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
-        this.ItemsProducto = data.Productos
+        this.ItemsProducto = [];
+        this.ItemsProducto = data.Productos;
       }
     }
   },
@@ -431,50 +432,9 @@ export default {
           Numero: Envase.Numero,
           Disponible: Envase.Disponible
         },
-        loadingKey: 'loading',
-        update: (store, { data: res }) => {
-          //console.log(res, 'linea 463');
-
-          var data = {OneEnvase: res.UpdateEnvase}
-          store.writeQuery({
-            query: ONE_ENVASE,
-            variables: {
-              Numero: res.UpdateEnvase.Numero
-            },
-            data: data
-          })
-
-          try {
-
-            data = store.readQuery({
-              query: ENVASES
-            })
-
-            for (let i=0; i<data.Envases.length; i++) {
-              if (data.Envases[i].Id === res.UpdateEnvase.Id) {
-                data.Envases[i] = res.UpdateEnvase
-              }
-            }
-
-            store.writeQuery({
-              query: ENVASES,
-              data: data
-            })
-
-          } catch (Err) {
-
-            console.log(Err)
-
-          }
-
-          for (let i=0; i<this.ItemsAllEnvase.length; i++){
-            if(res.UpdateEnvase.Id === this.ItemsAllEnvase[i].Id){
-              this.ItemsAllEnvase[i].Disponible = res.UpdateEnvase.Disponible;
-            }
-          }
-          this.filtrarEnvases()
-
-        }
+        loadingKey: 'loading'
+      }).then(() => {
+        this.$apollo.queries.Envases.refetch();
       })
 
     },
@@ -491,7 +451,6 @@ export default {
         SaveUpdate: 'save'
       }
 
-      //this.items.push(tmp)
       this.guardar(tmp)
 
       this.EnvaseActual = null
@@ -546,33 +505,9 @@ export default {
               Observacion: Produccion.Observacion,
               Despachado: Produccion.Despachado
             },
-            loadingKey: 'loading',
-            update: (store, {data: res}) => {
-
-              try{
-                var data = store.readQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  }
-                })
-
-                data.Produccions.push(res.CreateProduccion)
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  },
-                  data
-                })
-
-
-              } catch (Err) {
-                console.log(Err)
-              }
-
-            }
+            loadingKey: 'loading'
+          }).then(() => {
+            this.$apollo.queries.Produccions.refetch();
           })
 
           this.UpdateEnvase(item.Envase, 'No');
@@ -622,53 +557,9 @@ export default {
               Observacion: Produccion.Observacion,
               Despachado: Produccion.Despachado
             },
-            loadingKey: 'loading',
-            update (store, {data: res}) {
-
-              try{
-                const data = store.readQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  }
-                })
-
-                for (let i=0; i<data.Produccions.length; i++) {
-                  if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
-                    data.Produccions[i].Orden = res.UpdateOneProduccion.Orden
-                    data.Produccions[i].Turno = res.UpdateOneProduccion.Turno
-                    data.Produccions[i].Fecha = res.UpdateOneProduccion.Fecha
-                    data.Produccions[i].Lote = res.UpdateOneProduccion.Lote
-                    data.Produccions[i].FechaInicial = res.UpdateOneProduccion.FechaInicial
-                    data.Produccions[i].FechaFinal = res.UpdateOneProduccion.FechaFinal
-                    data.Produccions[i].HoraInicial = res.UpdateOneProduccion.HoraInicial
-                    data.Produccions[i].HoraFinal = res.UpdateOneProduccion.HoraFinal
-                    data.Produccions[i].FechaFabricacion = res.UpdateOneProduccion.FechaFabricacion
-                    data.Produccions[i].FechaVencimiento = res.UpdateOneProduccion.FechaVencimiento
-                    data.Produccions[i].Cantidad = res.UpdateOneProduccion.Cantidad
-                    data.Produccions[i].ProductoId = res.UpdateOneProduccion.ProductoId
-                    data.Produccions[i].EnvaseId = res.UpdateOneProduccion.EnvaseId
-                    data.Produccions[i].PurezaFinal = res.UpdateOneProduccion.PurezaFinal
-                    data.Produccions[i].PresionFinal = res.UpdateOneProduccion.PresionFinal
-                    data.Produccions[i].Observacion = res.UpdateOneProduccion.Observacion
-                    data.Produccions[i].Despachado = res.UpdateOneProduccion.Despachado
-                  }
-                }
-
-                store.writeQuery({
-                  query: PRODUCCIONS,
-                  variables: {
-                    Orden: Produccion.Orden,
-                  },
-                  data
-                })
-
-              } catch (Err) {
-                console.log(Err)
-              }
-
-            }
-
+            loadingKey: 'loading'
+          }).then(() => {
+            this.$apollo.queries.Produccions.refetch();
           })
 
         }
@@ -740,34 +631,9 @@ export default {
             Observacion: Produccion.Observacion,
             Despachado: Produccion.Despachado
           },
-           loadingKey: 'loading',
-           update: (store, {data: res}) => {
-
-             try{
-               const data = store.readQuery({
-                 query: PRODUCCIONS,
-                 variables: {
-                   Orden: Produccion.Orden,
-                 }
-               });
-
-               for(let i=0; i<data.Produccions.length; i++){
-                 if(data.Produccions[i].Id === Produccion.Id){
-                   data.Produccions.splice(i, 1)
-                 }
-               }
-
-               store.writeQuery({
-                 query: PRODUCCIONS,
-                 variables: {
-                   Orden: Produccion.Orden,
-                 },
-                 data
-               })
-
-             } catch (Err) { console.log(Err) }
-           }
-
+           loadingKey: 'loading'
+         }).then(() => {
+           this.$apollo.queries.Produccions.refetch();
          })
 
          this.UpdateEnvase(item.Envase, 'Si');

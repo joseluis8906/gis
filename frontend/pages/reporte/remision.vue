@@ -103,6 +103,7 @@ export default {
   apollo: {
     Remisions:{
       query: REMISIONS,
+      fetchPolicy: 'network-only',
       variables () {
         return {
           Numero: this.Numero

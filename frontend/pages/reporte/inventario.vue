@@ -69,6 +69,7 @@ export default {
   apollo: {
     Produccions: {
       query: PRODUCCIONS,
+      fetchPolicy: 'network-only',
       variables () {
         return {
           Despachado: 'No'

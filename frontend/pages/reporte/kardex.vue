@@ -103,6 +103,7 @@ export default {
   apollo: {
     Kardexs: {
       query: KARDEXS,
+      fetchPolicy: 'network-only',
       variables () {
         return {
           Tipo: this.Tipo,

@@ -162,8 +162,8 @@ export default {
       timeout: 6000,
       text: 'Cargando'
     },
-    Numero: '',
-    Fecha: '',
+    Numero: null,
+    Fecha: null,
     Cliente: {
       Id: null,
       TipoDocumento: null,
@@ -224,6 +224,7 @@ export default {
           Numero: this.Numero
         }
       },
+      fetchPolicy: 'network-only',
       loadingKey: "loading",
       update (data) {
         //console.log(data)
@@ -311,75 +312,69 @@ export default {
       variables () {
         //console.log(this.Cliente)
         return {
+          //EnvaseId: this.EnvaseActual ? this.EnvaseActual.Id : null,
           Despachado: 'No',
         }
       },
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
 
-        if (data.Produccions.length > 0) {
-          for ( let i=0; i<data.Produccions.length; i++ ) {
+        this.ItemsProduccion = [];
 
-            var tmp = {
-              Buscar: data.Produccions[i].Envase.Numero,
-              Id: data.Produccions[i].Id,
-              Cantidad: data.Produccions[i].Cantidad,
-              FechaFabricacion: data.Produccions[i].FechaFabricacion,
-              FechaVencimiento: data.Produccions[i].FechaVencimiento,
-              Lote: data.Produccions[i].Lote,
-              NumeroEnvase: data.Produccions[i].Envase.Numero,
-              Envase: {
-                Id: data.Produccions[i].Envase.Id,
-                Numero: data.Produccions[i].Envase.Numero
-              },
-              Producto: {
-                Id: data.Produccions[i].Producto.Id,
-                Nombre: data.Produccions[i].Producto.Nombre,
-                UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
-              },
-              Despachado: data.Produccions[i].Despachado
-            }
-
-            tmp.Despachado === 'No' ? this.ItemsProduccion.push(tmp) : null
-
+        for ( let i=0; i<data.Produccions.length; i++ ) {
+          var tmp = {
+            Buscar: data.Produccions[i].Envase.Numero,
+            Id: data.Produccions[i].Id,
+            Cantidad: data.Produccions[i].Cantidad,
+            FechaFabricacion: data.Produccions[i].FechaFabricacion,
+            FechaVencimiento: data.Produccions[i].FechaVencimiento,
+            Lote: data.Produccions[i].Lote,
+            NumeroEnvase: data.Produccions[i].Envase.Numero,
+            Envase: {
+              Id: data.Produccions[i].Envase.Id,
+              Numero: data.Produccions[i].Envase.Numero
+            },
+            Producto: {
+              Id: data.Produccions[i].Producto.Id,
+              Nombre: data.Produccions[i].Producto.Nombre,
+              UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
+            },
+            Despachado: data.Produccions[i].Despachado
           }
 
-          this.FiltrarEnvases();
-
-        } else {
-
-          this.ItemsProduccion = [];
+          tmp.Despachado === 'No' ? this.ItemsProduccion.push(tmp) : null
 
         }
+
+        this.FiltrarEnvases();
       }
     },
     Envases: {
       query: ENVASES,
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
-        this.ItemsEnvase = []
-        if (data.Envases.length>0) {
-          for (let i=0; i<data.Envases.length; i++) {
-            var tmp = {
-              Id: data.Envases[i].Id,
-              Numero: data.Envases[i].Numero,
-              Disponible: data.Envases[i].Disponible
-            }
 
-            tmp.Disponible === 'Si' ? this.ItemsEnvase.push(tmp) : null
+        this.ItemsEnvase = []
+        for (let i=0; i<data.Envases.length; i++) {
+          var tmp = {
+            Id: data.Envases[i].Id,
+            Numero: data.Envases[i].Numero,
+            Disponible: data.Envases[i].Disponible
           }
+          tmp.Disponible === 'Si' ? this.ItemsEnvase.push(tmp) : null
         }
       }
     },
     Entes: {
       query: ENTES,
+      fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
-        if (data.Entes) {
-          this.ItemsCliente = data.Entes
-        }
+
+        this.ItemsCliente = []
+        this.ItemsCliente = data.Entes
       }
     }
   },
@@ -442,7 +437,6 @@ export default {
     },
     guardar (item) {
 
-      //console.log(item);
       if( //item.Id === null &&
           this.Fecha !== null &&
           this.Cliente.Id !== null
@@ -471,32 +465,9 @@ export default {
             EnvaseId: Remision.EnvaseId,
             Total: Remision.Total
           },
-          loadingKey: 'loading',
-          update (store, {data: res}) {
-
-            try{
-              var data = store.readQuery({
-                query: REMISIONS,
-                variables: {
-                  Numero: Remision.Numero
-                }
-              })
-
-              data.Remisions.push(res.CreateRemision)
-
-              store.writeQuery({
-                query: REMISIONS,
-                variables: {
-                  Numero: Remision.Numero
-                },
-                data
-              })
-
-            } catch (Err) {
-              console.log(Err)
-            }
-
-          }
+          loadingKey: 'loading'
+        }).then(() => {
+          this.$apollo.queries.Remisions.refetch();
         })
 
         this.UpdateProduccion(item, 'Si');
@@ -535,38 +506,9 @@ export default {
           variables: {
             Id: Remision.Id
           },
-          loadingKey: 'loading',
-          update (store, {data: res}) {
-
-            try{
-              var data = store.readQuery({
-                query: REMISIONS,
-                variables: {
-                  Numero: Remision.Numero,
-                }
-              })
-
-
-              for (let i=0; i<data.Remisions.length; i++) {
-                if (data.Remisions[i].ProduccionId === Remision.ProduccionId) {
-                  //console.log('Eliminado de cache')
-                  data.Remisions.splice(i, 1)
-                }
-              }
-
-              store.writeQuery({
-                query: REMISIONS,
-                variables: {
-                  Numero: Remision.Numero,
-                },
-                data
-              })
-
-            } catch (Err) {
-              console.log(Err)
-            }
-
-          }
+          loadingKey: 'loading'
+        }).then(() => {
+          this.$apollo.queries.Remisions.refetch();
         })
 
         this.UpdateProduccion(item, 'No')
@@ -638,10 +580,7 @@ export default {
           FechaSale: kardex.FechaSale,
           NumeroFacturaSale: kardex.NumeroFacturaSale
         },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-          //console.log(res)
-        }
+        loadingKey: 'loading'
       })
     },
     CreateKardexEntra (item) {
@@ -663,10 +602,7 @@ export default {
           FechaEntra: kardex.FechaEntra,
           NumeroFacturaEntra: kardex.NumeroFacturaEntra
         },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-          //console.log(res)
-        }
+        loadingKey: 'loading'
       })
     },
     EliminarKardex (item) {
@@ -684,10 +620,7 @@ export default {
           EnvaseId: kardex1.EnvaseId,
           NumeroFacturaSale: kardex1.NumeroFacturaSale
         },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-          //console.log(res)
-        }
+        loadingKey: 'loading'
       })
 
       if(!item.Envase)
@@ -708,10 +641,7 @@ export default {
           EnvaseId: kardex2.EnvaseId,
           NumeroFacturaEntra: kardex2.NumeroFacturaEntra
         },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-          //console.log(res)
-        }
+        loadingKey: 'loading'
       })
       }
     },
@@ -735,40 +665,11 @@ export default {
           EnvaseId: Produccion.EnvaseId,
           Despachado: Produccion.Despachado
         },
-        loadingKey: 'loading',
-        update (store, {data: res}) {
-
-          try{
-
-            var data = store.readQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: res.UpdateOneProduccion.Orden,
-              }
-            })
-
-
-            for (let i=0; i<data.Produccions.length; i++) {
-              if (data.Produccions[i].Id === res.UpdateOneProduccion.Id) {
-                data.Produccions[i].Despachado = res.UpdateOneProduccion.Despachado
-              }
-            }
-
-            store.writeQuery({
-              query: PRODUCCIONS,
-              variables: {
-                Orden: res.UpdateOneProduccion.Orden,
-              },
-              data: data
-            })
-
-          } catch (Err) {
-            //console.log(Err)
-          }
-
-        }
-      })
-
+        loadingKey: 'loading'
+      }).then(() => {
+        this.$apollo.queries.Produccions.refetch();
+      });
+      /*
       var tmp = {
         Buscar: item.Produccion.Envase.Numero,
         Id: item.Produccion.Id,
@@ -791,14 +692,14 @@ export default {
 
       this.ItemsProduccion.push(tmp)
 
-      tmp = item.Envase ? {
+      var tmp = item.Envase ? {
         Id: item.Envase.Id,
         Numero: item.Envase.Numero,
         Disponible: item.Envase.Disponible
       } : null;
 
       tmp ? this.ItemsEnvase.push(tmp) : null;
-
+      */
     },
     UpdateEnvase (_Envase, Value) {
       if(_Envase.Id === null){
@@ -815,41 +716,9 @@ export default {
           Numero: Envase.Numero,
           Disponible: Envase.Disponible
         },
-        loadingKey: 'loading',
-        update: (store, { data: res }) => {
-          //console.log(res, 'linea 463');
-
-          try {
-
-            data = store.readQuery({
-              query: ENVASES
-            })
-
-            for (let i=0; i<data.Envases.length; i++) {
-              if (data.Envases[i].Id === res.UpdateEnvase.Id) {
-                data.Envases[i] = res.UpdateEnvase
-              }
-            }
-
-            store.writeQuery({
-              query: ENVASES,
-              data
-            })
-
-          } catch (Err) {
-
-            console.log(Err)
-
-          }
-
-          /*for (let i=0; i<this.ItemsAllEnvase.length; i++){
-            if(res.UpdateEnvase.Id === this.ItemsAllEnvase[i].Id){
-              this.ItemsAllEnvase[i].Disponible = res.UpdateEnvase.Disponible;
-            }
-          }*/
-          this.FiltrarEnvases()
-
-        }
+        loadingKey: 'loading'
+      }).then(() => {
+        this.$apollo.queries.Envases.refetch();
       })
 
     },
