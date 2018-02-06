@@ -139,7 +139,7 @@ v-layout( align-center justify-center )
 import VMoney from '~/components/MonetaryInput.vue'
 
 import REMISIONS from '~/queries/Remisions.gql'
-import PRODUCCIONS from '~/queries/Produccions.gql'
+import PRODUCCIONS2 from '~/queries/Produccions2.gql'
 import CREATE_REMISION from '~/queries/CreateRemision.gql'
 import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
 import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
@@ -236,7 +236,6 @@ export default {
               this.Cliente = this.ItemsCliente[i];
               break;
             }
-
           }
 
           this.items = []
@@ -290,29 +289,10 @@ export default {
 
       }
     },*/
-    /*OneEnte: {
-      query: ONE_ENTE,
-      variables () {
-        return {
-          TipoDocumento: this.Cliente.TipoDocumento ? this.Cliente.TipoDocumento : '',
-          NumeroDocumento: this.Cliente.NumeroDocumento ? this.Cliente.NumeroDocumento : ''
-        }
-      },
-      loadingKey: 'loading',
-      update (data) {
-        this.Cliente.Id = data.OneEnte ? data.OneEnte.Id : null
-        this.Cliente.Nombre = data.OneEnte ? data.OneEnte.Nombre : null
-        this.Cliente.Ciudad = data.OneEnte ? data.OneEnte.Ciudad : null
-        this.Cliente.Direccion = data.OneEnte ? data.OneEnte.Direccion : null
-        this.Cliente.Telefono = data.OneEnte ? data.OneEnte.Telefono : null
-      }
-    },*/
     Produccions: {
-      query: PRODUCCIONS,
+      query: PRODUCCIONS2,
       variables () {
-        //console.log(this.Cliente)
         return {
-          //EnvaseId: this.EnvaseActual ? this.EnvaseActual.Id : null,
           Despachado: 'No',
         }
       },
@@ -352,10 +332,12 @@ export default {
     },
     Envases: {
       query: ENVASES,
+      variables: {
+        Disponible: 'Si'
+      },
       fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-
         this.ItemsEnvase = []
         for (let i=0; i<data.Envases.length; i++) {
           var tmp = {
@@ -363,7 +345,7 @@ export default {
             Numero: data.Envases[i].Numero,
             Disponible: data.Envases[i].Disponible
           }
-          tmp.Disponible === 'Si' ? this.ItemsEnvase.push(tmp) : null
+          this.ItemsEnvase.push(tmp)
         }
       }
     },
@@ -372,7 +354,6 @@ export default {
       fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-
         this.ItemsCliente = []
         this.ItemsCliente = data.Entes
       }
@@ -465,10 +446,18 @@ export default {
             EnvaseId: Remision.EnvaseId,
             Total: Remision.Total
           },
-          loadingKey: 'loading'
-        }).then(() => {
+          loadingKey: 'loading',
+          refetchQueries: [
+            {
+              query: REMISIONS,
+              variables: {
+                Numero: this.Numero
+              }
+            }
+          ]
+        });/*.then(() => {
           this.$apollo.queries.Remisions.refetch();
-        })
+        })*/
 
         this.UpdateProduccion(item, 'Si');
         item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'Si') : null;
@@ -506,10 +495,18 @@ export default {
           variables: {
             Id: Remision.Id
           },
-          loadingKey: 'loading'
-        }).then(() => {
+          loadingKey: 'loading',
+          refetchQueries: [
+            {
+              query: REMISIONS,
+              variables: {
+                Numero: this.Numero
+              }
+            }
+          ]
+        });/*then(() => {
           this.$apollo.queries.Remisions.refetch();
-        })
+        })*/
 
         this.UpdateProduccion(item, 'No')
         item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'No') : null;
@@ -665,10 +662,18 @@ export default {
           EnvaseId: Produccion.EnvaseId,
           Despachado: Produccion.Despachado
         },
-        loadingKey: 'loading'
-      }).then(() => {
+        loadingKey: 'loading',
+        refetchQueries: [
+          {
+            query: PRODUCCIONS2,
+            variables: {
+              Despachado: 'No'
+            }
+          }
+        ]
+      });/*.then(() => {
         this.$apollo.queries.Produccions.refetch();
-      });
+      });*/
       /*
       var tmp = {
         Buscar: item.Produccion.Envase.Numero,
@@ -716,10 +721,18 @@ export default {
           Numero: Envase.Numero,
           Disponible: Envase.Disponible
         },
-        loadingKey: 'loading'
-      }).then(() => {
+        loadingKey: 'loading',
+        refetchQueries: [
+          {
+            query: ENVASES,
+            variables: {
+              Disponible: 'Si'
+            }
+          }
+        ]
+      });/*.then(() => {
         this.$apollo.queries.Envases.refetch();
-      })
+      })*/
 
     },
     FiltrarEnvases () {

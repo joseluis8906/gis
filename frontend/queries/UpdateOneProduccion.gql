@@ -41,7 +41,7 @@ mutation UpdateOneProduccion (
         Nombre
         Direccion
         Telefono
-      }
+      }      
     }
     Producto {
       Id
