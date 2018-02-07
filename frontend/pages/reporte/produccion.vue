@@ -77,9 +77,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       tbody
         tr(v-for="(item, j) in items1" :key="j")
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre, 16) }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Numero }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre, 24) }}
 
     table(style="width: 49%; margin-left: 2%; height: auto; display: inline-block;")
       thead
@@ -92,9 +92,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       tbody
         tr(v-for="(item, k) in items2" :key="k")
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Envase.Capacidad ? UnidadDeMedida : '' }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Producto.Nombre, 16) }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Envase.Numero }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength (item.Envase.Cliente.Nombre, 24) }}
 
     div(style="width: 49%; height:40mm; margin-top: 3mm; display: inline-block; vertical-align: top;")
       h6(class="headlines") Observación: {{ Observacion }}
@@ -278,10 +278,9 @@ export default {
     }
   },
   methods: {
-    MaxLength (value) {
+    MaxLength (value, len) {
       if(value){
-        //console.log(value.length)
-        return value.length > 22 ? value.substr(0, 14)+'...'+value.substr(-6, 6) : value;
+        return value.length >= len ? value.substr(0, (len-3))+'...' : value;
       }
     }
   }
