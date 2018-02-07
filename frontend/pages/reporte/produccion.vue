@@ -281,7 +281,7 @@ export default {
     MaxLength (value) {
       if(value){
         //console.log(value.length)
-        return value.length > 24 ? value.substr(0, 16)+'...'+value.substr(-6, 6) : value;
+        return value.length > 22 ? value.substr(0, 14)+'...'+value.substr(-6, 6) : value;
       }
     }
   }
