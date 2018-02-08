@@ -16,10 +16,10 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(class="lado") 0{{ i+1 }}
         tr
           td(class="lado") Versión
-          td(class="lado") 03
+          td(class="lado") 04
         tr
           td(class="lado") Fecha
-          td(class="lado") {{ Fecha }}
+          td(class="lado") 08/04/17
 
     table(style="width: 49%; height: auto; display: inline-block; vertical-align: top;" class="table-kardex" )
       tbody
