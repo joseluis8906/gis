@@ -86,7 +86,7 @@ v-layout( align-center justify-center )
 
               template(slot="items" scope="props")
                 td(class="text-xs-center") {{ props.item.Produccion.Cantidad ? props.item.Produccion.Cantidad : props.item.Envase.Capacidad }}
-                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion.Nombre ? props.item.Produccion.Producto.Nombre : props.item.Envase.Producto.Nombre }}
+                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre ? props.item.Produccion.Producto.Nombre : props.item.Envase.Producto.Nombre }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : '' }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : '' }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : '' }}
@@ -265,11 +265,17 @@ export default {
                 Numero: data.Remisions[i].Envase.Numero,
                 Capacidad: data.Remisions[i].Envase.Capacidad,
                 Producto: data.Remisions[i].Envase.Producto
-              } : null,
+              } : {
+                Id: null,
+                Numero: null,
+                Capacidad: null,
+                Producto: null
+              },
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update',
             }
 
+            console.log(tmp);
             this.items.push(tmp)
 
           }
