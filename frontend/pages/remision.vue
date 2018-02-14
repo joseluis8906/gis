@@ -275,7 +275,6 @@ export default {
               SaveUpdate: 'update',
             }
 
-            console.log(tmp);
             this.items.push(tmp)
 
           }
