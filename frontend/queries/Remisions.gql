@@ -1,10 +1,10 @@
-query Remisions ( 
+query Remisions (
   $Numero: String,
   $Fecha: String,
   $EnteId: Int
 ) {
   Remisions (
-    Numero: $Numero, 
+    Numero: $Numero,
     Fecha: $Fecha,
     EnteId: $EnteId
   ){
@@ -45,6 +45,11 @@ query Remisions (
     Envase {
       Id
       Numero
+      Capacidad
+      Producto {
+        Nombre
+        UnidadDeMedida
+      }
     }
   }
 }

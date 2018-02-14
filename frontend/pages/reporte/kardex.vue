@@ -107,8 +107,8 @@ export default {
       variables () {
         return {
           Tipo: this.Tipo,
-          EnteId: this.Cliente.Id,
-          EnvaseId: this.Envase.Id,
+          EnteId: this.Cliente !== null ? this.Cliente.Id : null,
+          EnvaseId: this.Envase !== null ? this.Envase.Id : null,
           FechaInicial: this.FechaInicial,
           FechaFinal: this.FechaFinal
         }

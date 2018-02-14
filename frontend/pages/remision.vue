@@ -85,12 +85,12 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
               template(slot="items" scope="props")
-                td(class="text-xs-center") {{ props.item.Produccion ? props.item.Produccion.Cantidad : '0' }}
-                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Producto.Nombre : '' }}
+                td(class="text-xs-center") {{ props.item.Produccion.Cantidad ? props.item.Produccion.Cantidad : props.item.Envase.Capacidad }}
+                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion.Nombre ? props.item.Produccion.Producto.Nombre : props.item.Envase.Producto.Nombre }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : '' }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : '' }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : '' }}
-                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccionv ? props.item.Produccion.Lote : '' }}
+                td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Lote : '' }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase ? props.item.Envase.Numero : '' }}
                 td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
                 td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
@@ -260,7 +260,12 @@ export default {
                 },
                 Despachado: data.Remisions[i].Despachado
               },
-              Envase: data.Remisions[i].Envase ? { Id: data.Remisions[i].Envase.Id,  Numero: data.Remisions[i].Envase.Numero } : null,
+              Envase: data.Remisions[i].Envase ? {
+                Id: data.Remisions[i].Envase.Id,
+                Numero: data.Remisions[i].Envase.Numero,
+                Capacidad: data.Remisions[i].Envase.Capacidad,
+                Producto: data.Remisions[i].Envase.Producto
+              } : null,
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update',
             }

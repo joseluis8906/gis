@@ -43,8 +43,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th Total
       tbody
         tr(v-for="(item, j) in page.Items" :key="j")
-          td(style="text-align: right") {{ item.Produccion.Cantidad }} {{ item.Produccion.Producto.UnidadDeMedida }}
-          td(style="text-align: left") {{ item.Produccion.Producto.Nombre }}
+          td(style="text-align: right") {{ item.Produccion.Cantidad !== null ? item.Produccion.Cantidad : item.Envase.Capacidad }} {{ item.Produccion.Producto.UnidadDeMedida !== null ? item.Produccion.Producto.UnidadDeMedida : item.Envase.Producto.UnidadDeMedida }}
+          td(style="text-align: left") {{ item.Produccion.Producto.Nombre !== null ? item.Produccion.Producto.Nombre : item.Envase.Producto.Nombre }}
           td(style="text-align: center") {{ item.Produccion.Envase.Numero }}
           td(style="text-align: center") {{ item.Envase ? item.Envase.Numero : '' }}
           td(style="text-align: center") {{ item.Produccion.FechaFabricacion }}
@@ -140,7 +140,9 @@ export default {
                 }
               },
               Envase: data.Remisions[i].Envase ?  {
-                Numero: data.Remisions[i].Envase.Numero
+                Numero: data.Remisions[i].Envase.Numero,
+                Capacidad: data.Remisions[i].Envase.Capacidad,
+                Producto: data.Remisions[i].Envase.Producto
               } : null,
               Total: data.Remisions[i].Total
             }
