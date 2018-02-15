@@ -1,8 +1,10 @@
-query Envases(
+query Envases (
   $Numero: String
+  $NombreProducto: String
 ) {
-  Envases (
+  EnvasesByProducto (
     Numero: $Numero
+    NombreProducto: $NombreProducto
   ){
     Id
     Estado

@@ -60,6 +60,12 @@ v-layout( align-center justify-center )
                   h6(class="grey--text text--lighten-4") Cliente
 
                 v-flex(xs12)
+                  v-text-field(
+                    v-model="NombreDocumento"
+                    label="Buscar Cliente"
+                    append-icon="search"
+                    :append-icon-cb="BuscarCliente")
+
                   v-select( v-bind:items="ItemsCliente"
                             v-model="Cliente"
                             label="Cliente"
@@ -104,22 +110,37 @@ v-layout( align-center justify-center )
 
             v-layout(row wrap mt-5)
               v-flex(xs12 md4)
-                v-select( v-bind:items="ItemsProduccion"
-                          v-model="ProduccionActual"
-                          label="Sale"
-                          item-text="Buscar"
-                          return-object
-                          autocomplete
-                          dark )
+                v-text-field(
+                  v-model="NumeroProduccion"
+                  label="Buscar Sale"
+                  append-icon="search"
+                  :append-icon-cb="BuscarProduccion")
+
+                v-select(
+                  v-bind:items="ItemsProduccion"
+                  v-model="ProduccionActual"
+                  label="Envase Sale"
+                  item-text="Buscar"
+                  return-object
+                  autocomplete
+                  dark )
 
               v-flex(xs12 md4)
-                v-select( v-bind:items="ItemsEnvase"
-                          v-model="EnvaseActual"
-                          label="Entra"
-                          item-text="Numero"
-                          return-object
-                          autocomplete
-                          dark )
+                v-text-field(
+                  v-model="NumeroEnvase"
+                  label="Buscar Entra"
+                  append-icon="search"
+                  :append-icon-cb="BuscarEnvase")
+
+                v-select(
+                  v-bind:items="ItemsEnvase"
+                  v-model="EnvaseActual"
+                  label="Envase Entra"
+                  item-text="Numero"
+                  return-object
+                  autocomplete
+                  dark )
+
 
               v-flex(xs12 md4)
                 v-money(label="Total" v-model="TotalActual" maskType="currency")
@@ -211,10 +232,11 @@ export default {
       'Noviembre',
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-
+    NumeroEnvase: null,
+    NumeroProduccion: null,
+    NombreDocumento: null,
     menu1: false,
-    loading: 0,
-
+    loading: 0
   }),
   apollo: {
     Remisions:{
@@ -231,16 +253,12 @@ export default {
 
         if (data.Remisions.length > 0) {
           this.Fecha = data.Remisions[0].Fecha
-          for(let i=0; i<this.ItemsCliente.length; i++){
-            if(data.Remisions[0].Ente.Id === this.ItemsCliente[i].Id){
-              this.Cliente = this.ItemsCliente[i];
-              break;
-            }
-          }
+
+          this.ItemsCliente.push(data.Remisions[0].Ente)
+          this.Cliente = data.Remisions[0].Ente
 
           this.items = []
           for (let i=0; i<data.Remisions.length; i++) {
-
             var tmp = {
               Id: data.Remisions[i].Id,
               Produccion: {
@@ -274,15 +292,10 @@ export default {
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update',
             }
-
             this.items.push(tmp)
-
           }
-
         } else {
-
           this.reset()
-
         }
       }
     },
@@ -299,75 +312,6 @@ export default {
 
       }
     },*/
-    Produccions: {
-      query: PRODUCCIONS2,
-      variables () {
-        return {
-          Despachado: 'No',
-        }
-      },
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-
-        this.ItemsProduccion = [];
-
-        for ( let i=0; i<data.Produccions.length; i++ ) {
-          var tmp = {
-            Buscar: data.Produccions[i].Envase.Numero,
-            Id: data.Produccions[i].Id,
-            Cantidad: data.Produccions[i].Cantidad,
-            FechaFabricacion: data.Produccions[i].FechaFabricacion,
-            FechaVencimiento: data.Produccions[i].FechaVencimiento,
-            Lote: data.Produccions[i].Lote,
-            NumeroEnvase: data.Produccions[i].Envase.Numero,
-            Envase: {
-              Id: data.Produccions[i].Envase.Id,
-              Numero: data.Produccions[i].Envase.Numero
-            },
-            Producto: {
-              Id: data.Produccions[i].Producto.Id,
-              Nombre: data.Produccions[i].Producto.Nombre,
-              UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
-            },
-            Despachado: data.Produccions[i].Despachado
-          }
-
-          tmp.Despachado === 'No' ? this.ItemsProduccion.push(tmp) : null
-
-        }
-
-        this.FiltrarEnvases();
-      }
-    },
-    Envases: {
-      query: ENVASES,
-      variables: {
-        Disponible: 'Si'
-      },
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-        this.ItemsEnvase = []
-        for (let i=0; i<data.Envases.length; i++) {
-          var tmp = {
-            Id: data.Envases[i].Id,
-            Numero: data.Envases[i].Numero,
-            Disponible: data.Envases[i].Disponible
-          }
-          this.ItemsEnvase.push(tmp)
-        }
-      }
-    },
-    Entes: {
-      query: ENTES,
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-        this.ItemsCliente = []
-        this.ItemsCliente = data.Entes
-      }
-    }
   },
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
@@ -378,6 +322,82 @@ export default {
     }
   },
   methods: {
+    BuscarCliente () {
+      this.ItemsCliente = [];
+      if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
+        this.$apollo.query({
+          query: ENTES,
+          variables: {
+            NombreDocumento: this.NombreDocumento
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then( res => {
+          console.log(res.data);
+          this.ItemsCliente = res.data.Entes;
+        });
+      }
+    },
+    BuscarEnvase () {
+      this.ItemsEnvase = [];
+      if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 3){
+        this.$apollo.query({
+          query: ENVASES,
+          variables: {
+            Numero: this.NumeroEnvase
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then (res => {
+          console.log(res.data.Envases.length);
+          for (let i=0; i<res.data.Envases.length; i++) {
+            var tmp = {
+              Id: res.data.Envases[i].Id,
+              Numero: res.data.Envases[i].Numero,
+              Disponible: res.data.Envases[i].Disponible
+            }
+            this.ItemsEnvase.push(tmp)
+          }
+        });
+      }
+    },
+    BuscarProduccion () {
+      this.ItemsProduccion = [];
+      if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 3){
+        this.$apollo.query({
+          query: PRODUCCIONS2,
+          variables: {
+            NumeroEnvase: this.NumeroProduccion
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then( res => {
+          console.log(res.data.Produccions.length);
+          for ( let i=0; i<res.data.Produccions.length; i++ ) {
+            var tmp = {
+              Buscar: res.data.Produccions[i].Envase.Numero,
+              Id: res.data.Produccions[i].Id,
+              Cantidad: res.data.Produccions[i].Cantidad,
+              FechaFabricacion: res.data.Produccions[i].FechaFabricacion,
+              FechaVencimiento: res.data.Produccions[i].FechaVencimiento,
+              Lote: res.data.Produccions[i].Lote,
+              NumeroEnvase: res.data.Produccions[i].Envase.Numero,
+              Envase: {
+                Id: res.data.Produccions[i].Envase.Id,
+                Numero: res.data.Produccions[i].Envase.Numero
+              },
+              Producto: {
+                Id: res.data.Produccions[i].Producto.Id,
+                Nombre: res.data.Produccions[i].Producto.Nombre,
+                UnidadDeMedida: res.data.Produccions[i].Producto.UnidadDeMedida
+              },
+              Despachado: res.data.Produccions[i].Despachado
+            }
+            tmp.Despachado === 'No' ? this.ItemsProduccion.push(tmp) : null
+          }
+        });
+      }
+    },
     AutoLLenar () {
       this.$apollo.queries.LastRemision.refetch()
     },

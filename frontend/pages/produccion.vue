@@ -229,7 +229,13 @@ v-layout( align-center justify-center )
 
             v-layout(row wrap mt-3)
               v-flex(xs12)
-                v-select( v-bind:items="ItemsFilteredEnvase"
+                v-text-field(
+                  v-model="NumeroEnvase"
+                  label="Buscar Envase"
+                  append-icon="search"
+                  :append-icon-cb="BuscarEnvase")
+
+                v-select( v-bind:items="ItemsEnvase"
                           v-model="EnvaseActual"
                           label="Envase"
                           item-text="Numero"
@@ -249,7 +255,7 @@ v-layout( align-center justify-center )
 
 <script>
 
-import ENVASES from '~/queries/Envases.gql'
+import ENVASESBYPRODUCTO from '~/queries/EnvasesByProducto.gql'
 import ONE_ENVASE from '~/queries/OneEnvase.gql'
 import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
 import PRODUCCIONS from '~/queries/Produccions.gql'
@@ -296,8 +302,7 @@ export default {
       sortBy: 'Numero'
     },
     ItemsProducto: [],
-    ItemsAllEnvase: [],
-    ItemsFilteredEnvase: [],
+    ItemsEnvase: [],
     EnvaseActual: null,
     months: [
       'Enero',
@@ -313,7 +318,7 @@ export default {
       'Noviembre',
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-
+    NumeroEnvase: null,
     menu1: false,
     menu2: false,
     menu3: false,
@@ -324,25 +329,6 @@ export default {
     loading: 0
   }),
   apollo: {
-    Envases: {
-      query: ENVASES,
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-        this.ItemsAllEnvase = []
-        for (let i=0; i<data.Envases.length; i++) {
-          var tmp = {}
-          tmp.Id = data.Envases[i].Id;
-          tmp.Numero = data.Envases[i].Numero;
-          tmp.Capacidad = data.Envases[i].Capacidad;
-          tmp.UnidadDeMedida = data.Envases[i].Producto.UnidadDeMedida;
-          tmp.ProductoId = data.Envases[i].Producto.Id;
-          tmp.Disponible = data.Envases[i].Disponible;
-          tmp.Cliente = data.Envases[i].Propietario;
-          this.ItemsAllEnvase.push(tmp);
-        }
-      }
-    },
     Produccions: {
       query: PRODUCCIONS,
       fetchPolicy: 'network-only',
@@ -414,12 +400,45 @@ export default {
     Producto: {
       handler: function () {
         this.changeProductoCounter ();
-        this.filtrarEnvases ()
       },
       deep: true
     }
   },
   methods: {
+    BuscarEnvase () {
+      this.ItemsEnvase = []
+      if(
+        null !== this.NumeroEnvase
+        &&
+        this.NumeroEnvase.length >= 3
+        &&
+        null !== this.Producto.Nombre
+      ){
+        this.$apollo.query({
+          query: ENVASESBYPRODUCTO,
+          variables: {
+            Numero: this.NumeroEnvase,
+            NombreProducto: this.Producto.Nombre
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then( res => {
+          console.log(res.data);
+          let Envases = res.data.EnvasesByProducto
+          for (let i=0; i<Envases.length; i++) {
+            var tmp = {}
+            tmp.Id = Envases[i].Id;
+            tmp.Numero = Envases[i].Numero;
+            tmp.Capacidad = Envases[i].Capacidad;
+            tmp.UnidadDeMedida = Envases[i].Producto.UnidadDeMedida;
+            tmp.ProductoId = Envases[i].Producto.Id;
+            tmp.Disponible = Envases[i].Disponible;
+            tmp.Cliente = Envases[i].Propietario;
+            this.ItemsEnvase.push(tmp);
+          }
+        });
+      }
+    },
     UpdateEnvase (_Envase, Value) {
       const Envase = {
         Numero: _Envase.Numero,
@@ -669,14 +688,6 @@ export default {
       this.ChangeProductoCounter++
       if( this.ChangeProductoCounter === 2 ) {
         this.ChangeProducto=false
-      }
-    },
-    filtrarEnvases () {
-      this.ItemsFilteredEnvase = []
-      for (let i=0; i<this.ItemsAllEnvase.length; i++) {
-        if ( this.Producto.Id === this.ItemsAllEnvase[i].ProductoId && this.ItemsAllEnvase[i].Disponible === 'Si' ) {
-          this.ItemsFilteredEnvase.push(this.ItemsAllEnvase[i])
-        }
       }
     },
     generar() {

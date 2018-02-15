@@ -682,10 +682,23 @@ var Query = new GraphQLObjectType({
           Ciudad: {type: GraphQLString},
           Direccion: {type: GraphQLString},
           Telefono: {type: GraphQLString},
-          Relacion: {type: GraphQLString}
+          Relacion: {type: GraphQLString},
+          NombreDocumento: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Ente.findAll({ where: args, order: [['Nombre', 'ASC']] });
+          return Db.models.Ente.findAll({
+            where: {
+              $or: [
+                {
+                  NumeroDocumento: {$like: ("%"+args.NombreDocumento+"%")}
+                },
+                {
+                  Nombre: {$like: ("%"+args.NombreDocumento+"%")}
+                }
+              ]
+            },
+            order: [['Nombre', 'ASC']]
+          });
         }
       },
       EntesByNombre: {
@@ -769,7 +782,35 @@ var Query = new GraphQLObjectType({
           Disponible: {type: GraphQLString}
         },
         resolve(root, args) {
-          return Db.models.Envase.findAll({ where: args, order: [['Numero', 'DESC']] });
+          return Db.models.Envase.findAll({
+            where: {
+              Numero: {$like: ("%"+args.Numero+"%")},
+              Disponible: 'Si'
+            },
+            order: [['Numero', 'DESC']]
+          });
+        }
+      },
+      EnvasesByProducto: {
+        type: new GraphQLList(Envase),
+        args: {
+          Numero: {type: GraphQLString},
+          NombreProducto: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Envase.findAll({
+            where: {
+              Numero: {$like: ("%"+args.Numero+"%")},
+              Disponible: 'Si'
+            },
+            order: [['Numero', 'DESC']],
+            include: [
+              {
+                model: Db.models.Producto,
+                where: {Nombre: args.NombreProducto}
+              }
+            ]
+          });
         }
       },
       OneEnvase: {
@@ -826,10 +867,35 @@ var Query = new GraphQLObjectType({
           PurezaFinal: {type: GraphQLFloat},
           PresionFinal: {type: GraphQLFloat},
           Observacion: {type: GraphQLString},
-          Despachado: {type: GraphQLString}
+          Despachado: {type: GraphQLString},
         },
         resolve(root, args) {
-          return Db.models.Produccion.findAll({ where: args, order: [['Orden', 'ASC']] });
+          return Db.models.Produccion.findAll({
+            where: args,
+            order: [['Orden', 'ASC']]
+          });
+        }
+      },
+      ProduccionsByEnvase: {
+        type: new GraphQLList(Produccion),
+        args: {
+          NumeroEnvase: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Produccion.findAll({
+            where:{
+              Despachado: 'No'
+            },
+            order: [['Orden', 'ASC']],
+            include: [
+              {
+                model: Db.models.Envase,
+                where:{
+                  Numero: {$like: ("%"+args.NumeroEnvase+"%")},
+                }
+              }
+            ]
+          });
         }
       },
       OneProduccion: {

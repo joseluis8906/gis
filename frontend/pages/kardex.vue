@@ -214,7 +214,7 @@ export default {
       FechaAlquiler: null,
       Observaciones: null
     },
-
+    NumeroEnvase: null,
     menu1: false,
     menu2: false,
     menu3: false,
@@ -234,10 +234,15 @@ export default {
     },
     Envases: {
       query: ENVASES,
+      variables () {
+        return {
+          Numero: this.NumeroEnvase
+        }
+      },
       fetchPolicy: 'network-only',
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
+        console.log(data.Envases.length)
         if (data.Envases) {
             this.ItemsEnvase = data.Envases
         }
