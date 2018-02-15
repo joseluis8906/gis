@@ -161,6 +161,7 @@ import VMoney from '~/components/MonetaryInput.vue'
 
 import REMISIONS from '~/queries/Remisions.gql'
 import PRODUCCIONS2 from '~/queries/Produccions2.gql'
+import PRODUCCIONSBYENVASE from '~/queries/ProduccionsByEnvase.gql'
 import CREATE_REMISION from '~/queries/CreateRemision.gql'
 import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
 import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
@@ -365,33 +366,35 @@ export default {
       this.ItemsProduccion = [];
       if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 3){
         this.$apollo.query({
-          query: PRODUCCIONS2,
+          query: PRODUCCIONSBYENVASE,
           variables: {
             NumeroEnvase: this.NumeroProduccion
           },
           fetchPolicy: 'network-only',
           loadingKey: 'loading'
         }).then( res => {
-          console.log(res.data.Produccions.length);
-          for ( let i=0; i<res.data.Produccions.length; i++ ) {
+          console.log(res.data.ProduccionsByEnvase);
+          let Produccions = res.data.ProduccionsByEnvase;
+
+          for ( let i=0; i<Produccions.length; i++ ) {
             var tmp = {
-              Buscar: res.data.Produccions[i].Envase.Numero,
-              Id: res.data.Produccions[i].Id,
-              Cantidad: res.data.Produccions[i].Cantidad,
-              FechaFabricacion: res.data.Produccions[i].FechaFabricacion,
-              FechaVencimiento: res.data.Produccions[i].FechaVencimiento,
-              Lote: res.data.Produccions[i].Lote,
-              NumeroEnvase: res.data.Produccions[i].Envase.Numero,
+              Buscar: Produccions[i].Envase.Numero,
+              Id: Produccions[i].Id,
+              Cantidad: Produccions[i].Cantidad,
+              FechaFabricacion: Produccions[i].FechaFabricacion,
+              FechaVencimiento: Produccions[i].FechaVencimiento,
+              Lote: Produccions[i].Lote,
+              NumeroEnvase: Produccions[i].Envase.Numero,
               Envase: {
-                Id: res.data.Produccions[i].Envase.Id,
-                Numero: res.data.Produccions[i].Envase.Numero
+                Id: Produccions[i].Envase.Id,
+                Numero: Produccions[i].Envase.Numero
               },
               Producto: {
-                Id: res.data.Produccions[i].Producto.Id,
-                Nombre: res.data.Produccions[i].Producto.Nombre,
-                UnidadDeMedida: res.data.Produccions[i].Producto.UnidadDeMedida
+                Id: Produccions[i].Producto.Id,
+                Nombre: Produccions[i].Producto.Nombre,
+                UnidadDeMedida: Produccions[i].Producto.UnidadDeMedida
               },
-              Despachado: res.data.Produccions[i].Despachado
+              Despachado: Produccions[i].Despachado
             }
             tmp.Despachado === 'No' ? this.ItemsProduccion.push(tmp) : null
           }
