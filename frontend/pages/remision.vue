@@ -334,7 +334,7 @@ export default {
           fetchPolicy: 'network-only',
           loadingKey: 'loading'
         }).then( res => {
-          console.log(res.data);
+          console.log(res.data.Entes.length);
           this.ItemsCliente = res.data.Entes;
         });
       }
@@ -373,7 +373,7 @@ export default {
           fetchPolicy: 'network-only',
           loadingKey: 'loading'
         }).then( res => {
-          console.log(res.data.ProduccionsByEnvase);
+          console.log(res.data.ProduccionsByEnvase.length);
           let Produccions = res.data.ProduccionsByEnvase;
 
           for ( let i=0; i<Produccions.length; i++ ) {
