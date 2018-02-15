@@ -341,7 +341,7 @@ export default {
     },
     BuscarEnvase () {
       this.ItemsEnvase = [];
-      if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 3){
+      if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 2){
         this.$apollo.query({
           query: ENVASES,
           variables: {
@@ -364,7 +364,7 @@ export default {
     },
     BuscarProduccion () {
       this.ItemsProduccion = [];
-      if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 3){
+      if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 2){
         this.$apollo.query({
           query: PRODUCCIONSBYENVASE,
           variables: {

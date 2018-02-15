@@ -265,7 +265,7 @@ export default {
     },
     BuscarEnvase () {
       this.ItemsEnvase = [];
-      if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 3){
+      if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 2){
         this.$apollo.query({
           query: ENVASES,
           variables: {

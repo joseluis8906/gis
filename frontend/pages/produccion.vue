@@ -410,7 +410,7 @@ export default {
       if(
         null !== this.NumeroEnvase
         &&
-        this.NumeroEnvase.length >= 3
+        this.NumeroEnvase.length >= 2
         &&
         null !== this.Producto.Nombre
       ){
