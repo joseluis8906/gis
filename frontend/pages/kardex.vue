@@ -51,21 +51,38 @@ v-layout( align-center justify-center )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
-            v-select( v-bind:items="ItemsTipoKardex"
-                      v-model="TipoKardex"
-                      label="Tipo"
-                      item-value="text"
-                      dark )
+            v-select(
+              v-bind:items="ItemsTipoKardex"
+              v-model="TipoKardex"
+              label="Tipo"
+              item-value="text"
+              dark )
 
-            v-select( v-bind:items="ItemsEnvase"
-                      v-model="Envase"
-                      label="Envase"
-                      item-text="Numero"
-                      item-value="Id"
-                      return-object
-                      autocomplete
-                      v-if="esUnico"
-                      dark )
+            v-text-field(
+              v-model="NumeroEnvase"
+              label="Buscar Envases"
+              append-icon="search"
+              v-if="esUnico"
+              :append-icon-cb="BuscarEnvase")
+
+            v-select(
+              v-bind:items="ItemsEnvase"
+              v-model="Envase"
+              label="Envase"
+              item-text="Numero"
+              item-value="Id"
+              return-object
+              autocomplete
+              v-if="esUnico"
+              dark )
+
+            v-text-field(
+              v-model="NombreDocumento"
+              label="Buscar Cliente"
+              append-icon="search"
+              v-if="esCliente"
+              :append-icon-cb="BuscarCliente")
+
 
             v-select( v-bind:items="ItemsCliente"
                       v-model="Cliente"
@@ -215,40 +232,12 @@ export default {
       Observaciones: null
     },
     NumeroEnvase: null,
+    NombreDocumento: null,
     menu1: false,
     menu2: false,
     menu3: false,
     loading: 0
   }),
-  apollo: {
-    Entes: {
-      query: ENTES,
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-        //console.log(data)
-        if (data.Entes) {
-          this.ItemsCliente = data.Entes
-        }
-      }
-    },
-    Envases: {
-      query: ENVASES,
-      variables () {
-        return {
-          Numero: this.NumeroEnvase
-        }
-      },
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-        console.log(data.Envases.length)
-        if (data.Envases) {
-            this.ItemsEnvase = data.Envases
-        }
-      }
-    }
-  },
   beforeMount () {
     if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
       this.$router.push('/')
@@ -258,6 +247,38 @@ export default {
     }
   },
   methods: {
+    BuscarCliente () {
+      this.ItemsCliente = [];
+      if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
+        this.$apollo.query({
+          query: ENTES,
+          variables: {
+            NombreDocumento: this.NombreDocumento
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then( res => {
+          console.log(res.data);
+          this.ItemsCliente = res.data.Entes;
+        });
+      }
+    },
+    BuscarEnvase () {
+      this.ItemsEnvase = [];
+      if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 3){
+        this.$apollo.query({
+          query: ENVASES,
+          variables: {
+            Numero: this.NumeroEnvase
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then (res => {
+          console.log(res.data.Envases.length)
+          this.ItemsEnvase = res.data.Envases
+        });
+      }
+    },
     generar() {
       this.$store.commit('kardex/changeTipo', this.TipoKardex)
       this.$store.commit('kardex/changeFecha', this.Fecha)
