@@ -236,7 +236,7 @@ export default {
     NumeroEnvase: null,
     NumeroProduccion: null,
     NombreDocumento: null,
-
+    
     menu1: false,
     loading: 0
   }),
