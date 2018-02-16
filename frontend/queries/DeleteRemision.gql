@@ -1,8 +1,16 @@
 mutation DeleteRemision (
-  $Id: Int!
+  $Id: Int
+  $Numero: String
+  $ProduccionId: Int
+  $EnvaseProduccionId: Int
+  $EnvaseId: Int
 ) {
   DeleteRemision (
     Id: $Id
+    Numero: $Numero
+    ProduccionId: $ProduccionId
+    EnvaseProduccionId: $EnvaseProduccionId
+    EnvaseId: $EnvaseId
   ){
     Id
   }

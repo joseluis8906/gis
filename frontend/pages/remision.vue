@@ -91,8 +91,8 @@ v-layout( align-center justify-center )
                           class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
               template(slot="items" scope="props")
-                td(class="text-xs-center") {{ props.item.Produccion.Cantidad ? props.item.Produccion.Cantidad : props.item.Envase.Capacidad }}
-                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion.Producto.Nombre ? props.item.Produccion.Producto.Nombre : props.item.Envase.Producto.Nombre }}
+                td(class="text-xs-center") {{ props.item.Produccion ? props.item.Produccion.Cantidad : props.item.Envase.Capacidad }}
+                td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion !== null ? props.item.Produccion.Producto.Nombre : props.item.Envase.Producto.Nombre }}
                 td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : '' }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : '' }}
                 td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : '' }}
@@ -236,7 +236,7 @@ export default {
     NumeroEnvase: null,
     NumeroProduccion: null,
     NombreDocumento: null,
-    
+
     menu1: false,
     loading: 0
   }),
@@ -251,7 +251,6 @@ export default {
       fetchPolicy: 'network-only',
       loadingKey: "loading",
       update (data) {
-        //console.log(data)
 
         if (data.Remisions.length > 0) {
           this.Fecha = data.Remisions[0].Fecha
@@ -263,34 +262,29 @@ export default {
           for (let i=0; i<data.Remisions.length; i++) {
             var tmp = {
               Id: data.Remisions[i].Id,
-              Produccion: {
-                Id: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Id : null,
-                Cantidad: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Cantidad : null,
-                FechaFabricacion: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.FechaFabricacion : null,
-                FechaVencimiento: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.FechaVencimiento : null,
-                Lote: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Lote : null,
+              Produccion: data.Remisions[i].Produccion ? {
+                Id: data.Remisions[i].Produccion.Id,
+                Cantidad: data.Remisions[i].Produccion.Cantidad,
+                FechaFabricacion: data.Remisions[i].Produccion.FechaFabricacion,
+                FechaVencimiento: data.Remisions[i].Produccion.FechaVencimiento,
+                Lote: data.Remisions[i].Produccion.Lote,
                 Envase: {
-                  Id: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Envase.Id : null,
-                  Numero: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Envase.Numero : null,
+                  Id: data.Remisions[i].Produccion.Envase.Id,
+                  Numero: data.Remisions[i].Produccion.Envase.Numero,
                 },
                 Producto: {
-                  Id: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.Id : null,
-                  Nombre: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.Nombre : null,
-                  UnidadDeMedida: data.Remisions[i].Produccion ? data.Remisions[i].Produccion.Producto.UnidadDeMedida : null
+                  Id: data.Remisions[i].Produccion.Producto.Id,
+                  Nombre: data.Remisions[i].Produccion.Producto.Nombre,
+                  UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
                 },
                 Despachado: data.Remisions[i].Despachado
-              },
+              } : null,
               Envase: data.Remisions[i].Envase ? {
                 Id: data.Remisions[i].Envase.Id,
                 Numero: data.Remisions[i].Envase.Numero,
                 Capacidad: data.Remisions[i].Envase.Capacidad,
                 Producto: data.Remisions[i].Envase.Producto
-              } : {
-                Id: null,
-                Numero: null,
-                Capacidad: null,
-                Producto: null
-              },
+              } : null,
               Total: data.Remisions[i].Total,
               SaveUpdate: 'update',
             }
@@ -356,7 +350,11 @@ export default {
             var tmp = {
               Id: res.data.Envases[i].Id,
               Numero: res.data.Envases[i].Numero,
-              Disponible: res.data.Envases[i].Disponible
+              Disponible: res.data.Envases[i].Disponible,
+              Producto: {
+                Nombre: res.data.Envases[i].Producto.Nombre,
+                UnidadDeMedida: res.data.Envases[i].Producto.UnidadDeMedida
+              }
             }
             this.ItemsEnvase.push(tmp)
           }
@@ -451,14 +449,9 @@ export default {
 
     },
     guardar (item) {
-
-      if( //item.Id === null &&
-          this.Fecha !== null &&
-          this.Cliente.Id !== null
-          //item.Produccion.Id !== null &&
-          //item.Envase.Id !== null &&
-          //item.Total !== null &&
-         //item.Total !== ''
+      if(
+        this.Fecha !== null &&
+        this.Cliente.Id !== null
       ) {
 
         const Remision = {
@@ -466,6 +459,7 @@ export default {
           Fecha: this.Fecha,
           EnteId: this.Cliente.Id,
           ProduccionId: item.Produccion ? item.Produccion.Id : null,
+          EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
           EnvaseId: item.Envase ? item.Envase.Id : null,
           Total: item.Total
         }
@@ -477,31 +471,48 @@ export default {
             Fecha: Remision.Fecha,
             EnteId: Remision.EnteId,
             ProduccionId: Remision.ProduccionId,
+            EnvaseProduccionId: Remision.EnvaseProduccionId,
             EnvaseId: Remision.EnvaseId,
             Total: Remision.Total
           },
           loadingKey: 'loading',
-          refetchQueries: [
-            {
-              query: REMISIONS,
-              variables: {
-                Numero: this.Numero
-              }
+          update: (store, { data: res }) => {
+            var tmp = {
+              Id: res.CreateRemision.Id,
+              Produccion: res.CreateRemision.Produccion ? {
+                Id: res.CreateRemision.Produccion.Id,
+                Cantidad: res.CreateRemision.Produccion.Cantidad,
+                FechaFabricacion: res.CreateRemision.Produccion.FechaFabricacion,
+                FechaVencimiento: res.CreateRemision.Produccion.FechaVencimiento,
+                Lote: res.CreateRemision.Produccion.Lote,
+                Envase: {
+                  Id: res.CreateRemision.Produccion.Envase.Id,
+                  Numero: res.CreateRemision.Produccion.Envase.Numero,
+                },
+                Producto: {
+                  Id: res.CreateRemision.Produccion.Producto.Id,
+                  Nombre: res.CreateRemision.Produccion.Producto.Nombre,
+                  UnidadDeMedida: res.CreateRemision.Produccion.Producto.UnidadDeMedida
+                },
+                Despachado: res.CreateRemision.Despachado
+              } : null,
+              Envase: res.CreateRemision.Envase ? {
+                Id: res.CreateRemision.Envase.Id,
+                Numero: res.CreateRemision.Envase.Numero,
+                Capacidad: res.CreateRemision.Envase.Capacidad,
+                Producto: res.CreateRemision.Envase.Producto
+              } : null,
+              Total: res.CreateRemision.Total,
+              SaveUpdate: 'update'
             }
-          ]
-        });/*.then(() => {
-          this.$apollo.queries.Remisions.refetch();
-        })*/
-
-        this.UpdateProduccion(item, 'Si');
-        item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'Si') : null;
-        this.CreateKardexEntra(item);
-        this.CreateKardexSale(item);
+            
+            this.items.push(tmp)
+          }
+        });
 
       }
     },
     eliminar (item) {
-
       if ( item.Id === null ) {
         for (let i=0; i<this.items.length; i++) {
           if ( item.ProduccionId === this.items[i].ProduccionId ) {
@@ -519,42 +530,31 @@ export default {
       const Remision = {
         Id: item.Id,
         Numero: this.Numero,
-        ProduccionId: item.Produccion.Id
+        ProduccionId: item.Produccion ? item.Produccion.Id : null,
+        EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
+        EnvaseId: item.Envase ? item.Envase.Id : null
       }
 
       if (item.Id !== null) {
-
         this.$apollo.mutate ({
           mutation: DELETE_REMISION,
           variables: {
-            Id: Remision.Id
+            Id: Remision.Id,
+            Numero: Remision.Numero,
+            ProduccionId: Remision.ProduccionId,
+            EnvaseProduccionId: Remision.EnvaseProduccionId,
+            EnvaseId: Remision.EnvaseId
           },
-          loadingKey: 'loading',
-          refetchQueries: [
-            {
-              query: REMISIONS,
-              variables: {
-                Numero: this.Numero
-              }
-            }
-          ]
-        });/*then(() => {
-          this.$apollo.queries.Remisions.refetch();
-        })*/
-
-        this.UpdateProduccion(item, 'No')
-        item.Produccion.Envase ? this.UpdateEnvase(item.Produccion.Envase, 'No') : null;
-        this.EliminarKardex(item)
+          loadingKey: 'loading'
+        });
 
       } else {
 
         for (let i=0; i<this.items.length; i++) {
-          if (item.ProduccionId === this.items[i].ProduccionId) {
-            //console.log('Eliminado de cache')
+          if (item.Id === this.items[i].Id) {
             this.items.splice(i, 1)
           }
         }
-
       }
 
     },
@@ -580,194 +580,6 @@ export default {
     generar () {
       this.$store.commit('remision/changeNumero', this.Numero)
       this.$router.push('/reporte/remision');
-    },
-    CreateKardexSale (item) {
-      //console.log(item)
-      if(item.Produccion.Id === null){
-        return;
-      }
-      var kardex = {
-        Cantidad: item.Produccion.Cantidad,
-        ProductoId: item.Produccion.Producto.Id,
-        EnvaseId: item.Produccion.Envase.Id,
-        FechaElaboracion: item.Produccion.FechaFabricacion,
-        Lote: item.Produccion.Lote,
-        FechaVencimiento: item.Produccion.FechaVencimiento,
-        EnteId: this.Cliente.Id,
-        FechaSale: this.Fecha,
-        NumeroFacturaSale: this.Numero
-      }
-
-      this.$apollo.mutate({
-        mutation: CREATE_KARDEX_SALE,
-        variables: {
-          Cantidad: kardex.Cantidad,
-          ProductoId: kardex.ProductoId,
-          EnvaseId: kardex.EnvaseId,
-          FechaElaboracion: kardex.FechaElaboracion,
-          Lote: kardex.Lote,
-          FechaVencimiento: kardex.FechaVencimiento,
-          EnteId: kardex.EnteId,
-          FechaSale: kardex.FechaSale,
-          NumeroFacturaSale: kardex.NumeroFacturaSale
-        },
-        loadingKey: 'loading'
-      })
-    },
-    CreateKardexEntra (item) {
-      if(item.Envase === null){
-        return
-      }
-      var kardex = {
-        EnvaseId: item.Envase.Id,
-        EnteId: this.Cliente.Id,
-        FechaEntra: this.Fecha,
-        NumeroFacturaEntra: this.Numero
-      }
-
-      this.$apollo.mutate({
-        mutation: CREATE_KARDEX_ENTRA,
-        variables: {
-          EnvaseId: kardex.EnvaseId,
-          EnteId: kardex.EnteId,
-          FechaEntra: kardex.FechaEntra,
-          NumeroFacturaEntra: kardex.NumeroFacturaEntra
-        },
-        loadingKey: 'loading'
-      })
-    },
-    EliminarKardex (item) {
-      if(item.Produccion.Id === null){
-        return;
-      }
-      var kardex1 = {
-        EnvaseId: item.Produccion.Envase.Id,
-        NumeroFacturaSale: this.Numero
-      }
-
-      this.$apollo.mutate({
-        mutation: DELETE_KARDEX_SALE,
-        variables: {
-          EnvaseId: kardex1.EnvaseId,
-          NumeroFacturaSale: kardex1.NumeroFacturaSale
-        },
-        loadingKey: 'loading'
-      })
-
-      if(!item.Envase)
-      {
-        return
-      }
-
-      if (item.Envase.Id) {
-
-        var kardex2 = {
-          EnvaseId: item.Envase.Id,
-          NumeroFacturaEntra: this.Numero
-        }
-
-        this.$apollo.mutate({
-        mutation: DELETE_KARDEX_ENTRA,
-        variables: {
-          EnvaseId: kardex2.EnvaseId,
-          NumeroFacturaEntra: kardex2.NumeroFacturaEntra
-        },
-        loadingKey: 'loading'
-      })
-      }
-    },
-    UpdateProduccion (item, Tipo) {
-      if(item.Produccion.Id === null){
-        return;
-      }
-
-      const Produccion = {
-        Id: item.Produccion.Id,
-        Cantidad: item.Produccion.Cantidad,
-        EnvaseId: item.Produccion.Envase.Id,
-        Despachado: Tipo
-      }
-
-      this.$apollo.mutate ({
-        mutation: UPDATE_ONE_PRODUCCION,
-        variables: {
-          Id: Produccion.Id,
-          Cantidad: Produccion.Cantidad,
-          EnvaseId: Produccion.EnvaseId,
-          Despachado: Produccion.Despachado
-        },
-        loadingKey: 'loading',
-        refetchQueries: [
-          {
-            query: PRODUCCIONS2,
-            variables: {
-              Despachado: 'No'
-            }
-          }
-        ]
-      });/*.then(() => {
-        this.$apollo.queries.Produccions.refetch();
-      });*/
-      /*
-      var tmp = {
-        Buscar: item.Produccion.Envase.Numero,
-        Id: item.Produccion.Id,
-        Cantidad: item.Produccion.Cantidad,
-        FechaFabricacion: item.Produccion.FechaFabricacion,
-        FechaVencimiento: item.Produccion.FechaVencimiento,
-        Lote: item.Produccion.Lote,
-        NumeroEnvase: item.Produccion.Envase.Numero,
-        Envase: {
-          Id: item.Produccion.Envase.Id,
-          Numero: item.Produccion.Envase.Numero
-        },
-        Producto: {
-          Id: item.Produccion.Producto.Id,
-          Nombre: item.Produccion.Producto.Nombre,
-          UnidadDeMedida: item.Produccion.Producto.UnidadDeMedida
-        },
-        Despachado: 'No'
-      }
-
-      this.ItemsProduccion.push(tmp)
-
-      var tmp = item.Envase ? {
-        Id: item.Envase.Id,
-        Numero: item.Envase.Numero,
-        Disponible: item.Envase.Disponible
-      } : null;
-
-      tmp ? this.ItemsEnvase.push(tmp) : null;
-      */
-    },
-    UpdateEnvase (_Envase, Value) {
-      if(_Envase.Id === null){
-        return;
-      }
-      const Envase = {
-        Numero: _Envase.Numero,
-        Disponible: Value
-      };
-
-      this.$apollo.mutate ({
-        mutation: UPDATE_ENVASE,
-        variables: {
-          Numero: Envase.Numero,
-          Disponible: Envase.Disponible
-        },
-        loadingKey: 'loading',
-        refetchQueries: [
-          {
-            query: ENVASES,
-            variables: {
-              Disponible: 'Si'
-            }
-          }
-        ]
-      });/*.then(() => {
-        this.$apollo.queries.Envases.refetch();
-      })*/
-
     },
     FiltrarEnvases () {
       for (let i=0; i<this.ItemsProduccion.length; i++){
