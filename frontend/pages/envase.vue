@@ -35,6 +35,12 @@ v-layout( align-center justify-center )
                       autocomplete
                       dark )
 
+            v-text-field(
+              v-model="NombreDocumento"
+              label="Buscar Cliente"
+              append-icon="search"
+              :append-icon-cb="BuscarCliente")
+
             v-select( v-bind:items="ItemsPropietario"
                       v-model="Propietario"
                       label="Propietario"
@@ -317,6 +323,7 @@ export default {
       'Noviembre',
       'Diciembre'],
     days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    NombreDocumento: null,
 
     loading: 0,
   }),
@@ -359,14 +366,6 @@ export default {
         this.update = data.OneEnvase ? true : false
       }
     },
-    Entes: {
-      query: ENTES,
-      loadingKey: 'loading',
-      update (data) {
-        //console.log(data)
-        this.ItemsPropietario = data.Entes
-      }
-    },
     Productos: {
       query: PRODUCTOS,
       loadingKey: 'loading',
@@ -385,6 +384,22 @@ export default {
     }
   },
   methods: {
+    BuscarCliente () {
+      this.ItemsCliente = [];
+      if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
+        this.$apollo.query({
+          query: ENTES,
+          variables: {
+            NombreDocumento: this.NombreDocumento
+          },
+          fetchPolicy: 'network-only',
+          loadingKey: 'loading'
+        }).then( res => {
+          console.log(res.data.Entes.length);
+          this.ItemsPropietario = res.data.Entes;
+        });
+      }
+    },
     CreateOrUpdate () {
       if (this.update) {
         this.Update();
