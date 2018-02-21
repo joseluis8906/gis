@@ -37,10 +37,10 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right") {{ CantidadM3 }} {{ UnidadDeMedida }}
         tr
           td(style="text-align: left") Fecha Inicial:
-          td(style="text-align: right") {{ FechaInicial }}
+          td(style="text-align: right") {{ fechaMilitar(FechaInicial) }}
         tr
           td(style="text-align: left") Fecha Final:
-          td(style="text-align: right") {{ FechaFinal }}
+          td(style="text-align: right") {{ fechaMilitar(FechaFinal) }}
 
     table(style="width: 49%; margin-left: 2%; height: auto; display: inline-block;" class="table-kardex" )
       tbody
@@ -55,10 +55,10 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right") {{ Lote }}
         tr
           td(style="text-align: left") Fecha Fabricación:
-          td(style="text-align: right") {{ FechaFabricacion }}
+          td(style="text-align: right") {{ fechaMilitar(FechaFabricacion) }}
         tr
           td(style="text-align: left") Fecha Vencimiento:
-          td(style="text-align: right") {{ FechaVencimiento }}
+          td(style="text-align: right") {{ fechaMilitar(FechaVencimiento) }}
         tr
           td(style="text-align: left") Hora Inicial:
           td(style="text-align: right") {{ HoraInicial }}
@@ -278,6 +278,12 @@ export default {
     }
   },
   methods: {
+    fechaMilitar (fecha){
+      if(null === fecha ){return '';}
+      let fechaList = fecha.split('-');
+      let fechaMil = `${fechaList[2]}/${fechaList[1]}/${fechaList[0].substr(2,2)}`;
+      return fechaMil;
+    },
     MaxLength (value, len) {
       if(value){
         return value.length >= len ? value.substr(0, (len-3))+'...' : value;
