@@ -258,7 +258,7 @@ export default {
       text: 'Cargando'
     },
     Estado: '',
-    Propietario: {Nombre: '', NumeroDocumento: '', Id: -1},
+    Propietario: {Nombre: null, NumeroDocumento: null, Id: null},
     EnteId: '',
     Material: '',
     Producto: {Id: null, Nombre: null, UnidadDeMedida: null},
@@ -337,7 +337,10 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        //console.log(data)
+        if (null !== data.OneEnvase){
+          this.ItemsPropietario = [];
+          this.ItemsPropietario.push (data.OneEnvase.Propietario);
+        }
         this.Estado = data.OneEnvase ? data.OneEnvase.Estado : ''
         this.EnteId = data.OneEnvase ? data.OneEnvase.EnteId : ''
         this.Propietario =

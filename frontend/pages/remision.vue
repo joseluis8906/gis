@@ -335,6 +335,7 @@ export default {
       }
     },
     BuscarEnvase () {
+      this.EnvaseActual = null;
       this.ItemsEnvase = [];
       if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 2){
         this.$apollo.query({
@@ -362,6 +363,7 @@ export default {
       }
     },
     BuscarProduccion () {
+      this.ProduccionActual = null;
       this.ItemsProduccion = [];
       if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 2){
         this.$apollo.query({
@@ -409,6 +411,13 @@ export default {
       return s;
     },
     agregar () {
+      if(
+        (null === this.ProduccionActual || typeof(this.ProduccionActual) !== 'object') &&
+        (null === this.EnvaseActual || typeof(this.EnvaseActual) !== 'object')
+       ){
+        console.log('Error en Envase o produccion');
+        return;
+      }
       var tmp = {
         Id: null,
         Produccion: {
@@ -451,7 +460,8 @@ export default {
     guardar (item) {
       if(
         this.Fecha !== null &&
-        this.Cliente.Id !== null
+        this.Cliente.Id !== null &&
+        (item.Produccion !== null || item.Envase !== null)
       ) {
 
         const Remision = {
@@ -505,11 +515,13 @@ export default {
               Total: res.CreateRemision.Total,
               SaveUpdate: 'update'
             }
-            
+
             this.items.push(tmp)
           }
         });
 
+      } else {
+        console.log('Erro antes de guardar en envase o producción');
       }
     },
     eliminar (item) {
