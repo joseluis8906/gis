@@ -369,7 +369,8 @@ export default {
         this.$apollo.query({
           query: PRODUCCIONSBYENVASE,
           variables: {
-            NumeroEnvase: this.NumeroProduccion
+            NumeroEnvase: this.NumeroProduccion,
+            FechaFabricacion: this.Fecha
           },
           fetchPolicy: 'network-only',
           loadingKey: 'loading'

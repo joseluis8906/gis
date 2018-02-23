@@ -1,8 +1,10 @@
 query Produccions (
   $NumeroEnvase: String
+  $FechaFabricacion: String
 ) {
-  ProduccionsByEnvase (    
+  ProduccionsByEnvase (
     NumeroEnvase: $NumeroEnvase
+    FechaFabricacion: $FechaFabricacion
   ){
     Id
     Orden

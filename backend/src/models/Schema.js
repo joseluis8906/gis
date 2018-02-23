@@ -879,12 +879,14 @@ var Query = new GraphQLObjectType({
       ProduccionsByEnvase: {
         type: new GraphQLList(Produccion),
         args: {
-          NumeroEnvase: {type: GraphQLString}
+          NumeroEnvase: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Produccion.findAll({
             where:{
-              Despachado: 'No'
+              Despachado: 'No',
+              FechaFabricacion: { $lte: new Date(args.FechaFabricacion+'T00:00:00') }
             },
             order: [['Orden', 'ASC']],
             include: [
