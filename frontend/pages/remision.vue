@@ -470,7 +470,7 @@ export default {
     guardar (item) {
       if(
         this.Fecha !== null &&
-        this.Cliente.Id !== null &&
+        (this.Cliente.Id !== null || typeof(this.Cliente) !== 'object' ) &&
         (item.Produccion !== null || item.Envase !== null)
       ) {
 
@@ -531,7 +531,7 @@ export default {
         });
 
       } else {
-        console.log('Erro antes de guardar en envase o producción');
+        console.log('Erro en función guardar');
       }
     },
     eliminar (item) {
