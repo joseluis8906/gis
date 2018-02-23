@@ -317,6 +317,15 @@ export default {
       this.$store.commit('security/AddRoles', Roles);
     }
   },
+  watch: {
+    Fecha (value) {
+      let hoy = new Date(Date.now());
+      let fecha = new Date(value+'T00:00:00');
+      if(fecha > hoy){
+        this.Fecha = hoy.toISOString().split('T')[0];
+      }
+    }
+  },
   methods: {
     BuscarCliente () {
       this.ItemsCliente = [];
