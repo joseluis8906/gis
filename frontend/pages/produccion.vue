@@ -404,28 +404,28 @@ export default {
       deep: true
     },
     Fecha (value) {
-      let hoy = new Date(Date.now());
+      let hoy = new Date(Date.now()-(1000*60*60*5));
       let fecha = new Date(value+'T00:00:00');
       if(fecha > hoy){
         this.Fecha = hoy.toISOString().split('T')[0];
       }
     },
     FechaInicial (value) {
-      let hoy = new Date(Date.now());
+      let hoy = new Date(Date.now()-(1000*60*60*5));
       let fecha = new Date(value+'T00:00:00');
       if(fecha > hoy){
         this.FechaInicial = hoy.toISOString().split('T')[0];
       }
     },
     FechaFinal (value) {
-      let hoy = new Date(Date.now());
+      let hoy = new Date(Date.now()-(1000*60*60*5));
       let fecha = new Date(value+'T00:00:00');
       if(fecha > hoy){
         this.FechaFinal = hoy.toISOString().split('T')[0];
       }
     },
     FechaFabricacion (value) {
-      let hoy = new Date(Date.now());
+      let hoy = new Date(Date.now()-(1000*60*60*5));
       let fecha = new Date(value+'T00:00:00');
       if(fecha > hoy){
         this.FechaFabricacion = hoy.toISOString().split('T')[0];
