@@ -782,6 +782,13 @@ var Query = new GraphQLObjectType({
           Disponible: {type: GraphQLString}
         },
         resolve(root, args) {
+          if(args.EnteId || args.ProductoId){
+            return Db.models.Envase.findAll({where: args});
+          }
+          else if(!args.Numero){
+            return Db.models.Envase.findAll();
+          }
+
           return Db.models.Envase.findAll({
             where: {
               Numero: {$like: ("%"+args.Numero+"%")},

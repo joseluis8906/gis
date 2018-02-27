@@ -29,9 +29,9 @@ v-layout( align-center justify-center )
             v-icon create
             p(class="body-2 grey--text text--lighten-4") Editar
 
-          v-tabs-item(href="#buscar")
+          v-tabs-item(href="#listar")
             v-icon search
-            p(class="body-2 grey--text text--lighten-4") Buscar
+            p(class="body-2 grey--text text--lighten-4") Listar
 
           v-tabs-slider(class="yellow")
 
@@ -39,14 +39,14 @@ v-layout( align-center justify-center )
           v-card-text
             app-envase-edit
 
-        v-tabs-content(id="buscar")
+        v-tabs-content(id="listar")
           v-card-text
-            app-envase-buscar
+            app-envase-listar
 </template>
 
 <script>
   import AppEnvaseEdit from '~/components/envase/edit';
-  import AppEnvaseBuscar from '~/components/envase/buscar';
+  import AppEnvaseListar from '~/components/envase/listar';
 
   export default {
     data () {
@@ -58,7 +58,7 @@ v-layout( align-center justify-center )
           text: 'Cargando'
         },
         loading: 0,
-        active: "#editar",
+        active: "editar",
       }
     },
     beforeMount () {
@@ -71,7 +71,7 @@ v-layout( align-center justify-center )
     },
     components: {
       AppEnvaseEdit,
-      AppEnvaseBuscar
+      AppEnvaseListar
     },
   };
 </script>

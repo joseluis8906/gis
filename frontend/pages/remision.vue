@@ -319,7 +319,7 @@ export default {
   },
   watch: {
     Fecha (value) {
-      let hoy = new Date(Date.now()-(1000*60*60*5));    
+      let hoy = new Date(Date.now()-(1000*60*60*5));
       let fecha = new Date(value+'T00:00:00');
       if(fecha > hoy){
         this.Fecha = hoy.toISOString().split('T')[0];
@@ -374,7 +374,7 @@ export default {
     BuscarProduccion () {
       this.ProduccionActual = null;
       this.ItemsProduccion = [];
-      if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 2){
+      if(null !== this.NumeroProduccion && this.NumeroProduccion.length >= 2 && this.Fecha !== null && this.Fecha !== ''){
         this.$apollo.query({
           query: PRODUCCIONSBYENVASE,
           variables: {

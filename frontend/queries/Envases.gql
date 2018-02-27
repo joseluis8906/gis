@@ -1,8 +1,12 @@
 query Envases(
   $Numero: String
+  $EnteId: Int
+  $ProductoId: Int
 ) {
   Envases (
     Numero: $Numero
+    EnteId: $EnteId
+    ProductoId: $ProductoId
   ){
     Id
     Estado
