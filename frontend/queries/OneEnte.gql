@@ -1,4 +1,4 @@
-query OneEnte($TipoDocumento: String!, $NumeroDocumento: String!) {
+query OneEnte($TipoDocumento: String, $NumeroDocumento: String) {
   OneEnte(TipoDocumento: $TipoDocumento, NumeroDocumento: $NumeroDocumento) {
     Id
     TipoDocumento
@@ -7,6 +7,6 @@ query OneEnte($TipoDocumento: String!, $NumeroDocumento: String!) {
     Ciudad
     Direccion
     Telefono
-    Relacion 
+    Relacion
   }
 }

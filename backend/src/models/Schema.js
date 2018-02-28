@@ -686,6 +686,10 @@ var Query = new GraphQLObjectType({
           NombreDocumento: {type: GraphQLString}
         },
         resolve(root, args) {
+          if(!args.NombreDocumento){
+            return Db.models.Ente.findAll();
+          }
+
           return Db.models.Ente.findAll({
             where: {
               $or: [
