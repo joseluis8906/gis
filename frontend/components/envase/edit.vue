@@ -267,7 +267,8 @@ v-layout( row wrap )
         {text: 'CGA870'},
         {text: 'CGA320'},
         {text: 'CGA510'},
-        {text: 'CGA590'}
+        {text: 'CGA590'},
+        {text: 'YUGO'}
       ],
       ItemsEquipoAlquilado: [
         {text: 'Si'},
