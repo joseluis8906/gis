@@ -65,11 +65,28 @@ export default {
     active: "editar",
   }),
   beforeMount () {
-    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
+
+    if ( sessionStorage.getItem('x-access-token') === null ) {
       this.$router.push('/')
     } else {
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
       this.$store.commit('security/AddRoles', Roles);
+
+      var AvailableRoles = ["Gerencia"];
+
+      var allowAccess = false;
+      for (let i=0;i<Roles.length; i++) {
+        if(AvailableRoles.indexOf(Roles[i]) !== -1) {
+          allowAccess = true;
+          break;
+        }
+      }
+
+      if(!allowAccess){
+        sessionStorage.removeItem("x-access-token");
+        sessionStorage.removeItem("x-access-roles");
+        this.$router.push('/');
+      }
     }
   },
   components: {

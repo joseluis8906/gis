@@ -25,7 +25,12 @@ v-layout( align-center justify-center )
       v-card-text
         v-layout( row wrap )
           v-flex( xs12 )
-            v-text-field( label="Orden Nº" v-model="Orden" dark )
+            v-text-field(
+              label="Orden Nº"
+              v-model="Orden"
+              append-icon="cached"
+              :append-icon-cb="LastProduccion"
+              dark )
 
             v-menu( lazy
                     :close-on-content-click="true"
@@ -51,6 +56,13 @@ v-layout( align-center justify-center )
                 template( scope="{ save, cancel }" )
                   v-card-actions
                     v-btn( dark warning @click.native="Fecha=null" ) Limpiar
+
+            v-text-field(
+              label="Lote"
+              v-model="Lote"
+              append-icon="cached"
+              :append-icon-cb="SetLote"
+              dark )
 
             v-text-field( label="Turno" v-model="Turno" dark )
 
@@ -135,8 +147,6 @@ v-layout( align-center justify-center )
 
                   v-time-picker(v-model="HoraFinal" autosave)
 
-
-            v-text-field( label="Lote" v-model="Lote" dark )
 
             v-select( v-bind:items="ItemsProducto"
                       v-model="Producto"
@@ -255,15 +265,17 @@ v-layout( align-center justify-center )
 
 <script>
 
-import ENVASESBYPRODUCTO from '~/queries/EnvasesByProducto.gql'
-import ONE_ENVASE from '~/queries/OneEnvase.gql'
-import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql'
-import PRODUCCIONS from '~/queries/Produccions.gql'
-import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql'
-import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql'
-import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql'
-import PRODUCTOS from '~/queries/Productos.gql'
-import ENTES from '~/queries/Entes.gql'
+import ENVASESBYPRODUCTO from '~/queries/EnvasesByProducto.gql';
+import ONE_ENVASE from '~/queries/OneEnvase.gql';
+import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql';
+import PRODUCCIONS from '~/queries/Produccions.gql';
+import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql';
+import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql';
+import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql';
+import PRODUCTOS from '~/queries/Productos.gql';
+import ENTES from '~/queries/Entes.gql';
+import LAST_PRODUCCION from '~/queries/LastProduccion.gql';
+import LAST_LOTE from '~/queries/LastLote.gql';
 
 export default {
   data: () => ({
@@ -389,12 +401,33 @@ export default {
     }
   },
   beforeMount () {
-    if (sessionStorage.getItem('x-access-token') === null || sessionStorage.getItem('x-access-token') === null) {
+    if ( sessionStorage.getItem('x-access-token') === null ) {
       this.$router.push('/')
     } else {
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
       this.$store.commit('security/AddRoles', Roles);
+
+      var AvailableRoles = ["Gerencia", "Produccion"];
+
+      var allowAccess = false;
+      for (let i=0;i<Roles.length; i++) {
+        if(AvailableRoles.indexOf(Roles[i]) !== -1) {
+          allowAccess = true;
+          break;
+        }
+      }
+
+      if(!allowAccess){
+        sessionStorage.removeItem("x-access-token");
+        sessionStorage.removeItem("x-access-roles");
+        this.$router.push('/');
+      }
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.LastProduccion();
+    })
   },
   watch: {
     Producto: {
@@ -433,6 +466,45 @@ export default {
     }
   },
   methods: {
+    SetToday() {
+      this.Fecha = new Date(Date.now()-(1000*60*60*5)).toISOString().split('T')[0];
+      this.SetLote();
+    },
+    SetLote() {
+      if(this.items.length === 0){
+        this.$apollo.query({
+          query: LAST_LOTE,
+          variables: {
+            Fecha: this.Fecha
+          }
+        })
+        .then(res => {
+          this.Lote = res.data.LastLote ?
+            res.data.LastLote.Lote.substr(0,4)+this.VerificarConsecutivo(res.data.LastLote.Lote.substr(5,3)) :
+            `${this.Fecha.substr(8,2)}${this.Fecha.substr(3,2)}'001'`;
+        });
+      }
+    },
+    VerificarConsecutivo (number) {
+      let nextNumber = Number(number) + 1;
+      if(nextNumber < 10){
+        return '00' + nextNumber.toString();
+      }
+      else if(nextOrden < 100){
+        return '0' + nextNumber.toString();
+      }
+
+      return nextNumber.toString();
+
+    },
+    LastProduccion () {
+      this.$apollo.query({
+        query: LAST_PRODUCCION
+      })
+      .then(res => {
+        res.data.LastProduccion !== null ? this.Orden = this.VerificarConsecutivo(res.data.LastProduccion.Orden) : '001';
+      });
+    },
     BuscarEnvase () {
       this.ItemsEnvase = []
       if(
@@ -451,7 +523,7 @@ export default {
           fetchPolicy: 'network-only',
           loadingKey: 'loading'
         }).then( res => {
-          console.log(res.data);
+          //console.log(res.data);
           let Envases = res.data.EnvasesByProducto
           for (let i=0; i<Envases.length; i++) {
             var tmp = {}
@@ -483,7 +555,6 @@ export default {
       }).then(() => {
         this.$apollo.queries.Envases.refetch();
       })
-
     },
     agregar () {
       var tmp = {
@@ -501,7 +572,6 @@ export default {
       this.guardar(tmp)
 
       this.EnvaseActual = null
-
     },
     guardar (item) {
       //console.log(item)
@@ -707,6 +777,8 @@ export default {
       this.ItemsEnvase = []
       this.items = []
       this.ChangeProductoCounter=0
+
+      this.SetToday();
     },
     hardReset () {
       this.Orden = null

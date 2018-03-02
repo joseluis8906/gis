@@ -81,7 +81,7 @@ export default {
         variables: Variables
       }).then( R => {
         var data = R.data;
-        console.log(data);
+        //console.log(data);
         let page = 0;
         for( let i=0; i < data.Entes.length; i++ ) {
           let tmp = data.Entes[i];

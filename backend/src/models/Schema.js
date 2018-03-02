@@ -858,6 +858,34 @@ var Query = new GraphQLObjectType({
           });
         }
       },
+      LastProduccion : {
+        type: Produccion,
+        args: {},
+        resolve (root, args) {
+          return Db.models.Produccion.findOne({order: [['Orden', 'DESC']]})
+        }
+      },
+      LastLote : {
+        type: Produccion,
+        args: {
+          Fecha: {type: GraphQLString}
+        },
+        resolve (root, args) {
+          var month = new Date(Number(args.Fecha.substr(0,4), args.Fecha.substr(6,2), 0)).getDate();
+          var DateOne = `${args.Fecha.substr(0,7)}-01T00:00:00`;
+          var DateTwo = `${args.Fecha.substr(0,7)}-${month}T00:00:00`;
+          return Db.models.Produccion.findOne({
+            where: {
+              $and: {
+                Fecha: {
+                  $gte: new Date(DateOne),
+                  $lte: new Date(DateTwo)
+                }
+              }
+            },
+            order: [['Fecha', 'DESC'], ['Lote', 'DESC']]});
+        }
+      },
       Produccions: {
         type: new GraphQLList(Produccion),
         args: {
@@ -969,15 +997,7 @@ var Query = new GraphQLObjectType({
       },
       LastRemision: {
         type: Remision,
-        args: {
-          Id: {type: GraphQLInt},
-          Numero: {type: GraphQLString},
-          Fecha: {type: GraphQLString},
-          EnteId: {type: GraphQLInt},
-          ProduccionId: {type: GraphQLInt},
-          EnvaseId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
-        },
+        args: {},
         resolve(root, args) {
           return Db.models.Remision.findOne({where: args, order: [['Numero', 'DESC']]})
         }

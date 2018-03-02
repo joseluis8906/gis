@@ -7,7 +7,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           th(rowspan="5" style="width: 7.5%; text-align: center")
             img(src="~assets/logo.gis.png" style="width: 100%")
-          th(rowspan="5" style="text-align: center; width: 80%") ENVASES
+          th(rowspan="5" style="text-align: center; width: 80%") USUARIOS
         //-tr
           td(class="lado") Código
           td(class="lado") FVT-017
@@ -25,22 +25,22 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       thead
         tr(class="green lighten-3")
           th(style="width: 10%") N°
-          th() Numero
-          th() Producto
-          th() Cliente
+          th(style="width: 20%") UserName
+          th(style="width: 20%") Active
+          th Roles
 
       tbody
         tr(v-for="(item, j) in page.Items" :key="j")
           td(style="text-align: right; font-size: 7.5pt;") {{ j + 1 }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ item.Numero }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ item.Producto.Nombre }}
-          td(style="text-align: right; font-size: 7.5pt; width: '33%'") {{ item.Propietario.Nombre }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.UserName }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Active }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ printRoles(item.Groups) }}
 
 </template>
 
 <script>
 
-import ENVASES from '~/queries/Envases.gql'
+import USERS from '~/queries/Users.gql'
 
 export default {
   data () {
@@ -52,23 +52,12 @@ export default {
   },
   layout: 'report',
   fetch ({ store }) {
-    store.commit('reports/changeTitle', 'Envases')
+    store.commit('reports/changeTitle', 'Usuarios')
   },
   mounted() {
     this.$nextTick( ()=>{
       this.Buscar();
     });
-  },
-  computed: {
-    Tipo () {
-      return this.$store.state.envase.Tipo;
-    },
-    EnteId () {
-      return this.$store.state.envase.EnteId;
-    },
-    ProductoId () {
-      return this.$store.state.envase.ProductoId;
-    }
   },
   methods: {
     MaxLength ( value ) {
@@ -79,19 +68,17 @@ export default {
     },
     Buscar () {
       var Variables = {}
-      if(this.EnteId){Variables.EnteId = this.EnteId;}
-      if(this.ProductoId){Variables.ProductoId = this.ProductoId;}
 
       this.$apollo.query({
-        query: ENVASES,
+        query: USERS,
         fetchPolicy: 'network-only',
         variables: Variables
       }).then( R => {
         var data = R.data;
-        //console.log(data)
+        //console.log(data);
         let page = 0;
-        for( let i=0; i < data.Envases.length; i++ ) {
-          let tmp = data.Envases[i];
+        for( let i=0; i < data.Users.length; i++ ) {
+          let tmp = data.Users[i];
           if( Number.isInteger(i / 34) ){
             page = Math.trunc(i / 34);
             this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
@@ -99,6 +86,13 @@ export default {
           this.pages[page].Items.push(tmp)
         }
       });
+    },
+    printRoles (roles){
+      let rolesString = '';
+      roles.forEach(R => {
+        rolesString +=  `[${R.Name}], `;
+      });
+      return rolesString;
     }
   }
 }

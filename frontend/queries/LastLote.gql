@@ -1,0 +1,9 @@
+query LastLote($Fecha: String) {
+  LastLote(
+    Fecha: $Fecha
+  ) {
+    Orden
+    Fecha
+    Lote
+  }
+}

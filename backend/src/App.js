@@ -102,7 +102,10 @@ app.post('/login/', (req, res, next) => {
   var Data = (req.body);
 
   Db.models.User.findOne({
-    where: {UserName: Data.UserName},
+    where: {
+      UserName: Data.UserName,
+      Active: 'Si'
+    },
     include: [
       {model: Db.models.Group},
     ]

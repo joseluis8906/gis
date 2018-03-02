@@ -77,7 +77,7 @@ export default {
       },
       loadingKey: 'loading',
       update (data) {
-        console.log(data)
+        //console.log(data)
         let page = 0;
         for( let i=0; i < data.Produccions.length; i++ ) {
           var tmp = {

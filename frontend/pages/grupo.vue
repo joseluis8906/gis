@@ -29,6 +29,7 @@ v-layout( align-center justify-center )
 
       v-card-actions
         v-spacer
+        v-btn( dark warning @click.native="ListAll" ) Listar
         v-btn( dark @click.native="Reset" ) Cancelar
         v-btn( dark primary @click.native="CreateOrUpdate" ) Guardar
 </template>
@@ -57,6 +58,22 @@ export default {
     } else {
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
       this.$store.commit('security/AddRoles', Roles);
+
+      var AvailableRoles = ["Administrador"];
+
+      var allowAccess = false;
+      for (let i=0;i<Roles.length; i++) {
+        if(AvailableRoles.indexOf(Roles[i]) !== -1) {
+          allowAccess = true;
+          break;
+        }
+      }
+
+      if(!allowAccess){
+        sessionStorage.removeItem("x-access-token");
+        sessionStorage.removeItem("x-access-roles");
+        this.$router.push('/');
+      }
     }
   },
   apollo: {
@@ -75,6 +92,9 @@ export default {
     },
   },
   methods: {
+    ListAll() {
+      this.$router.push('/reporte/grupo');
+    },
     CreateOrUpdate () {
       if (this.Id === null) {
         this.Create();
