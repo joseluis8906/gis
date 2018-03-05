@@ -490,7 +490,7 @@ export default {
       if(nextNumber < 10){
         return '00' + nextNumber.toString();
       }
-      else if(nextOrden < 100){
+      else if(nextNumber < 100){
         return '0' + nextNumber.toString();
       }
 
