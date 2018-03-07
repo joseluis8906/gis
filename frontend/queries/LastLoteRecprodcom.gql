@@ -1,0 +1,9 @@
+query LastLoteRecprodcom($Fecha: String) {
+  LastLoteRecprodcom(
+    Fecha: $Fecha
+  ) {
+    Numero
+    Fecha
+    Lote
+  }
+}

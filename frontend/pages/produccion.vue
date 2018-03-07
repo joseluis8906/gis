@@ -22,784 +22,84 @@ v-layout( align-center justify-center )
           h5(class="grey--text text--lighten-4 text-xs-center bold")
             v-icon(ma) settings
             |  Producción
-      v-card-text
-        v-layout( row wrap )
-          v-flex( xs12 )
-            v-text-field(
-              label="Orden Nº"
-              v-model="Orden"
-              append-icon="cached"
-              :append-icon-cb="LastProduccion"
-              dark )
 
-            v-menu( lazy
-                    :close-on-content-click="true"
-                    v-model="menu5"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-left="40"
-                    max-width="290px" )
+      v-tabs(dark fixed icons v-model="active")
+        v-tabs-bar(slot="activators" class="light-blue darken-4")
 
-              v-text-field( slot="activator"
-                            label="Fecha"
-                            v-model="Fecha"
-                            readonly )
+          v-tabs-item(href="#interna")
+            v-icon assignment_returned
+            p(class="body-2 grey--text text--lighten-4") Interna
 
-              v-date-picker( :months="months"
-                           :days="days"
-                           first-day-of-week="D"
-                           :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                           v-model="Fecha"
-                           no-title
-                           dark )
-                template( scope="{ save, cancel }" )
-                  v-card-actions
-                    v-btn( dark warning @click.native="Fecha=null" ) Limpiar
+          v-tabs-item(href="#externa")
+            v-icon add_shopping_cart
+            p(class="body-2 grey--text text--lighten-4") Externa
 
-            v-text-field(
-              label="Lote"
-              v-model="Lote"
-              append-icon="cached"
-              :append-icon-cb="SetLote"
-              dark )
+          v-tabs-item(href="#listar")
+            v-icon search
+            p(class="body-2 grey--text text--lighten-4") Buscar
 
-            v-text-field( label="Turno" v-model="Turno" dark )
+          v-tabs-slider(class="yellow")
 
-            v-menu( lazy
-                    :close-on-content-click="true"
-                    v-model="menu1"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-left="40"
-                    max-width="290px" )
+        v-tabs-content(id="interna")
+          v-card-text
+            app-produccion-interna
 
-              v-text-field( slot="activator"
-                            label="Fecha Inicial"
-                            v-model="FechaInicial"
-                            readonly )
+        v-tabs-content(id="externa")
+          v-card-text
+            app-produccion-externa
 
-              v-date-picker( :months="months"
-                             :days="days"
-                             first-day-of-week="D"
-                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaInicial"
-                             no-title
-                             dark )
-                template( scope="{ save, cancel }" )
-                  v-card-actions
-                    v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-
-            v-menu( lazy
-                    :close-on-content-click="true"
-                    v-model="menu2"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-left="40"
-                    max-width="290px" )
-
-              v-text-field( slot="activator"
-                            label="Fecha Final"
-                            v-model="FechaFinal"
-                            readonly )
-
-              v-date-picker( :months="months"
-                             :days="days"
-                             first-day-of-week="D"
-                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaFinal"
-                             no-title
-                             dark )
-                template( scope="{ save, cancel }" )
-                  v-card-actions
-                    v-btn( dark warning @click.native="Fecha=null" ) Limpiar
-
-            v-layout(row wrap)
-              v-flex(xs12)
-                v-menu( lazy
-                        :close-on-content-click="false"
-                        v-model="menu3"
-                        transition="scale-transition"
-                        offset-y
-                        :nudge-left="40" )
-
-                  v-text-field( slot="activator"
-                                label="Hora Inicial"
-                                v-model="HoraInicial"
-                                readonly )
-
-                  v-time-picker(v-model="HoraInicial" autosave)
-
-              v-flex(xs12)
-                v-menu( lazy
-                        :close-on-content-click="false"
-                        v-model="menu4"
-                        transition="scale-transition"
-                        offset-y
-                        :nudge-left="40" )
-
-                  v-text-field( slot="activator"
-                                label="Hora Final"
-                                v-model="HoraFinal"
-                                readonly )
-
-                  v-time-picker(v-model="HoraFinal" autosave)
-
-
-            v-select( v-bind:items="ItemsProducto"
-                      v-model="Producto"
-                      label="Producto"
-                      item-text="Nombre"
-                      item-value="Id"
-                      return-object
-                      autocomplete
-                      :disabled="!ChangeProducto"
-                      class="mb-5"
-                      dark )
-
-            v-menu( lazy
-                    :close-on-content-click="true"
-                    v-model="menu6"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-left="40"
-                    max-width="290px" )
-
-              v-text-field( slot="activator"
-                            label="Fecha de Fabricacion"
-                            v-model="FechaFabricacion"
-                            readonly )
-
-              v-date-picker( :months="months"
-                             :days="days"
-                             first-day-of-week="D"
-                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaFabricacion"
-                             no-title
-                             autosave
-                             dark )
-                template( scope="{ save, cancel }" )
-                  v-card-actions
-                    v-btn( dark warning @click.native="FechaFabricacion=null" ) Limpiar
-
-            v-menu( lazy
-                    :close-on-content-click="true"
-                    v-model="menu7"
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    :nudge-left="40"
-                    max-width="290px" )
-
-              v-text-field( slot="activator"
-                            label="Fecha de Vencimiento"
-                            v-model="FechaVencimiento"
-                            readonly )
-
-              v-date-picker( :months="months"
-                             :days="days"
-                             first-day-of-week="D"
-                             :header-date-format="({ monthName, year }) => { return `${monthName} ${year}` }"
-                             v-model="FechaVencimiento"
-                             no-title
-                             autosave
-                             dark )
-                template( scope="{ save, cancel }" )
-                  v-card-actions
-                    v-btn( dark warning @click.native="FechaVencimiento=null" ) Limpiar
-
-            v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
-
-            v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
-
-            v-text-field( label="Observacion" v-model="Observacion" multi-line dark )
-
-            v-data-table( v-bind:headers="headers"
-                          v-bind:items="items"
-                          class="elevation-5 grey lighten-1 grey--text text--darken-4" )
-
-              template(slot="items" scope="props")
-                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
-                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
-                td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
-                td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
-                td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
-                  v-btn( fab
-                         dark
-                         small
-                         error
-                         style="width: 16px; height:16px"
-                         @click.native="eliminar(props.item)"
-                         :disabled="props.item.EliminarDisable")
-                    v-icon remove
-
-
-            v-layout(row wrap mt-3)
-              v-flex(xs12)
-                v-text-field(
-                  v-model="NumeroEnvase"
-                  label="Buscar Envase"
-                  append-icon="search"
-                  :append-icon-cb="BuscarEnvase")
-
-                v-select( v-bind:items="ItemsEnvase"
-                          v-model="EnvaseActual"
-                          label="Envase"
-                          item-text="Numero"
-                          item-value="Id"
-                          return-object
-                          autocomplete
-                          dark )
-
-            v-btn(fab dark class="indigo mt-1" @click.native="agregar")
-              v-icon(dark) add
-      v-card-actions
-        v-spacer
-        v-btn( dark warning @click.native="hardReset" ) Limpiar
-        v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
-        v-btn( dark @click.native="inventario" class="mt-0 blue darken-1" ) Inventario
+        v-tabs-content(id="listar")
+          v-card-text
+            app-produccion-listar
 </template>
 
 <script>
 
-import ENVASESBYPRODUCTO from '~/queries/EnvasesByProducto.gql';
-import ONE_ENVASE from '~/queries/OneEnvase.gql';
-import UPDATE_ENVASE from '~/queries/UpdateEnvase.gql';
-import PRODUCCIONS from '~/queries/Produccions.gql';
-import CREATE_PRODUCCION from '~/queries/CreateProduccion.gql';
-import UPDATE_ONE_PRODUCCION from '~/queries/UpdateOneProduccion.gql';
-import DELETE_PRODUCCION from '~/queries/DeleteProduccion.gql';
-import PRODUCTOS from '~/queries/Productos.gql';
-import ENTES from '~/queries/Entes.gql';
-import LAST_PRODUCCION from '~/queries/LastProduccion.gql';
-import LAST_LOTE from '~/queries/LastLote.gql';
+  import AppProduccionInterna from '~/components/produccion/interna';
+  import AppProduccionExterna from '~/components/produccion/externa';
+  import AppProduccionListar from '~/components/produccion/listar';
 
-export default {
-  data: () => ({
-    snackbar: {
-      context: 'secondary',
-      mode: '',
-      timeout: 6000,
-      text: 'Cargando'
-    },
-    Orden: null,
-    Turno: null,
-    Fecha: null,
-    Lote: null,
-    FechaInicial: null,
-    FechaFinal: null,
-    HoraInicial: null,
-    HoraFinal: null,
-    FechaFabricacion: null,
-    FechaVencimiento: null,
-    Producto: {Id: null, Nombre: null},
-    PurezaFinal: null,
-    PresionFinal: null,
-    Observacion: null,
-    saveUpdate: 'save',
-    ChangeProducto: true,
-    ChangeProductoCounter: 0,
-    headers: [
-      { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
-      { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
-      { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
-      { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
-      { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
-    ],
-    items: [],
-    pagination: {
-      sortBy: 'Numero'
-    },
-    ItemsProducto: [],
-    ItemsEnvase: [],
-    EnvaseActual: null,
-    months: [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'],
-    days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-    NumeroEnvase: null,
-    menu1: false,
-    menu2: false,
-    menu3: false,
-    menu4: false,
-    menu5: false,
-    menu6: false,
-    menu7: false,
-    loading: 0
-  }),
-  apollo: {
-    Produccions: {
-      query: PRODUCCIONS,
-      fetchPolicy: 'network-only',
-      variables () {
-        return {
-          Orden: this.Orden,
-        }
+  export default {
+    data: () => ({
+      snackbar: {
+        context: 'secondary',
+        mode: '',
+        timeout: 6000,
+        text: 'Cargando'
       },
-      loadingKey: 'loading',
-      update (data) {
-        this.items = [];
-        if (data.Produccions.length > 0) {
-          this.Turno = data.Produccions[0].Turno
-          this.Fecha = data.Produccions[0].Fecha
-          this.Lote = data.Produccions[0].Lote
-          this.FechaInicial = data.Produccions[0].FechaInicial
-          this.FechaFinal = data.Produccions[0].FechaFinal
-          this.HoraInicial = data.Produccions[0].HoraInicial
-          this.HoraFinal = data.Produccions[0].HoraFinal
-          this.FechaFabricacion = data.Produccions[0].FechaFabricacion
-          this.FechaVencimiento = data.Produccions[0].FechaVencimiento
-          this.Producto = data.Produccions[0].Producto
-          this.PurezaFinal = data.Produccions[0].PurezaFinal
-          this.PresionFinal = data.Produccions[0].PresionFinal
-          this.Observacion = data.Produccions[0].Observacion
-          this.items = []
-          for ( let i=0; i<data.Produccions.length; i++ ) {
-            var tmp = {
-              Id: data.Produccions[i].Id,
-              Envase: {
-                Id: data.Produccions[i].Envase.Id,
-                Numero: data.Produccions[i].Envase.Numero,
-                Capacidad: data.Produccions[i].Envase.Capacidad,
-                Cliente: data.Produccions[i].Envase.Propietario,
-              },
-              Cantidad: data.Produccions[i].Cantidad,
-              SaveUpdate: 'update',
-              EliminarDisable: data.Produccions[i].Despachado === 'Si' ? true : false,
-              Despachado: data.Produccions[i].Despachado
-            }
-            this.items.push(tmp)
-          }
-
-        } else {
-          this.reset ()
-        }
-
-      }
-    },
-    Productos: {
-      query: PRODUCTOS,
-      fetchPolicy: 'network-only',
-      loadingKey: 'loading',
-      update (data) {
-        this.ItemsProducto = [];
-        this.ItemsProducto = data.Productos;
-      }
-    }
-  },
-  beforeMount () {
-    if ( sessionStorage.getItem('x-access-token') === null ) {
-      this.$router.push('/')
-    } else {
-      var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
-      this.$store.commit('security/AddRoles', Roles);
-
-      var AvailableRoles = ["Gerencia", "Produccion"];
-
-      var allowAccess = false;
-      for (let i=0;i<Roles.length; i++) {
-        if(AvailableRoles.indexOf(Roles[i]) !== -1) {
-          allowAccess = true;
-          break;
-        }
-      }
-
-      if(!allowAccess){
-        sessionStorage.removeItem("x-access-token");
-        sessionStorage.removeItem("x-access-roles");
-        this.$router.push('/');
-      }
-    }
-  },
-  mounted () {
-    this.$nextTick(() => {
-      this.LastProduccion();
-    })
-  },
-  watch: {
-    Producto: {
-      handler: function () {
-        this.changeProductoCounter ();
-      },
-      deep: true
-    },
-    Fecha (value) {
-      let hoy = new Date(Date.now()-(1000*60*60*5));
-      let fecha = new Date(value+'T00:00:00');
-      if(fecha > hoy){
-        this.Fecha = hoy.toISOString().split('T')[0];
-      }
-    },
-    FechaInicial (value) {
-      let hoy = new Date(Date.now()-(1000*60*60*5));
-      let fecha = new Date(value+'T00:00:00');
-      if(fecha > hoy){
-        this.FechaInicial = hoy.toISOString().split('T')[0];
-      }
-    },
-    FechaFinal (value) {
-      let hoy = new Date(Date.now()-(1000*60*60*5));
-      let fecha = new Date(value+'T00:00:00');
-      if(fecha > hoy){
-        this.FechaFinal = hoy.toISOString().split('T')[0];
-      }
-    },
-    FechaFabricacion (value) {
-      let hoy = new Date(Date.now()-(1000*60*60*5));
-      let fecha = new Date(value+'T00:00:00');
-      if(fecha > hoy){
-        this.FechaFabricacion = hoy.toISOString().split('T')[0];
-      }
-    }
-  },
-  methods: {
-    SetToday() {
-      this.Fecha = new Date(Date.now()-(1000*60*60*5)).toISOString().split('T')[0];
-      this.SetLote();
-    },
-    SetLote() {
-      if(this.items.length === 0){
-        this.$apollo.query({
-          query: LAST_LOTE,
-          variables: {
-            Fecha: this.Fecha
-          }
-        })
-        .then(res => {
-          this.Lote = res.data.LastLote ?
-            res.data.LastLote.Lote.substr(0,4)+this.VerificarConsecutivo(res.data.LastLote.Lote.substr(5,3)) :
-            `${this.Fecha.substr(8,2)}${this.Fecha.substr(3,2)}'001'`;
-        });
-      }
-    },
-    VerificarConsecutivo (number) {
-      let nextNumber = Number(number) + 1;
-      if(nextNumber < 10){
-        return '00' + nextNumber.toString();
-      }
-      else if(nextNumber < 100){
-        return '0' + nextNumber.toString();
-      }
-
-      return nextNumber.toString();
-
-    },
-    LastProduccion () {
-      this.$apollo.query({
-        query: LAST_PRODUCCION
-      })
-      .then(res => {
-        res.data.LastProduccion !== null ? this.Orden = this.VerificarConsecutivo(res.data.LastProduccion.Orden) : '001';
-      });
-    },
-    BuscarEnvase () {
-      this.ItemsEnvase = []
-      if(
-        null !== this.NumeroEnvase
-        &&
-        this.NumeroEnvase.length >= 2
-        &&
-        null !== this.Producto.Nombre
-      ){
-        this.$apollo.query({
-          query: ENVASESBYPRODUCTO,
-          variables: {
-            Numero: this.NumeroEnvase,
-            NombreProducto: this.Producto.Nombre
-          },
-          fetchPolicy: 'network-only',
-          loadingKey: 'loading'
-        }).then( res => {
-          //console.log(res.data);
-          let Envases = res.data.EnvasesByProducto
-          for (let i=0; i<Envases.length; i++) {
-            var tmp = {}
-            tmp.Id = Envases[i].Id;
-            tmp.Numero = Envases[i].Numero;
-            tmp.Capacidad = Envases[i].Capacidad;
-            tmp.UnidadDeMedida = Envases[i].Producto.UnidadDeMedida;
-            tmp.ProductoId = Envases[i].Producto.Id;
-            tmp.Disponible = Envases[i].Disponible;
-            tmp.Cliente = Envases[i].Propietario;
-            this.ItemsEnvase.push(tmp);
-          }
-        });
-      }
-    },
-    UpdateEnvase (_Envase, Value) {
-      const Envase = {
-        Numero: _Envase.Numero,
-        Disponible: Value
-      };
-
-      this.$apollo.mutate ({
-        mutation: UPDATE_ENVASE,
-        variables: {
-          Numero: Envase.Numero,
-          Disponible: Envase.Disponible
-        },
-        loadingKey: 'loading'
-      }).then(() => {
-        this.$apollo.queries.Envases.refetch();
-      })
-    },
-    agregar () {
-      var tmp = {
-        Id: null,
-        Envase: {
-          Id: this.EnvaseActual.Id,
-          Numero: this.EnvaseActual.Numero,
-          Capacidad: this.EnvaseActual.Capacidad,
-          Cliente: this.EnvaseActual.Cliente
-        },
-        Cantidad: this.EnvaseActual.Capacidad,
-        SaveUpdate: 'save'
-      }
-
-      this.guardar(tmp)
-
-      this.EnvaseActual = null
-    },
-    guardar (item) {
-      //console.log(item)
-      if ( item.Envase.Id !== null && item.Envase.Cantidad !== null && item.Envase.Cantidad !== '' ) {
-
-        if ( item.Id === null ) {
-
-          item.SaveUpdate = 'update'
-
-          const Produccion = {
-            Orden: this.Orden,
-            Turno: this.Turno,
-            Fecha: this.Fecha,
-            Lote: this.Lote,
-            FechaInicial: this.FechaInicial,
-            FechaFinal: this.FechaFinal,
-            HoraInicial: this.HoraInicial,
-            HoraFinal: this.HoraFinal,
-            FechaFabricacion: this.FechaFabricacion,
-            FechaVencimiento: this.FechaVencimiento,
-            Cantidad: item.Cantidad,
-            ProductoId: this.Producto.Id,
-            EnvaseId: item.Envase.Id,
-            PurezaFinal: this.PurezaFinal,
-            PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion,
-            Despachado: 'No'
-          }
-
-          this.$apollo.mutate ({
-            mutation: CREATE_PRODUCCION,
-            variables: {
-              Orden: Produccion.Orden,
-              Turno: Produccion.Turno,
-              Fecha: Produccion.Fecha,
-              Lote: Produccion.Lote,
-              FechaInicial: Produccion.FechaInicial,
-              FechaFinal: Produccion.FechaFinal,
-              HoraInicial: Produccion.HoraInicial,
-              HoraFinal: Produccion.HoraFinal,
-              FechaFabricacion: Produccion.FechaFabricacion,
-              FechaVencimiento: Produccion.FechaVencimiento,
-              Cantidad: Produccion.Cantidad,
-              ProductoId: Produccion.ProductoId,
-              EnvaseId: Produccion.EnvaseId,
-              PurezaFinal: Produccion.PurezaFinal,
-              PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion,
-              Despachado: Produccion.Despachado
-            },
-            loadingKey: 'loading'
-          }).then(() => {
-            this.$apollo.queries.Produccions.refetch();
-          })
-
-          this.UpdateEnvase(item.Envase, 'No');
-
-        } else {
-
-          const Produccion = {
-            Id: item.Id,
-            Orden: this.Orden,
-            Turno: this.Turno,
-            Fecha: this.Fecha,
-            Lote: this.Lote,
-            FechaInicial: this.FechaInicial,
-            FechaFinal: this.FechaFinal,
-            HoraInicial: this.HoraInicial,
-            HoraFinal: this.HoraFinal,
-            FechaFabricacion: this.FechaFabricacion,
-            FechaVencimiento: this.FechaVencimiento,
-            Cantidad: item.Cantidad,
-            ProductoId: this.Producto.Id,
-            EnvaseId: item.Envase.Id,
-            PurezaFinal: this.PurezaFinal,
-            PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion,
-            Despachado: item.Despachado
-          }
-
-          this.$apollo.mutate ({
-            mutation: UPDATE_ONE_PRODUCCION,
-            variables: {
-              Id: Produccion.Id,
-              Orden: Produccion.Orden,
-              Turno: Produccion.Turno,
-              Fecha: Produccion.Fecha,
-              Lote: Produccion.Lote,
-              FechaInicial: Produccion.FechaInicial,
-              FechaFinal: Produccion.FechaFinal,
-              HoraInicial: Produccion.HoraInicial,
-              HoraFinal: Produccion.HoraFinal,
-              FechaFabricacion: Produccion.FechaFabricacion,
-              FechaVencimiento: Produccion.FechaVencimiento,
-              Cantidad: Produccion.Cantidad,
-              ProductoId: Produccion.ProductoId,
-              EnvaseId: Produccion.EnvaseId,
-              PurezaFinal: Produccion.PurezaFinal,
-              PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion,
-              Despachado: Produccion.Despachado
-            },
-            loadingKey: 'loading'
-          }).then(() => {
-            this.$apollo.queries.Produccions.refetch();
-          })
-
-        }
-
-      }
-    },
-    eliminar (item) {
-
-      if ( item.Id === null ) {
-
-        for (let i=0; i<this.items.length; i++) {
-          if ( item.Envase.Id === this.items[i].Envase.Id ) {
-            this.items.splice(i, 1)
-          }
-        }
-
+      active: null,
+      loading: null,
+    }),
+    beforeMount () {
+      if ( sessionStorage.getItem('x-access-token') === null ) {
+        this.$router.push('/')
       } else {
+        var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
+        this.$store.commit('security/AddRoles', Roles);
 
-        for (let i=0; i<this.items.length; i++) {
-          if ( item.Id === this.items[i].Id ) {
-            this.items.splice(i, 1)
+        var AvailableRoles = ["Gerencia", "Produccion"];
+
+        var allowAccess = false;
+        for (let i=0;i<Roles.length; i++) {
+          if(AvailableRoles.indexOf(Roles[i]) !== -1) {
+            allowAccess = true;
+            break;
           }
         }
 
-        if(item.Id === null){
-          return;
+        if(!allowAccess){
+          sessionStorage.removeItem("x-access-token");
+          sessionStorage.removeItem("x-access-roles");
+          this.$router.push('/');
         }
-
-        const Produccion = {
-          Id: item.Id,
-          Orden: this.Orden,
-          Turno: this.Turno,
-          Fecha: this.Fecha,
-          Lote: this.Lote,
-          FechaInicial: this.FechaInicial,
-          FechaFinal: this.FechaFinal,
-          HoraInicial: this.HoraInicial,
-          HoraFinal: this.HoraFinal,
-          FechaFabricacion: this.FechaFabricacion,
-          FechaVencimiento: this.FechaVencimiento,
-          Cantidad: item.Cantidad,
-          ProductoId: this.Producto.Id,
-          EnvaseId: item.Envase.Id,
-          PurezaFinal: this.PurezaFinal,
-          PresionFinal: this.PresionFinal,
-          Observacion: this.Observacion,
-          Despachado: 'No'
-        }
-
-        this.$apollo.mutate ({
-          mutation: DELETE_PRODUCCION,
-          variables: {
-            Id: Produccion.Id,
-            Orden: Produccion.Orden,
-            Turno: Produccion.Turno,
-            Fecha: Produccion.Fecha,
-            Lote: Produccion.Lote,
-            FechaInicial: Produccion.FechaInicial,
-            FechaFinal: Produccion.FechaFinal,
-            HoraInicial: Produccion.HoraInicial,
-            HoraFinal: Produccion.HoraFinal,
-            FechaFabricacion: Produccion.FechaFabricacion,
-            FechaVencimiento: Produccion.FechaVencimiento,
-            Cantidad: Produccion.Cantidad,
-            ProductoId: Produccion.ProductoId,
-            EnvaseId: Produccion.EnvaseId,
-            PurezaFinal: Produccion.PurezaFinal,
-            PresionFinal: Produccion.PresionFinal,
-            Observacion: Produccion.Observacion,
-            Despachado: Produccion.Despachado
-          },
-           loadingKey: 'loading'
-         }).then(() => {
-           this.$apollo.queries.Produccions.refetch();
-         })
-
-         this.UpdateEnvase(item.Envase, 'Si');
-
-      }
-
-     },
-    reset () {
-
-      this.ChangeProducto=true
-      this.Fecha = null,
-      this.Turno = null,
-      this.Lote = null,
-      this.FechaInicial = null,
-      this.FechaFinal = null,
-      this.HoraInicial = null,
-      this.HoraFinal = null,
-      this.FechaFabricacion = null,
-      this.FechaVencimiento = null,
-      this.Producto = {Id: null, Nombre: null},
-      this.PurezaFinal = null,
-      this.PresionFinal = null,
-      this.Observacion = null,
-      this.ItemsEnvase = []
-      this.items = []
-      this.ChangeProductoCounter=0
-
-      this.SetToday();
-    },
-    hardReset () {
-      this.Orden = null
-      this.reset ()
-    },
-    changeProductoCounter (){
-      this.ChangeProductoCounter++
-      if( this.ChangeProductoCounter === 2 ) {
-        this.ChangeProducto=false
       }
     },
-    generar() {
-      this.$store.commit('produccion/changeOrden', this.Orden)
-      this.$router.push('/reporte/produccion')
-    },
-    inventario () {
-      this.$router.push('/reporte/inventario')
+    components: {
+      AppProduccionInterna,
+      AppProduccionExterna,
+      AppProduccionListar
     }
-  }
-};
-
+  };
 </script>
 
 <style lang="stylus" scoped>

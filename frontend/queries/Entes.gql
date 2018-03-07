@@ -1,6 +1,10 @@
-query Entes($NombreDocumento: String) {
+query Entes(
+  $NombreDocumento: String
+  $Relacion: String
+) {
   Entes(
     NombreDocumento: $NombreDocumento
+    Relacion: $Relacion
   ) {
     Id
     TipoDocumento

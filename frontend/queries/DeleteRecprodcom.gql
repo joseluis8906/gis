@@ -1,0 +1,9 @@
+mutation DeleteRecprodcom (
+  $Id: Int
+) {
+  DeleteRecprodcom (
+    Id: $Id
+  ){
+    Id
+  }
+}

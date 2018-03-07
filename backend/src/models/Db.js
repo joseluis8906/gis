@@ -151,6 +151,41 @@ Producto.hasMany(Produccion);
 Produccion.belongsTo(Producto);
 
 
+//recprodcom
+const Recprodcom = Db.define('Recprodcom', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  Numero: Sequelize.STRING,
+  Fecha: Sequelize.DATEONLY,
+  Lote: Sequelize.STRING,
+  FechaFabricacion: Sequelize.DATEONLY,
+  FechaVencimiento: Sequelize.DATEONLY,
+  Cantidad: Sequelize.DECIMAL,
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
+  ProductoId: {type: Sequelize.INTEGER, references: {model: Producto, key: "Id"}},
+  EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
+  PurezaFinal: Sequelize.DECIMAL,
+  PresionFinal: Sequelize.DECIMAL,
+  Certificado: Sequelize.TEXT,
+  RegistroSanitario: Sequelize.TEXT,
+  Otros: Sequelize.TEXT,
+  Observacion: Sequelize.TEXT,
+  Despachado: Sequelize.STRING
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+Ente.hasMany(Recprodcom);
+Recprodcom.belongsTo(Ente);
+
+Envase.hasMany(Recprodcom);
+Recprodcom.belongsTo(Envase);
+
+Producto.hasMany(Recprodcom);
+Recprodcom.belongsTo(Producto);
+
+
 //remision
 const Remision = Db.define('Remision', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
@@ -176,7 +211,6 @@ Envase.hasMany(Remision)
 Remision.belongsTo(Envase)
 
 
-
 //kardex
 const Kardex = Db.define('Kardex', {
   Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
@@ -190,7 +224,8 @@ const Kardex = Db.define('Kardex', {
   FechaSale: Sequelize.DATEONLY,
   NumeroFacturaSale: Sequelize.TEXT,
   FechaEntra: Sequelize.DATEONLY,
-  NumeroFacturaEntra: Sequelize.TEXT
+  NumeroFacturaEntra: Sequelize.TEXT,
+  Tipo: Sequelize.TEXT
 },
 {
   timestamps: false,

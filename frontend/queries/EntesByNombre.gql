@@ -1,5 +1,9 @@
-query EntesByNombre($Nombre: String!) {
-  EntesByNombre(Nombre: $Nombre) {
+query EntesByNombre(
+  $Nombre: String
+  ) {
+  EntesByNombre(
+    Nombre: $Nombre
+  ) {
     Id
     TipoDocumento
     NumeroDocumento
@@ -7,6 +11,6 @@ query EntesByNombre($Nombre: String!) {
     Ciudad
     Direccion
     Telefono
-    Relacion 
+    Relacion
   }
 }

@@ -88,6 +88,28 @@ CREATE TABLE IF NOT EXISTS "Produccion" (
 );
 
 
+CREATE TABLE IF NOT EXISTS "Recprodcom" (
+  "Id" BIGSERIAL PRIMARY KEY,
+  "Numero" TEXT,
+  "Fecha" DATE,
+  "Lote" TEXT,
+  "FechaFabricacion" DATE,
+  "FechaVencimiento" DATE,
+  "Cantidad" DECIMAL,
+  "EnteId" BIGINT DEFAULT NULL REFERENCES "Ente"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "ProductoId" BIGINT DEFAULT NULL REFERENCES "Producto"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "EnvaseId" BIGINT DEFAULT NULL REFERENCES "Envase"("Id") ON DELETE SET DEFAULT ON UPDATE CASCADE,
+  "PurezaFinal" DECIMAL,
+  "PresionFinal" DECIMAL,
+  "Certificado" TEXT,
+  "RegistroSanitario" TEXT,
+  "Otros" TEXT,
+  "Observacion" TEXT,
+  "Despachado" TEXT,
+  UNIQUE("Numero", "EnvaseId")
+);
+
+
 CREATE TABLE IF NOT EXISTS "Remision" (
   "Id" BIGSERIAL PRIMARY KEY,
   "Numero" TEXT,
@@ -112,5 +134,6 @@ CREATE TABLE IF NOT EXISTS "Kardex" (
   "FechaSale" DATE,
   "NumeroFacturaSale" TEXT,
   "FechaEntra" DATE,
-  "NumeroFacturaEntra" TEXT
+  "NumeroFacturaEntra" TEXT,
+  "Tipo" TEXt
 );

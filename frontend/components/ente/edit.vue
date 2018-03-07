@@ -23,10 +23,10 @@ v-layout( row wrap )
               item-value="text"
               dark )
 
-  v-card-actions
-  v-spacer
-  v-btn( dark @click.native="Reset" ) Cancelar
-  v-btn( dark primary @click.native="CreateOrUpdate" ) Guardar
+    v-card-actions
+      v-spacer
+      v-btn( dark @click.native="Reset" ) Cancelar
+      v-btn( dark primary @click.native="CreateOrUpdate" ) Guardar
 </template>
 
 <style>
@@ -56,7 +56,9 @@ v-layout( row wrap )
         ],
         ItemsRelacion: [
           {text: 'Propia'},
-          {text: 'Cliente'}
+          {text: 'Cliente'},
+          {text: 'Proveedor'},
+          {text: 'Cliente Y Proveedor'}
         ],
 
 
@@ -222,7 +224,7 @@ v-layout( row wrap )
         this.Telefono = null
         this.Relacion = null
         this.TipoDocumento = null
-        this.NumeroDocumento = null        
+        this.NumeroDocumento = null
       }
     },
   }

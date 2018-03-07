@@ -465,6 +465,137 @@ var Produccion = new GraphQLObjectType({
 });
 
 
+//recprodcom
+var Recprodcom = new GraphQLObjectType({
+  name: "Recprodcom",
+  description: "Object representation of Recprodcom",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Recprodcom) {
+          return Recprodcom.Id;
+        }
+      },
+      Numero: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Numero;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Fecha;
+        }
+      },
+      Lote: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Lote;
+        }
+      },
+      FechaFabricacion: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.FechaFabricacion;
+        }
+      },
+      FechaVencimiento: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.FechaVencimiento;
+        }
+      },
+      Cantidad: {
+        type: GraphQLFloat,
+        resolve(Recprodcom) {
+          return Recprodcom.Cantidad;
+        }
+      },
+      ProductoId: {
+        type: GraphQLInt,
+        resolve(Recprodcom) {
+          return Recprodcom.ProductoId;
+        }
+      },
+      EnteId: {
+        type: GraphQLInt,
+        resolve(Recprodcom) {
+          return Recprodcom.EnteId;
+        }
+      },
+      EnvaseId: {
+        type: GraphQLInt,
+        resolve(Recprodcom) {
+          return Recprodcom.EnvaseId;
+        }
+      },
+      PurezaFinal: {
+        type: GraphQLFloat,
+        resolve(Recprodcom) {
+          return Recprodcom.PurezaFinal;
+        }
+      },
+      PresionFinal: {
+        type: GraphQLFloat,
+        resolve(Recprodcom) {
+          return Recprodcom.PresionFinal;
+        }
+      },
+      Certificado: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Certificado;
+        }
+      },
+      RegistroSanitario: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.RegistroSanitario;
+        }
+      },
+      Otros: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Otros;
+        }
+      },
+      Observacion: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Observacion;
+        }
+      },
+      Despachado: {
+        type: GraphQLString,
+        resolve(Recprodcom) {
+          return Recprodcom.Despachado;
+        }
+      },
+      Proveedor: {
+        type: Ente,
+        resolve(Recprodcom) {
+          return Recprodcom.getEnte();
+        }
+      },
+      Envase: {
+        type: Envase,
+        resolve(Recprodcom) {
+          return Recprodcom.getEnvase();
+        }
+      },
+      Producto: {
+        type: Producto,
+        resolve(Recprodcom) {
+          return Recprodcom.getProducto();
+        }
+      },
+    }
+  }
+});
+
+
 //remision
 var Remision = new GraphQLObjectType({
   name: "Remision",
@@ -699,7 +830,8 @@ var Query = new GraphQLObjectType({
                 {
                   Nombre: {$like: ("%"+args.NombreDocumento+"%")}
                 }
-              ]
+              ],
+              Relacion: args.Relacion ? args.Relacion : {$or: ['Cliente', 'Propia', 'Proveedor', 'Cliente Y Proveedor']}
             },
             order: [['Nombre', 'ASC']]
           });
@@ -709,11 +841,13 @@ var Query = new GraphQLObjectType({
         type: new GraphQLList(Ente),
         args: {
           Nombre: {type: GraphQLString},
+          Relacion: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Ente.findAll({
             where: {
-              Nombre: {$like: ("%"+args.Nombre+"%")}
+              Nombre: {$like: ("%"+args.Nombre+"%")},
+
             },
             order: [['Nombre', 'ASC']]
           });
@@ -963,6 +1097,62 @@ var Query = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.Produccion.findOne({ where: args, order: [['Orden', 'ASC']] });
+        }
+      },
+      Recprodcoms: {
+        type: new GraphQLList(Recprodcom),
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          EnteId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          ProductoId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat},
+          Certificado: {type: GraphQLString},
+          RegistroSanitario: {type: GraphQLString},
+          Otros: {type: GraphQLString},
+          Observacion: {type: GraphQLString},
+          Despachado: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Recprodcom.findAll({
+            where: args,
+            order: [['Numero', 'ASC']]
+          });
+        }
+      },
+      LastRecprodcom : {
+        type: Recprodcom,
+        args: {},
+        resolve (root, args) {
+          return Db.models.Recprodcom.findOne({order: [['Numero', 'DESC']]})
+        }
+      },
+      LastLoteRecprodcom : {
+        type: Recprodcom,
+        args: {
+          Fecha: {type: GraphQLString}
+        },
+        resolve (root, args) {
+          var month = new Date(Number(args.Fecha.substr(0,4), args.Fecha.substr(6,2), 0)).getDate();
+          var DateOne = `${args.Fecha.substr(0,7)}-01T00:00:00`;
+          var DateTwo = `${args.Fecha.substr(0,7)}-${month}T00:00:00`;
+          return Db.models.Recprodcom.findOne({
+            where: {
+              $and: {
+                Fecha: {
+                  $gte: new Date(DateOne),
+                  $lte: new Date(DateTwo)
+                }
+              }
+            },
+            order: [['Fecha', 'DESC'], ['Lote', 'DESC']]});
         }
       },
       Remisions: {
@@ -1383,7 +1573,6 @@ var Mutation = new GraphQLObjectType({
       CreateProduccion: {
         type: Produccion,
         args: {
-          Id: {type: GraphQLInt},
           Orden: {type: GraphQLString},
           Turno: {type: GraphQLString},
           Fecha: {type: GraphQLString},
@@ -1422,9 +1611,7 @@ var Mutation = new GraphQLObjectType({
             Observacion: args.Observacion,
             Despachado: args.Despachado
           }).then( R => {
-
             return R;
-
           });
         }
       },
@@ -1500,6 +1687,86 @@ var Mutation = new GraphQLObjectType({
         resolve(_, args) {
           return Db.models.Produccion.findOne({
             where : {
+              Id: args.Id
+            }
+          }).then( R => {
+            return R.destroy();
+          });
+        }
+      },
+      CreateRecprodcom: {
+        type: Recprodcom,
+        args: {
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          Lote: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString},
+          FechaVencimiento: {type: GraphQLString},
+          Cantidad: {type: GraphQLFloat},
+          EnteId: {type: GraphQLInt},
+          EnvaseId: {type: GraphQLInt},
+          ProductoId: {type: GraphQLInt},
+          PurezaFinal: {type: GraphQLFloat},
+          PresionFinal: {type: GraphQLFloat},
+          Certificado: {type: GraphQLString},
+          RegistroSanitario: {type: GraphQLString},
+          Otros: {type: GraphQLString},
+          Observacion: {type: GraphQLString},
+          Despachado: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Recprodcom.create({
+            Numero: args.Numero,
+            Fecha: args.Fecha,
+            Lote: args.Lote,
+            FechaFabricacion: args.FechaFabricacion,
+            FechaVencimiento: args.FechaVencimiento,
+            Cantidad: args.Cantidad,
+            EnteId: args.EnteId,
+            EnvaseId: args.EnvaseId,
+            ProductoId: args.ProductoId,
+            PurezaFinal: args.PurezaFinal,
+            PresionFinal: args.PresionFinal,
+            Certificado: args.Certificado,
+            RegistroSanitario: args.RegistroSanitario,
+            Otros: args.Otros,
+            Observacion: args.Observacion,
+            Despachado: 'No'
+          }).then( R => {
+              return R;
+          });
+        }
+      },
+      UpdateOneRecprodcom: {
+        type: Recprodcom,
+        args: {
+          Id: {type: GraphQLInt},
+          Cantidad: {type: GraphQLFloat},
+          EnvaseId: {type: GraphQLInt},
+          Despachado: {type: GraphQLString}
+        },
+        resolve(_, args) {
+          return Db.models.Recprodcom.findOne({
+            where: {
+              Id: args.Id
+            }
+          }).then( R => {
+            R.Cantidad = args.Cantidad;
+            R.EnvaseId = args.EnvaseId;
+            R.Despachado = args.Despachado;
+            R.save();
+            return R;
+          });
+        }
+      },
+      DeleteRecprodcom: {
+        type: Recprodcom,
+        args: {
+          Id: {type: GraphQLInt}
+        },
+        resolve(_, args) {
+          return Db.models.Recprodcom.findOne({
+            where: {
               Id: args.Id
             }
           }).then( R => {

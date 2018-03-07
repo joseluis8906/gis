@@ -17,16 +17,17 @@ v-layout( row wrap )
       append-icon="search"
       :append-icon-cb="BuscarCliente")
 
-    v-select( v-bind:items="ItemsPropietario"
-              v-model="Propietario"
-              label="Propietario"
-              item-value="Id"
-              item-text="Nombre"
-              autocomplete
-              return-object
-              :hint="`${Propietario.TipoDocumento || ''}: ${Propietario.NumeroDocumento || ''}`"
-              persistent-hint
-              dark )
+    v-select(
+      v-bind:items="ItemsPropietario"
+      v-model="Propietario"
+      label="Propietario"
+      item-value="Id"
+      item-text="Nombre"
+      autocomplete
+      return-object
+      :hint="`${Propietario.TipoDocumento || ''}: ${Propietario.NumeroDocumento || ''}`"
+      persistent-hint
+      dark )
 
     v-text-field( label="Material" v-model="Material" dark )
 
