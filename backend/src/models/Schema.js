@@ -831,7 +831,7 @@ var Query = new GraphQLObjectType({
                   Nombre: {$like: ("%"+args.NombreDocumento+"%")}
                 }
               ],
-              Relacion: args.Relacion ? args.Relacion : {$or: ['Cliente', 'Propia', 'Proveedor', 'Cliente Y Proveedor']}
+              Relacion: args.Relacion ? {$like: ("%"+args.Relacion+"%")} : {$or: ['Cliente', 'Propia', 'Proveedor', 'Cliente Y Proveedor']}
             },
             order: [['Nombre', 'ASC']]
           });
