@@ -16,12 +16,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha"
         v-model="Fecha"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -42,11 +44,13 @@ v-layout( row wrap )
       v-model="Lote"
       append-icon="cached"
       :append-icon-cb="SetLote"
+      :disabled="items.length > 0"
       dark )
 
     v-text-field(
       label="Turno"
       v-model="Turno"
+      :disabled="items.length > 0"
       dark )
 
     v-menu(
@@ -57,12 +61,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha Inicial"
         v-model="FechaInicial"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -86,12 +92,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha Final"
         v-model="FechaFinal"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -115,12 +123,14 @@ v-layout( row wrap )
           v-model="menu3"
           transition="scale-transition"
           offset-y
-          :nudge-left="40" )
+          :nudge-left="40"
+          :disabled="items.length > 0" )
 
           v-text-field(
             slot="activator"
             label="Hora Inicial"
             v-model="HoraInicial"
+            :disabled="items.length > 0"
             readonly )
 
           v-time-picker(v-model="HoraInicial" autosave)
@@ -132,12 +142,14 @@ v-layout( row wrap )
           v-model="menu4"
           transition="scale-transition"
           offset-y
-          :nudge-left="40" )
+          :nudge-left="40"
+          :disabled="items.length > 0" )
 
           v-text-field(
             slot="activator"
             label="Hora Final"
             v-model="HoraFinal"
+            :disabled="items.length > 0"
             readonly )
 
           v-time-picker(v-model="HoraFinal" autosave)
@@ -151,7 +163,7 @@ v-layout( row wrap )
       item-value="Id"
       return-object
       autocomplete
-      :disabled="!ChangeProducto"
+      :disabled="items.length > 0"
       class="mb-5"
       dark )
 
@@ -163,12 +175,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha de Fabricacion"
         v-model="FechaFabricacion"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -193,12 +207,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha de Vencimiento"
         v-model="FechaVencimiento"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -215,11 +231,11 @@ v-layout( row wrap )
           v-card-actions
             v-btn( dark warning @click.native="FechaVencimiento=null" ) Limpiar
 
-    v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
+    v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" :disabled="items.length > 0" dark )
 
-    v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
+    v-text-field( label="Presion Final (psi)" v-model="PresionFinal" :disabled="items.length > 0" dark )
 
-    v-text-field( label="Observacion" v-model="Observacion" multi-line dark )
+    v-text-field( label="Observacion" v-model="Observacion" multi-line :disabled="items.length > 0" dark )
 
     v-data-table(
       v-bind:headers="headers"

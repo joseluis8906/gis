@@ -1155,6 +1155,30 @@ var Query = new GraphQLObjectType({
             order: [['Fecha', 'DESC'], ['Lote', 'DESC']]});
         }
       },
+      RecprodcomsByEnvase: {
+        type: new GraphQLList(Recprodcom),
+        args: {
+          NumeroEnvase: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Recprodcom.findAll({
+            where:{
+              Despachado: 'No',
+              FechaFabricacion: { $lte: new Date(args.FechaFabricacion+'T00:00:00') }
+            },
+            order: [['Numero', 'ASC']],
+            include: [
+              {
+                model: Db.models.Envase,
+                where:{
+                  Numero: {$like: ("%"+args.NumeroEnvase+"%")},
+                }
+              }
+            ]
+          });
+        }
+      },
       Remisions: {
         type: new GraphQLList(Remision),
         args: {

@@ -47,14 +47,14 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           td(style="text-align: left") Producto:
           td(style="text-align: right") {{ MaxLength (Producto, 19) }}
-        tr
+        //- tr
           td(style="text-align: left") Certificado:
           td(style="text-align: right") {{ MaxLength (Certificado, 19) }}
         tr
           td(style="text-align: left") Registro Sanitario:
           td(style="text-align: right") {{ MaxLength (RegistroSanitario, 19) }}
 
-        tr
+        //- tr
           td(style="text-align: left") Otros:
           td(style="text-align: right") {{ MaxLength (Otros, 19) }}
 

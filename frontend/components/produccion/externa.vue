@@ -16,12 +16,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha"
         v-model="Fecha"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -42,13 +44,15 @@ v-layout( row wrap )
       v-model="Lote"
       append-icon="cached"
       :append-icon-cb="SetLote"
+      :disabled="items.length > 0"
       dark )
 
     v-text-field(
       v-model="NombreDocumento"
       label="Buscar Proveedor"
       append-icon="search"
-      :append-icon-cb="BuscarProveedor")
+      :append-icon-cb="BuscarProveedor"
+      :disabled="items.length > 0" )
 
     v-select(
       v-bind:items="ItemsProveedor"
@@ -60,7 +64,7 @@ v-layout( row wrap )
       return-object
       :hint="`${Proveedor.TipoDocumento || ''}: ${Proveedor.NumeroDocumento || ''}`"
       persistent-hint
-      :disabled="Proveedor.Id !== null"
+      :disabled="items.length > 0"
       dark )
 
     v-select(
@@ -71,7 +75,7 @@ v-layout( row wrap )
       item-value="Id"
       return-object
       autocomplete
-      :disabled="!ChangeProducto"
+      :disabled="items.length > 0"
       dark )
 
     v-menu(
@@ -82,12 +86,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha de Fabricacion"
         v-model="FechaFabricacion"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -112,12 +118,14 @@ v-layout( row wrap )
       offset-y
       full-width
       :nudge-left="40"
-      max-width="290px" )
+      max-width="290px"
+      :disabled="items.length > 0" )
 
       v-text-field(
         slot="activator"
         label="Fecha de Vencimiento"
         v-model="FechaVencimiento"
+        :disabled="items.length > 0"
         readonly )
 
       v-date-picker(
@@ -134,17 +142,17 @@ v-layout( row wrap )
           v-card-actions
             v-btn( dark warning @click.native="FechaVencimiento=null" ) Limpiar
 
-    v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" dark )
+    v-text-field( label="Pureza Final (%)" v-model="PurezaFinal" :disabled="items.length > 0" dark )
 
-    v-text-field( label="Presion Final (psi)" v-model="PresionFinal" dark )
+    v-text-field( label="Presion Final (psi)" v-model="PresionFinal" :disabled="items.length > 0" dark )
 
-    v-text-field( label="Certificado" v-model="Certificado" dark )
+    //- v-text-field( label="Certificado" v-model="Certificado" :disabled="items.length > 0" dark )
 
-    v-text-field( label="RegistroSanitario" v-model="RegistroSanitario" dark )
+    v-text-field( label="RegistroSanitario" v-model="RegistroSanitario" :disabled="items.length > 0" dark )
 
-    v-text-field( label="Otros" v-model="Otros" multi-line dark )
+    //- v-text-field( label="Otros" v-model="Otros" multi-line :disabled="items.length > 0" dark )
 
-    v-text-field( label="Observacion" v-model="Observacion" multi-line dark )
+    v-text-field( label="Observacion" v-model="Observacion" multi-line :disabled="items.length > 0" dark )
 
     v-data-table(
       v-bind:headers="headers"

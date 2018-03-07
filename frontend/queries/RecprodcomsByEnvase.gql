@@ -1,0 +1,54 @@
+query Recprodcoms (
+  $NumeroEnvase: String
+  $FechaFabricacion: String
+) {
+  RecprodcomsByEnvase (
+    NumeroEnvase: $NumeroEnvase
+    FechaFabricacion: $FechaFabricacion
+  ){
+    Id
+    Numero
+    Fecha
+    Lote
+    FechaFabricacion
+    FechaVencimiento
+    Cantidad
+    EnteId
+    ProductoId
+    EnvaseId
+    PurezaFinal
+    PresionFinal
+    Certificado
+    RegistroSanitario
+    Otros
+    Observacion
+    Despachado
+    Proveedor {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Ciudad
+      Direccion
+      Telefono
+    }
+    Envase {
+      Id
+      Numero
+      Capacidad
+      Propietario {
+        Id
+        TipoDocumento
+        NumeroDocumento
+        Nombre
+        Direccion
+        Telefono
+      }
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
+    }
+  }
+}
