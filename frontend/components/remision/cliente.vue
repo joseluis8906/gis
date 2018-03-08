@@ -95,12 +95,12 @@ v-layout( row wrap )
       class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
       template(slot="items" scope="props")
-        td(class="text-xs-center") {{ props.item.Produccion ? props.item.Produccion.Cantidad : props.item.Envase.Capacidad }}
-        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion !== null ? props.item.Produccion.Producto.Nombre : props.item.Envase.Producto.Nombre }}
-        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Lote : '' }}
+        td(class="text-xs-center") {{ EncontrarClave(props.item, 'Cantidad') }}
+        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'Nombre') }}
+        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'Numero') }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'FechaFabricacion') }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'FechaVencimiento') }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'Lote') }}
         td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase ? props.item.Envase.Numero : '' }}
         td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
         td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
@@ -124,7 +124,7 @@ v-layout( row wrap )
 
         v-select(
           v-bind:items="ItemsProduccionAndRecprodcom"
-          v-model="ProduccionActual"
+          v-model="ProduccionAndRecprodcomActual"
           label="Envase Sale"
           item-text="Buscar"
           return-object
@@ -224,8 +224,7 @@ v-layout( row wrap )
         ItemsProduccionAndRecprodcom: [],
         ItemsAllEnvase: [],
         ItemsEnvase: [],
-        RecprodcomActual: null,
-        ProduccionActual: null,
+        ProduccionAndRecprodcomActual: null,
         EnvaseActual: null,
         TotalActual: null,
         headers: [
@@ -341,6 +340,24 @@ v-layout( row wrap )
       }
     },
     methods: {
+      EncontrarClave (Obj, clave) {
+        if(Obj.hasOwnProperty(clave)){
+          return Obj[clave];
+        }
+        else if(Obj.Produccion){
+          if(Obj.Produccion.hasOwnProperty(clave)){
+            return Obj.Produccion[clave];
+          }
+        }
+        else if(Obj.Recprodcom){
+          if(Obj.Recprodcom.hasOwnProperty(clave)){
+            return Obj.Recprodcom[clave];
+          }
+        }
+        else {
+          return Obj.Envse[clave];
+        }
+      },
       BuscarCliente () {
         this.ItemsCliente = [];
         if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
@@ -386,9 +403,7 @@ v-layout( row wrap )
         }
       },
       BuscarProduccionAndRecprodcom () {
-        this.ProduccionActual = null;
-        this.RecprodcomActual = null;
-
+        this.ProduccionAndRecprodcomActual = null;
         this.ItemsProduccionAndRecprodcom = [];
 
         if(null !== this.NumeroProduccionAndRecprodcom && this.NumeroProduccionAndRecprodcom.length >= 2 && this.Fecha !== null && this.Fecha !== ''){
@@ -479,8 +494,7 @@ v-layout( row wrap )
       },
       agregar () {
         if(
-          (null === this.ProduccionActual || typeof(this.ProduccionActual) !== 'object') &&
-          (null === this.RecprodcomActual || typeof(this.RecprodcomActual) !== 'object') &&
+          (null === this.ProduccionAndRecprodcomActual || typeof(this.ProduccionAndRecprodcomActual) !== 'object') &&
           (null === this.EnvaseActual || typeof(this.EnvaseActual) !== 'object')
          ){
           console.log('Error en Envase, produccion o recprodcom');
@@ -488,38 +502,40 @@ v-layout( row wrap )
         }
         var tmp = {
           Id: null,
-          Produccion: {
-            Id: this.ProduccionActual ? this.ProduccionActual.Id : null,
-            FechaFabricacion: this.ProduccionActual ? this.ProduccionActual.FechaFabricacion : null,
-            FechaVencimiento: this.ProduccionActual ? this.ProduccionActual.FechaVencimiento : null,
-            Lote: this.ProduccionActual ? this.ProduccionActual.Lote : null,
-            Cantidad: this.ProduccionActual ? this.ProduccionActual.Cantidad : null,
+          Produccion: this.ProduccionAndRecprodcomActual.Type === "Produccion" ?  {
+            Type: this.ProduccionAndRecprodcomActual.Type,
+            Id: this.ProduccionAndRecprodcomActual.Id,
+            FechaFabricacion: this.ProduccionAndRecprodcomActual.FechaFabricacion,
+            FechaVencimiento: this.ProduccionAndRecprodcomActual.FechaVencimiento,
+            Lote: this.ProduccionAndRecprodcomActual.Lote,
+            Cantidad: this.ProduccionAndRecprodcomActual.Cantidad,
             Envase: {
-              Id: this.ProduccionActual ? this.ProduccionActual.Envase.Id : null,
-              Numero: this.ProduccionActual ? this.ProduccionActual.Envase.Numero : null,
+              Id: this.ProduccionAndRecprodcomActual.Envase.Id,
+              Numero: this.ProduccionAndRecprodcomActual.Envase.Numero,
             },
             Producto: {
-              Id: this.ProduccionActual ? this.ProduccionActual.Producto.Id : null,
-              Nombre: this.ProduccionActual ? this.ProduccionActual.Producto.Nombre : null,
-              UnidadDeMedida: this.ProduccionActual ? this.ProduccionActual.Producto.UnidadDeMedida : null,
+              Id: this.ProduccionAndRecprodcomActual.Producto.Id,
+              Nombre: this.ProduccionAndRecprodcomActual.Producto.Nombre,
+              UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
             }
-          },
-          Recprodcom: {
-            Id: this.RecprodcomsActual ? this.RecprodcomsActual.Id : null,
-            FechaFabricacion: this.RecprodcomsActual ? this.RecprodcomsActual.FechaFabricacion : null,
-            FechaVencimiento: this.RecprodcomsActual ? this.RecprodcomsActual.FechaVencimiento : null,
-            Lote: this.RecprodcomsActual ? this.RecprodcomsActual.Lote : null,
-            Cantidad: this.RecprodcomsActual ? this.RecprodcomsActual.Cantidad : null,
+          } : null,
+          Recprodcom: this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? {
+            Type: this.ProduccionAndRecprodcomActual.Type,
+            Id: this.ProduccionAndRecprodcomActual.Id,
+            FechaFabricacion: this.ProduccionAndRecprodcomActual.FechaFabricacion,
+            FechaVencimiento: this.ProduccionAndRecprodcomActual.FechaVencimiento,
+            Lote: this.ProduccionAndRecprodcomActual.Lote,
+            Cantidad: this.ProduccionAndRecprodcomActual.Cantidad,
             Envase: {
-              Id: this.RecprodcomsActual ? this.RecprodcomsActual.Envase.Id : null,
-              Numero: this.RecprodcomsActual ? this.RecprodcomsActual.Envase.Numero : null,
+              Id: this.ProduccionAndRecprodcomActual.Envase.Id,
+              Numero: this.ProduccionAndRecprodcomActual.Envase.Numero,
             },
             Producto: {
-              Id: this.RecprodcomsActual ? this.RecprodcomsActual.Producto.Id : null,
-              Nombre: this.RecprodcomsActual ? this.RecprodcomsActual.Producto.Nombre : null,
-              UnidadDeMedida: this.RecprodcomsActual ? this.RecprodcomActual.Producto.UnidadDeMedida : null,
+              Id: this.ProduccionAndRecprodcomActual.Producto.Id,
+              Nombre: this.ProduccionAndRecprodcomActual.Producto.Nombre,
+              UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
             }
-          },
+          } : null,
           Envase: this.EnvaseActual ? { Id: this.EnvaseActual.Id,  Numero: this.EnvaseActual.Numero } : null,
           Total: this.TotalActual,
           SaveUpdate: 'save'
@@ -528,14 +544,14 @@ v-layout( row wrap )
         this.guardar(tmp)
 
         this.ItemsProduccionAndRecprodcom = this.ItemsProduccionAndRecprodcom.filter( Item => {
-          return (tmp.Produccion.Id !== Item.Id || tmp.Produccion. )
+          return ( (tmp.Produccion !== null && tmp.Produccion.Id !== Item.Id) || (tmp.Recprodcom !== null && tmp.Recprodcom.Id !== Item.Id) )
         })
 
         this.ItemsEnvase = this.ItemsEnvase.filter( Item => {
           return Item.Id !== (tmp.Envase ? tmp.Envase.Id : null);
         })
 
-        this.ProduccionActual = null,
+        this.ProduccionAndRecprodcomActual = null,
         this.EnvaseActual = null,
         this.TotalActual = null;
 
@@ -544,7 +560,7 @@ v-layout( row wrap )
         if(
           this.Fecha !== null &&
           (this.Cliente.Id !== null || typeof(this.Cliente) !== 'object' ) &&
-          (item.Produccion !== null || item.Envase !== null)
+          (item.Produccion !== null || item.Envase !== null || item.Recprodcom !== null)
         ) {
 
           const Remision = {
@@ -553,6 +569,8 @@ v-layout( row wrap )
             EnteId: this.Cliente.Id,
             ProduccionId: item.Produccion ? item.Produccion.Id : null,
             EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
+            RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
+            EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
             EnvaseId: item.Envase ? item.Envase.Id : null,
             Total: item.Total
           }
@@ -565,6 +583,8 @@ v-layout( row wrap )
               EnteId: Remision.EnteId,
               ProduccionId: Remision.ProduccionId,
               EnvaseProduccionId: Remision.EnvaseProduccionId,
+              RecprodcomId: Remision.RecprodcomId,
+              EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
               EnvaseId: Remision.EnvaseId,
               Total: Remision.Total
             },
@@ -587,7 +607,24 @@ v-layout( row wrap )
                     Nombre: res.CreateRemision.Produccion.Producto.Nombre,
                     UnidadDeMedida: res.CreateRemision.Produccion.Producto.UnidadDeMedida
                   },
-                  Despachado: res.CreateRemision.Despachado
+                  Despachado: res.CreateRemision.Produccion.Despachado
+                } : null,
+                Recprodcom: res.CreateRemision.Recprodcom ? {
+                  Id: res.CreateRemision.Recprodcom.Id,
+                  Cantidad: res.CreateRemision.Recprodcom.Cantidad,
+                  FechaFabricacion: res.CreateRemision.Recprodcom.FechaFabricacion,
+                  FechaVencimiento: res.CreateRemision.Recprodcom.FechaVencimiento,
+                  Lote: res.CreateRemision.Recprodcom.Lote,
+                  Envase: {
+                    Id: res.CreateRemision.Recprodcom.Envase.Id,
+                    Numero: res.CreateRemision.Recprodcom.Envase.Numero,
+                  },
+                  Producto: {
+                    Id: res.CreateRemision.Recprodcom.Producto.Id,
+                    Nombre: res.CreateRemision.Recprodcom.Producto.Nombre,
+                    UnidadDeMedida: res.CreateRemision.Recprodcom.Producto.UnidadDeMedida
+                  },
+                  Despachado: res.CreateRemision.Recprodcom.Despachado
                 } : null,
                 Envase: res.CreateRemision.Envase ? {
                   Id: res.CreateRemision.Envase.Id,

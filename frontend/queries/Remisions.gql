@@ -13,6 +13,7 @@ query Remisions (
     Fecha
     EnteId
     ProduccionId
+    RecprodcomId
     EnvaseId
     Total
     Ente {
@@ -25,6 +26,24 @@ query Remisions (
       Telefono
     }
     Produccion {
+      Id
+      Fecha
+      Lote
+      Cantidad
+      Producto {
+        Id
+        Nombre
+        UnidadDeMedida
+      }
+      FechaFabricacion
+      FechaVencimiento
+      Envase {
+        Id
+        Numero
+        Capacidad
+      }
+    }
+    Recprodcom {
       Id
       Fecha
       Lote

@@ -632,6 +632,12 @@ var Remision = new GraphQLObjectType({
           return Remision.ProduccionId;
         }
       },
+      RecprodcomId: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.RecprodcomId;
+        }
+      },
       EnvaseId: {
         type: GraphQLInt,
         resolve(Remision) {
@@ -654,6 +660,12 @@ var Remision = new GraphQLObjectType({
         type: Produccion,
         resolve(Remision) {
           return Remision.getProduccion();
+        }
+      },
+      Recprodcom: {
+        type: Recprodcom,
+        resolve(Remision) {
+          return Remision.getRecprodcom();
         }
       },
       Envase: {
@@ -1807,15 +1819,42 @@ var Mutation = new GraphQLObjectType({
           EnteId: {type: GraphQLInt},
           ProduccionId: {type: GraphQLInt},
           EnvaseProduccionId: {type: GraphQLInt},
+          RecprodcomId: {type: GraphQLInt},
+          EnvaseRecprodcomId: {type: GraphQLInt},
           EnvaseId: {type: GraphQLInt},
           Total: {type: GraphQLFloat}
         },
         resolve(_, args) {
-
+          console.log(args);
           if(args.ProduccionId){
             Db.models.Produccion.findOne({
               where: {
                 Id: args.ProduccionId
+              }
+            }).then ( P => {
+              P.Despachado = 'Si';
+              P.save();
+
+              Db.models.Kardex.create({
+                Cantidad: P.Cantidad,
+                ProductoId: P.ProductoId,
+                EnvaseId: P.EnvaseId,
+                FechaElaboracion: P.FechaFabricacion,
+                Lote: P.Lote,
+                FechaVencimiento: P.FechaVencimiento,
+                EnteId: args.EnteId,
+                FechaSale: args.Fecha,
+                NumeroFacturaSale: args.Numero,
+                FechaEntra: null,
+                NumeroFacturaEntra: null
+              });
+            });
+          }
+
+          if(args.RecprodcomId){
+            Db.models.Recprodcom.findOne({
+              where: {
+                Id: args.RecprodcomId
               }
             }).then ( P => {
               P.Despachado = 'Si';
@@ -1848,6 +1887,17 @@ var Mutation = new GraphQLObjectType({
             });
           }
 
+          if(args.EnvaseRecprodcomId){
+            Db.models.Envase.findOne({
+              where: {
+                Id: args.EnvaseRecprodcomId
+              }
+            }).then( E => {
+              E.Disponible = 'Si';
+              E.save();
+            });
+          }
+
           if(args.EnvaseId){
             Db.models.Kardex.findOne({
               where: {
@@ -1870,6 +1920,7 @@ var Mutation = new GraphQLObjectType({
             Fecha: args.Fecha,
             EnteId: args.EnteId,
             ProduccionId: args.ProduccionId,
+            RecprodcomId: args.RecprodcomId,
             EnvaseId: args.EnvaseId,
             Total: args.Total
           }).then( R => {
@@ -1884,6 +1935,8 @@ var Mutation = new GraphQLObjectType({
           Numero: {type: GraphQLString},
           ProduccionId: {type: GraphQLInt},
           EnvaseProduccionId: {type: GraphQLInt},
+          RecprodcomId: {type: GraphQLInt},
+          EnvaseRecprodcomId: {type: GraphQLInt},
           EnvaseId: {type: GraphQLInt}
         },
         resolve(_, args) {
@@ -1892,6 +1945,17 @@ var Mutation = new GraphQLObjectType({
             Db.models.Produccion.findOne({
               where: {
                 Id: args.ProduccionId
+              }
+            }).then ( P => {
+              P.Despachado = 'No';
+              P.save();
+            });
+          }
+
+          if(args.RecprodcomId){
+            Db.models.Recprodcom.findOne({
+              where: {
+                Id: args.RecprodcomId
               }
             }).then ( P => {
               P.Despachado = 'No';
@@ -1910,9 +1974,20 @@ var Mutation = new GraphQLObjectType({
             });
           }
 
+          if(args.EnvaseRecprodcomId){
+            Db.models.Envase.findOne({
+              where: {
+                Id: args.EnvaseRecprodcomId
+              }
+            }).then( E => {
+              E.Disponible = 'No';
+              E.save();
+            });
+          }
+
           Db.models.Kardex.findOne({
             where: {
-              EnvaseId: args.EnvaseProduccionId,
+              EnvaseId: args.EnvaseProduccionId ? args.EnvaseProduccionId : args.EnvaseRecprodcomId,
               NumeroFacturaSale: args.Numero
             }
           }).then( KS => {

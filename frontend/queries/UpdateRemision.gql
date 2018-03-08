@@ -1,7 +1,8 @@
-mutation UpdateRemision ( 
+mutation UpdateRemision (
   $Id: Int!
   $EnteId: Int
   $ProduccionId: Int
+  $RecprodcomId: Int
   $EnvaseId: Int
   $Total: Float
 ) {
@@ -9,6 +10,7 @@ mutation UpdateRemision (
     Id: $Id
     EnteId: $EnteId
     ProduccionId: $ProduccionId
+    RecprodcomId: $RecprodcomId
     EnvaseId: $EnvaseId
     Total: $Total
   ){
@@ -17,6 +19,7 @@ mutation UpdateRemision (
     Fecha
     EnteId
     ProduccionId
+    RecprodcomId
     EnvaseId
     Total
     Ente {
@@ -29,6 +32,24 @@ mutation UpdateRemision (
       Telefono
     }
     Produccion {
+      Id
+      Fecha
+      Lote
+      Cantidad
+      Producto {
+        Id
+        Nombre
+        UnidadDeMedida
+      }
+      FechaFabricacion
+      FechaVencimiento
+      Envase {
+        Id
+        Numero
+        Capacidad
+      }
+    }
+    Recprodcom {
       Id
       Fecha
       Lote

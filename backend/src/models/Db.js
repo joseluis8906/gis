@@ -193,6 +193,7 @@ const Remision = Db.define('Remision', {
   Fecha: Sequelize.DATEONLY,
   EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
   ProduccionId: {type: Sequelize.INTEGER, references: {model: Produccion, key: "Id"}},
+  RecprodcomId: {type: Sequelize.INTEGER, references: {model: Recprodcom, key: "Id"}},
   EnvaseId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
   Total: Sequelize.DECIMAL
 },
@@ -206,6 +207,9 @@ Remision.belongsTo(Ente)
 
 Produccion.hasMany(Remision)
 Remision.belongsTo(Produccion)
+
+Recprodcom.hasMany(Remision)
+Remision.belongsTo(Recprodcom)
 
 Envase.hasMany(Remision)
 Remision.belongsTo(Envase)
