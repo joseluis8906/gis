@@ -1822,10 +1822,11 @@ var Mutation = new GraphQLObjectType({
           RecprodcomId: {type: GraphQLInt},
           EnvaseRecprodcomId: {type: GraphQLInt},
           EnvaseId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
+          Total: {type: GraphQLFloat},
+          Tipo: {type: GraphQLString}
         },
         resolve(_, args) {
-          console.log(args);
+
           if(args.ProduccionId){
             Db.models.Produccion.findOne({
               where: {
@@ -1846,7 +1847,8 @@ var Mutation = new GraphQLObjectType({
                 FechaSale: args.Fecha,
                 NumeroFacturaSale: args.Numero,
                 FechaEntra: null,
-                NumeroFacturaEntra: null
+                NumeroFacturaEntra: null,
+                Tipo: args.Tipo
               });
             });
           }
@@ -1911,6 +1913,27 @@ var Mutation = new GraphQLObjectType({
                 KE.FechaEntra = args.Fecha;
                 KE.NumeroFacturaEntra = args.Numero;
                 KE.save();
+              }else{
+                Db.models.Envase.findOne({
+                  where: {
+                    Id: args.EnvaseId
+                  }
+                }).then(EN => {
+                  Db.models.Kardex.create({
+                    Cantidad: EN.Capacidad,
+                    ProductoId: EN.ProductoId,
+                    EnvaseId: EN.Id,
+                    FechaElaboracion: null,
+                    Lote: null,
+                    FechaVencimiento: null,
+                    EnteId: args.EnteId,
+                    FechaSale: null,
+                    NumeroFacturaSale: null,
+                    FechaEntra: args.Fecha,
+                    NumeroFacturaEntra: args.Numero,
+                    Tipo: args.Tipo
+                  });
+                })
               }
             });
           }
@@ -2003,9 +2026,13 @@ var Mutation = new GraphQLObjectType({
             }
           }).then( KE => {
             if (KE) {
-              KE.FechaEntra = null;
-              KE.NumeroFacturaEntra = null;
-              KE.save();
+              if(KE.FechaSale !== null && KE.NumeroFacturaSale !== null){
+                KE.FechaEntra = null;
+                KE.NumeroFacturaEntra = null;
+                KE.save();
+              } else {
+                KE.destroy();
+              }
             }
           });
 

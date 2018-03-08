@@ -95,12 +95,12 @@ v-layout( row wrap )
       class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
       template(slot="items" scope="props")
-        td(class="text-xs-center") {{ EncontrarClave(props.item, 'Cantidad') }}
-        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'Nombre') }}
-        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'Numero') }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'FechaFabricacion') }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'FechaVencimiento') }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ EncontrarClave (props.item, 'Lote') }}
+        td(class="text-xs-center") {{ props.item.Produccion ? props.item.Produccion.Cantidad : props.item.Recprodcom ? props.item.Recprodcom.Cantidad : props.item.Envase.Capacidad }}
+        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Producto.Nombre : props.item.Recprodcom ? props.item.Recprodcom.Producto.Nombre : props.item.Envase.Producto.Nombre }}
+        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : props.item.Recprodcom ? props.item.Recprodcom.Envase.Numero : '' }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : props.item.Recprodcom ? props.item.Recprodcom.FechaFabricacion : '' }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : props.item.Recprodcom ? props.item.Recprodcom.FechaVencimiento : '' }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Lote : props.item.Recprodcom ? props.item.Recprodcom.Lote : '' }}
         td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase ? props.item.Envase.Numero : '' }}
         td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
         td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
@@ -270,7 +270,6 @@ v-layout( row wrap )
           }
         },
         fetchPolicy: 'network-only',
-        loadingKey: "loading",
         update (data) {
 
           if (data.Remisions.length > 0) {
@@ -298,7 +297,24 @@ v-layout( row wrap )
                     Nombre: data.Remisions[i].Produccion.Producto.Nombre,
                     UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
                   },
-                  Despachado: data.Remisions[i].Despachado
+                  Despachado: data.Remisions[i].Produccion.Despachado
+                } : null,
+                Recprodcom: data.Remisions[i].Recprodcom ? {
+                  Id: data.Remisions[i].Recprodcom.Id,
+                  Cantidad: data.Remisions[i].Recprodcom.Cantidad,
+                  FechaFabricacion: data.Remisions[i].Recprodcom.FechaFabricacion,
+                  FechaVencimiento: data.Remisions[i].Recprodcom.FechaVencimiento,
+                  Lote: data.Remisions[i].Recprodcom.Lote,
+                  Envase: {
+                    Id: data.Remisions[i].Recprodcom.Envase.Id,
+                    Numero: data.Remisions[i].Recprodcom.Envase.Numero,
+                  },
+                  Producto: {
+                    Id: data.Remisions[i].Recprodcom.Producto.Id,
+                    Nombre: data.Remisions[i].Recprodcom.Producto.Nombre,
+                    UnidadDeMedida: data.Remisions[i].Recprodcom.Producto.UnidadDeMedida
+                  },
+                  Despachado: data.Remisions[i].Recprodcom.Despachado
                 } : null,
                 Envase: data.Remisions[i].Envase ? {
                   Id: data.Remisions[i].Envase.Id,
@@ -341,21 +357,31 @@ v-layout( row wrap )
     },
     methods: {
       EncontrarClave (Obj, clave) {
+        //console.log(Obj);
         if(Obj.hasOwnProperty(clave)){
           return Obj[clave];
         }
         else if(Obj.Produccion){
           if(Obj.Produccion.hasOwnProperty(clave)){
             return Obj.Produccion[clave];
+          }else if(Obj.Produccion.Producto.hasOwnProperty(clave)){
+            return Obj.Produccion.Producto[clave];
           }
         }
         else if(Obj.Recprodcom){
           if(Obj.Recprodcom.hasOwnProperty(clave)){
             return Obj.Recprodcom[clave];
+          }else if(Obj.Recprodcom.Producto.hasOwnProperty(clave)){
+            return Obj.Recprodcom.Producto[clave];
           }
         }
-        else {
-          return Obj.Envse[clave];
+        else if(Obj.Envase){
+          if(Obj.Envase.hasOwnProperty(clave)){
+            return Obj.Envase[clave];
+          }else if(Obj.Envase.Producto.hasOwnProperty(clave)){
+            return Obj.Envase.Producto[clave];
+          }
+          return '';
         }
       },
       BuscarCliente () {
@@ -502,7 +528,7 @@ v-layout( row wrap )
         }
         var tmp = {
           Id: null,
-          Produccion: this.ProduccionAndRecprodcomActual.Type === "Produccion" ?  {
+          Produccion: this.ProduccionAndRecprodcomActual ? this.ProduccionAndRecprodcomActual.Type === "Produccion" ?  {
             Type: this.ProduccionAndRecprodcomActual.Type,
             Id: this.ProduccionAndRecprodcomActual.Id,
             FechaFabricacion: this.ProduccionAndRecprodcomActual.FechaFabricacion,
@@ -518,8 +544,8 @@ v-layout( row wrap )
               Nombre: this.ProduccionAndRecprodcomActual.Producto.Nombre,
               UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
             }
-          } : null,
-          Recprodcom: this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? {
+          } : null : null,
+          Recprodcom: this.ProduccionAndRecprodcomActual ? this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? {
             Type: this.ProduccionAndRecprodcomActual.Type,
             Id: this.ProduccionAndRecprodcomActual.Id,
             FechaFabricacion: this.ProduccionAndRecprodcomActual.FechaFabricacion,
@@ -535,7 +561,7 @@ v-layout( row wrap )
               Nombre: this.ProduccionAndRecprodcomActual.Producto.Nombre,
               UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
             }
-          } : null,
+          } : null : null,
           Envase: this.EnvaseActual ? { Id: this.EnvaseActual.Id,  Numero: this.EnvaseActual.Numero } : null,
           Total: this.TotalActual,
           SaveUpdate: 'save'
@@ -586,7 +612,8 @@ v-layout( row wrap )
               RecprodcomId: Remision.RecprodcomId,
               EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
               EnvaseId: Remision.EnvaseId,
-              Total: Remision.Total
+              Total: Remision.Total,
+              Tipo: 'Cliente'
             },
             loadingKey: 'loading',
             update: (store, { data: res }) => {
@@ -647,8 +674,24 @@ v-layout( row wrap )
       eliminar (item) {
         if ( item.Id === null ) {
           for (let i=0; i<this.items.length; i++) {
-            if ( item.ProduccionId === this.items[i].ProduccionId ) {
-              this.items.splice(i, 1)
+            if ( item.Produccion !== null ) {
+              if( this.items[i].Produccion !== null ){
+                if(item.Produccion.Id === this.item[i].Produccion.Id){
+                  this.items.splice(i, 1)
+                }
+              }
+            } else if( item.Recprodcom !== null ){
+              if( this.items[i].Recprodcom !== null ){
+                if(item.Recprodcom.Id === this.item[i].Recprodcom.Id){
+                  this.items.splice(i, 1)
+                }
+              }
+            } else if( item.Envase !== null ){
+              if( this.items[i].Envase !== null ){
+                if(item.Envase.Id === this.item[i].Envase.Id){
+                  this.items.splice(i, 1)
+                }
+              }
             }
           }
         } else {
@@ -664,6 +707,8 @@ v-layout( row wrap )
           Numero: this.Numero,
           ProduccionId: item.Produccion ? item.Produccion.Id : null,
           EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
+          RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
+          EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
           EnvaseId: item.Envase ? item.Envase.Id : null
         }
 
@@ -675,6 +720,8 @@ v-layout( row wrap )
               Numero: Remision.Numero,
               ProduccionId: Remision.ProduccionId,
               EnvaseProduccionId: Remision.EnvaseProduccionId,
+              RecprodcomId: Remision.RecprodcomId,
+              EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
               EnvaseId: Remision.EnvaseId
             },
             loadingKey: 'loading'
@@ -687,6 +734,10 @@ v-layout( row wrap )
               this.items.splice(i, 1)
             }
           }
+        }
+
+        if(this.items.length === 0){
+          this.reset();
         }
 
       },

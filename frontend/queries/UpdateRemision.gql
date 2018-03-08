@@ -1,5 +1,5 @@
 mutation UpdateRemision (
-  $Id: Int!
+  $Id: Int
   $EnteId: Int
   $ProduccionId: Int
   $RecprodcomId: Int

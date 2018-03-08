@@ -8,6 +8,7 @@ mutation CreateRemision (
   $EnvaseRecprodcomId: Int
   $EnvaseId: Int
   $Total: Float
+  $Tipo: String
 ) {
   CreateRemision (
     Numero: $Numero
@@ -19,6 +20,7 @@ mutation CreateRemision (
     EnvaseRecprodcomId: $EnvaseRecprodcomId
     EnvaseId: $EnvaseId
     Total: $Total
+    Tipo: $Tipo
   ){
     Id
     Numero
