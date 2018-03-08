@@ -25,7 +25,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       thead
         tr(class="green lighten-3")
           th(style="width: 4%") N°
-          th(style="width: 8%") Orden
+          th(style="width: 4%") Tipo
+          th(style="width: 8%") Orden / Numero
           th(style="width: 8%") Cantidad
           th(style="width: 20%") Producto
           th(style="width: 10%") Fecha
@@ -34,14 +35,15 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(style="width: 10%") Fecha
             br
             | Vencimiento
-          th(style="width: 20%") Envase
+          th(style="width: 16%") Envase
           th(style="width: 10%") Pureza
           th(style="width: 10%") Presión
 
       tbody
         tr(v-for="(item, j) in page.Items" :key="j")
           td {{ item.Contador }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ item.Orden }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Type }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ item.Orden ? item.Orden : item.Numero }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Producto.UnidadDeMedida }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Producto ? item.Producto.Nombre : '' }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.FechaFabricacion }}
@@ -53,96 +55,141 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 </template>
 
 <script>
+  import PRODUCCIONS from '~/queries/Produccions.gql'
+  import RECPRODCOMS from '~/queries/Recprodcoms.gql'
 
-import PRODUCCIONS from '~/queries/Produccions.gql'
-
-export default {
-  data () {
-    return {
-      pages: [],
-      loading: 0,
-      Fecha: '2017-11-10'
-    }
-  },
-  layout: 'report',
-  fetch ({ store }) {
-    store.commit('reports/changeTitle', 'Inventario')
-  },
-  computed: {
-    Orden () {
-      return this.$store.state.produccion.Orden;
+  export default {
+    data () {
+      return {
+        pages: [],
+        loading: 0,
+        Fecha: '2017-11-10'
+      }
     },
-    EnvaseId () {
-      return this.$store.state.produccion.EnvaseId;
-    }
-  },
-  mounted () {
-    this.$nextTick(() => {
-      this.Buscar();
-    });
-  },
-  methods: {
-    Buscar () {
-      var variables = {};
-
-      if(this.Orden !== null){
-        variables.Orden = this.Orden;
+    layout: 'report',
+    fetch ({ store }) {
+      store.commit('reports/changeTitle', 'Inventario')
+    },
+    computed: {
+      Orden () {
+        return this.$store.state.produccion.Orden;
+      },
+      EnvaseId () {
+        return this.$store.state.produccion.EnvaseId;
+      },
+      ProductoId () {
+        return this.$store.state.produccion.ProductoId;
       }
-
-      if(this.EnvaseId !== null){
-        variables.EnvaseId = this.EnvaseId;
-      }
-
-      if(this.ProductoId !== null){
-        variables.ProductoId = this.ProductoId;
-      }
-
-      if(this.Despachado !== null){
-        variables.Despachado = this.Despachado;
-      }
-
-      this.$apollo.query({
-        query: PRODUCCIONS,
-        fetchPolicy: 'network-only',
-        variables: variables,
-      }).then( res => {
-        let data = res.data;
-        let page = 0;
-        for( let i=0; i < data.Produccions.length; i++ ) {
-          var tmp = {
-            Contador: i+1,
-            Orden: data.Produccions[i].Orden,
-            Cantidad: data.Produccions[i].Cantidad,
-            Producto: {
-              Nombre: data.Produccions[i].Producto.Nombre,
-              UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
-            },
-            Envase: {
-              Numero: data.Produccions[i].Envase.Numero
-            },
-            FechaFabricacion: data.Produccions[i].FechaFabricacion,
-            FechaVencimiento: data.Produccions[i].FechaVencimiento,
-            PurezaFinal: data.Produccions[i].PurezaFinal,
-            PresionFinal: data.Produccions[i].PresionFinal
-          }
-
-          if( Number.isInteger(i / 34) ){
-            page = Math.trunc(i / 34);
-            this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
-          }
-
-          this.pages[page].Items.push(tmp)
-        }
+    },
+    mounted () {
+      this.$nextTick(() => {
+        this.Buscar();
       });
     },
-    MaxLength ( value ) {
-      if( value ){
-        //console.log(value.length)
-        return value.length >= 26 ? value.substr(0, 20)+'...'+value.substr(-6, 6) : value;
+    methods: {
+      Buscar () {
+        var variables = {};
+
+        if(this.Orden !== null){
+          variables.Orden = this.Orden;
+        }
+
+        if(this.EnvaseId !== null){
+          variables.EnvaseId = this.EnvaseId;
+        }
+
+        if(this.ProductoId !== null){
+          variables.ProductoId = this.ProductoId;
+        }
+
+        if(this.Despachado !== null){
+          variables.Despachado = this.Despachado;
+        }else{
+          variables.Despachado = 'No';
+        }
+
+        var Contador = 0;
+
+        this.$apollo.query({
+          query: PRODUCCIONS,
+          fetchPolicy: 'network-only',
+          variables: variables,
+        }).then( res => {
+          let data = res.data;
+          let page = 0;
+          for( let i=0; i < data.Produccions.length; i++ ) {
+            Contador += 1;
+            var tmp = {
+              Contador: Contador,
+              Type: 'PI',
+              Orden: data.Produccions[i].Orden,
+              Cantidad: data.Produccions[i].Cantidad,
+              Producto: {
+                Nombre: data.Produccions[i].Producto.Nombre,
+                UnidadDeMedida: data.Produccions[i].Producto.UnidadDeMedida
+              },
+              Envase: {
+                Numero: data.Produccions[i].Envase.Numero
+              },
+              FechaFabricacion: data.Produccions[i].FechaFabricacion,
+              FechaVencimiento: data.Produccions[i].FechaVencimiento,
+              PurezaFinal: data.Produccions[i].PurezaFinal,
+              PresionFinal: data.Produccions[i].PresionFinal
+            }
+
+            if( Number.isInteger(i / 34) ){
+              page = Math.trunc(i / 34);
+              this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
+            }
+
+            this.pages[page].Items.push(tmp)
+          }
+        });
+
+        this.$apollo.query({
+          query: RECPRODCOMS,
+          fetchPolicy: 'network-only',
+          variables: variables,
+        }).then( res => {
+          let data = res.data;
+          let page = 0;
+          for( let i=0; i < data.Recprodcoms.length; i++ ) {
+            Contador += 1;
+            var tmp = {
+              Contador: Contador,
+              Type: 'PC',
+              Numero: data.Recprodcoms[i].Numero,
+              Cantidad: data.Recprodcoms[i].Cantidad,
+              Producto: {
+                Nombre: data.Recprodcoms[i].Producto.Nombre,
+                UnidadDeMedida: data.Recprodcoms[i].Producto.UnidadDeMedida
+              },
+              Envase: {
+                Numero: data.Recprodcoms[i].Envase.Numero
+              },
+              FechaFabricacion: data.Recprodcoms[i].FechaFabricacion,
+              FechaVencimiento: data.Recprodcoms[i].FechaVencimiento,
+              PurezaFinal: data.Recprodcoms[i].PurezaFinal,
+              PresionFinal: data.Recprodcoms[i].PresionFinal
+            }
+
+            if( Number.isInteger(i / 34) ){
+              page = Math.trunc(i / 34);
+              this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
+            }
+
+            this.pages[page].Items.push(tmp)
+          }
+        });
+      },
+      MaxLength ( value ) {
+        if( value ){
+          //console.log(value.length)
+          return value.length >= 26 ? value.substr(0, 20)+'...'+value.substr(-6, 6) : value;
+        }
       }
     }
   }
-}
 </script>
 
 <style lang="stylus" scoped>

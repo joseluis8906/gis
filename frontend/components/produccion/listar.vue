@@ -24,6 +24,18 @@ v-layout( row wrap )
       autocomplete
       dark )
 
+    v-select(
+      v-if="Criterio === 'Por Producto'"
+      v-bind:items="ItemsProducto"
+      v-model="ProductoActual"
+      label="Producto"
+      item-text="Nombre"
+      item-value="Id"
+      return-object
+      autocomplete
+      class="mb-5"
+      dark )
+
     v-card-actions
       v-spacer
       v-btn(
@@ -31,6 +43,7 @@ v-layout( row wrap )
         @click.native="inventario"
         class="mt-0 blue darken-1"
         :disabled="!Criterio" ) Buscar
+        
 </template>
 
 <style>
@@ -38,6 +51,7 @@ v-layout( row wrap )
 
 <script>
   import ENVASES from '~/queries/Envases.gql';
+  import PRODUCTOS from '~/queries/Productos.gql';
 
   export default {
     data () {
@@ -46,6 +60,19 @@ v-layout( row wrap )
         NumeroEnvase: null,
         ItemsEnvase: [],
         EnvaseActual: null,
+        ItemsProducto: [],
+        ProductoActual: null,
+      }
+    },
+    apollo: {
+      Productos: {
+        query: PRODUCTOS,
+        fetchPolicy: 'network-only',
+        loadingKey: 'loading',
+        update (data) {
+          this.ItemsProducto = [];
+          this.ItemsProducto = data.Productos;
+        }
       }
     },
     methods: {
