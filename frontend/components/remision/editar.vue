@@ -1,4 +1,4 @@
-<template lang="pug">
+ClienteOProveedor<template lang="pug">
 v-layout( row wrap )
   v-flex( xs12 )
     v-text-field(
@@ -39,24 +39,31 @@ v-layout( row wrap )
           v-card-actions
             v-btn( dark warning @click.native="Fecha=null" ) Limpiar
 
+    v-select(
+      v-model="TipoEnte"
+      :items="OptionsTipoEnte"
+      label="Tipo de Ente"
+      :disabled="items.length > 0"
+    )
+
     div( style="border: 1px solid #555555; border-radius: 5px; padding: 12px;"
          class="mb-4"  )
       v-layout(row wrap)
         v-flex(xs12)
-          h6(class="grey--text text--lighten-4") Cliente
+          h6(class="grey--text text--lighten-4") {{ TipoEnte }}
 
         v-flex(xs12)
           v-text-field(
             v-model="NombreDocumento"
-            label="Buscar Cliente"
+            :label="`Buscar ${TipoEnte}`"
             append-icon="search"
-            :append-icon-cb="BuscarCliente"
+            :append-icon-cb="BuscarClienteOProveedor"
             :disabled="items.length > 0" )
 
           v-select(
-            v-bind:items="ItemsCliente"
-            v-model="Cliente"
-            label="Cliente"
+            v-bind:items="ItemsClienteOProveedor"
+            v-model="ClienteOProveedor"
+            :label="`${TipoEnte}`"
             item-text="Nombre"
             autocomplete
             return-object
@@ -66,27 +73,27 @@ v-layout( row wrap )
         v-flex(xs12 md6)
           v-text-field(
             label="Documento"
-            v-model="Cliente.NumeroDocumento"
-            :hint="`${Cliente.TipoDocumento || ''}`"
+            v-model="ClienteOProveedor.NumeroDocumento"
+            :hint="`${ClienteOProveedor.TipoDocumento || ''}`"
             persistent-hint
             readonly )
 
         v-flex(xs12 md6)
           v-text-field(
             label="Ciudad"
-            v-model="Cliente.Ciudad"
+            v-model="ClienteOProveedor.Ciudad"
             readonly )
 
         v-flex(xs12 md6)
           v-text-field(
             label="Dirección"
-            v-model="Cliente.Direccion"
+            v-model="ClienteOProveedor.Direccion"
             readonly )
 
         v-flex(xs12 md6)
           v-text-field(
             label="Teléfono"
-            v-model="Cliente.Telefono"
+            v-model="ClienteOProveedor.Telefono"
             readonly )
 
     v-data-table(
@@ -115,7 +122,7 @@ v-layout( row wrap )
             v-icon(dark) remove
 
     v-layout(row wrap mt-5)
-      v-flex(xs12 md4)
+      v-flex(xs12 md4 v-if="TipoEnte==='Cliente'")
         v-text-field(
           v-model="NumeroProduccionAndRecprodcom"
           label="Buscar Sale"
@@ -127,6 +134,22 @@ v-layout( row wrap )
           v-model="ProduccionAndRecprodcomActual"
           label="Envase Sale"
           item-text="Buscar"
+          return-object
+          autocomplete
+          dark )
+
+      v-flex(xs12 md4 v-if="TipoEnte==='Proveedor'")
+        v-text-field(
+          v-model="NumeroEnvaseSale"
+          label="Buscar Sale"
+          append-icon="search"
+          :append-icon-cb="BuscarEnvaseSale" )
+
+        v-select(
+          v-bind:items="ItemsEnvaseSale"
+          v-model="EnvaseSaleActual"
+          label="Envase Sale"
+          item-text="Numero"
           return-object
           autocomplete
           dark )
@@ -207,7 +230,12 @@ v-layout( row wrap )
       return {
         Numero: null,
         Fecha: null,
-        Cliente: {
+        TipoEnte: 'Cliente',
+        OptionsTipoEnte: [
+          'Cliente',
+          'Proveedor'
+        ],
+        ClienteOProveedor: {
           Id: null,
           TipoDocumento: null,
           NumeroDocumento: null,
@@ -220,12 +248,14 @@ v-layout( row wrap )
           {text: 'Nit'},
           {text: 'Cédula'}
         ],
-        ItemsCliente: [],
+        ItemsClienteOProveedor: [],
         ItemsProduccionAndRecprodcom: [],
         ItemsAllEnvase: [],
         ItemsEnvase: [],
+        ItemsEnvaseSale: [],
         ProduccionAndRecprodcomActual: null,
         EnvaseActual: null,
+        EnvaseSaleActual: null,
         TotalActual: null,
         headers: [
           { text: 'Cant', align: 'center', sortable: false,  value: 'Cantidad' },
@@ -255,6 +285,7 @@ v-layout( row wrap )
           'Diciembre'],
         days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
         NumeroEnvase: null,
+        NumeroEnvaseSale: null,
         NumeroProduccionAndRecprodcom: null,
         NombreDocumento: null,
 
@@ -275,8 +306,8 @@ v-layout( row wrap )
           if (data.Remisions.length > 0) {
             this.Fecha = data.Remisions[0].Fecha
 
-            this.ItemsCliente.push(data.Remisions[0].Ente)
-            this.Cliente = data.Remisions[0].Ente
+            this.ItemsClienteOProveedor.push(data.Remisions[0].Ente)
+            this.ClienteOProveedor = data.Remisions[0].Ente
 
             this.items = []
             for (let i=0; i<data.Remisions.length; i++) {
@@ -353,6 +384,19 @@ v-layout( row wrap )
         if(fecha > hoy){
           this.Fecha = hoy.toISOString().split('T')[0];
         }
+      },
+      TipoEnte (value) {
+        this.ClienteOProveedor = {
+          Id: null,
+          TipoDocumento: null,
+          NumeroDocumento: null,
+          Nombre: null,
+          Ciudad: null,
+          Direccion: null,
+          Telefono: null
+        }
+        this.ItemsClienteOProveedor = []
+        this.NombreDocumento = null
       }
     },
     methods: {
@@ -384,19 +428,20 @@ v-layout( row wrap )
           return '';
         }
       },
-      BuscarCliente () {
-        this.ItemsCliente = [];
+      BuscarClienteOProveedor () {
+        this.ItemsClienteOProveedor = [];
         if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
           this.$apollo.query({
             query: ENTES,
             variables: {
-              NombreDocumento: this.NombreDocumento
+              NombreDocumento: this.NombreDocumento,
+              Relacion: this.TipoEnte === 'Cliente' ? 'Cliente' : 'Proveedor'
             },
             fetchPolicy: 'network-only',
             loadingKey: 'loading'
           }).then( res => {
             console.log(res.data.Entes.length);
-            this.ItemsCliente = res.data.Entes;
+            this.ItemsClienteOProveedor = res.data.Entes;
           });
         }
       },
@@ -424,6 +469,34 @@ v-layout( row wrap )
                 }
               }
               this.ItemsEnvase.push(tmp)
+            }
+          });
+        }
+      },
+      BuscarEnvaseSale () {
+        this.EnvaseSaleActual = null;
+        this.ItemsEnvaseSale = [];
+        if(null !== this.NumeroEnvaseSale && this.NumeroEnvaseSale.length >= 2){
+          this.$apollo.query({
+            query: ENVASES,
+            variables: {
+              Numero: this.NumeroEnvaseSale
+            },
+            fetchPolicy: 'network-only',
+            loadingKey: 'loading'
+          }).then (res => {
+            console.log(res.data.Envases.length);
+            for (let i=0; i<res.data.Envases.length; i++) {
+              var tmp = {
+                Id: res.data.Envases[i].Id,
+                Numero: res.data.Envases[i].Numero,
+                Disponible: res.data.Envases[i].Disponible,
+                Producto: {
+                  Nombre: res.data.Envases[i].Producto.Nombre,
+                  UnidadDeMedida: res.data.Envases[i].Producto.UnidadDeMedida
+                }
+              }
+              this.ItemsEnvaseSale.push(tmp)
             }
           });
         }
@@ -585,14 +658,14 @@ v-layout( row wrap )
       guardar (item) {
         if(
           this.Fecha !== null &&
-          (this.Cliente.Id !== null || typeof(this.Cliente) !== 'object' ) &&
+          (this.ClienteOProveedor.Id !== null || typeof(this.ClienteOProveedor) !== 'object' ) &&
           (item.Produccion !== null || item.Envase !== null || item.Recprodcom !== null)
         ) {
 
           const Remision = {
             Numero: this.Numero,
             Fecha: this.Fecha,
-            EnteId: this.Cliente.Id,
+            EnteId: this.ClienteOProveedor.Id,
             ProduccionId: item.Produccion ? item.Produccion.Id : null,
             EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
             RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,

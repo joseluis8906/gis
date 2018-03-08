@@ -26,29 +26,21 @@ v-layout( align-center justify-center )
       v-tabs(dark fixed icons v-model="active")
         v-tabs-bar(slot="activators" class="light-blue darken-4")
 
-          v-tabs-item(href="#cliente")
-            v-icon create
-            p(class="body-2 grey--text text--lighten-4") Cliente
-
-          v-tabs-item(href="#proveedor")
-            v-icon search
-            p(class="body-2 grey--text text--lighten-4") Proveedor
+          v-tabs-item(href="#editar")
+            v-icon(fa) edit
+            p(class="body-2 grey--text text--lighten-4") Editar
 
           v-tabs-slider(class="yellow")
 
-        v-tabs-content(id="cliente")
+        v-tabs-content(id="editar")
           v-card-text
-            app-remision-cliente
+            app-remision-editar
 
-        v-tabs-content(id="proveedor")
-          v-card-text
-            app-remision-proveedor
 
 </template>
 
 <script>
-  import AppRemisionCliente from '~/components/remision/cliente.vue';
-  import AppRemisionProveedor from '~/components/remision/proveedor.vue'
+  import AppRemisionEditar from '~/components/remision/editar.vue';
 
 export default {
   data: () => ({
@@ -58,7 +50,7 @@ export default {
       timeout: 6000,
       text: 'Cargando'
     },
-    active: 'cliente',
+    active: 'editar',
     loading: 0
   }),
   beforeMount () {
@@ -86,8 +78,7 @@ export default {
     }
   },
   components: {
-    AppRemisionCliente,
-    AppRemisionProveedor
+    AppRemisionEditar
   }
 };
 
