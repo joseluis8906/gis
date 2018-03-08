@@ -942,7 +942,7 @@ var Query = new GraphQLObjectType({
           return Db.models.Envase.findAll({
             where: {
               Numero: {$like: ("%"+args.Numero+"%")},
-              Disponible: 'Si'
+              Disponible: args.Disponible ? args.Disponible : {$or: ['Si', 'No']},
             },
             order: [['Numero', 'DESC']]
           });

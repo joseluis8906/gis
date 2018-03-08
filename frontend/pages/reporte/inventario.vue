@@ -24,8 +24,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
     table(style="width: 100%; height: auto" class="table-kardex" )
       thead
         tr(class="green lighten-3")
-          th(style="width: 10%") Orden
-          th(style="width: 10%") Cantidad
+          th(style="width: 4%") N°
+          th(style="width: 8%") Orden
+          th(style="width: 8%") Cantidad
           th(style="width: 20%") Producto
           th(style="width: 10%") Fecha
             br
@@ -39,6 +40,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 
       tbody
         tr(v-for="(item, j) in page.Items" :key="j")
+          td {{ item.Contador }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Orden }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Cantidad }} {{ item.Producto.UnidadDeMedida }}
           td(style="text-align: right; font-size: 7.5pt;") {{ item.Producto ? item.Producto.Nombre : '' }}
@@ -66,21 +68,49 @@ export default {
   fetch ({ store }) {
     store.commit('reports/changeTitle', 'Inventario')
   },
-  apollo: {
-    Produccions: {
-      query: PRODUCCIONS,
-      fetchPolicy: 'network-only',
-      variables () {
-        return {
-          Despachado: 'No'
-        }
-      },
-      loadingKey: 'loading',
-      update (data) {
-        //console.log(data)
+  computed: {
+    Orden () {
+      return this.$store.state.produccion.Orden;
+    },
+    EnvaseId () {
+      return this.$store.state.produccion.EnvaseId;
+    }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.Buscar();
+    });
+  },
+  methods: {
+    Buscar () {
+      var variables = {};
+
+      if(this.Orden !== null){
+        variables.Orden = this.Orden;
+      }
+
+      if(this.EnvaseId !== null){
+        variables.EnvaseId = this.EnvaseId;
+      }
+
+      if(this.ProductoId !== null){
+        variables.ProductoId = this.ProductoId;
+      }
+
+      if(this.Despachado !== null){
+        variables.Despachado = this.Despachado;
+      }
+
+      this.$apollo.query({
+        query: PRODUCCIONS,
+        fetchPolicy: 'network-only',
+        variables: variables,
+      }).then( res => {
+        let data = res.data;
         let page = 0;
         for( let i=0; i < data.Produccions.length; i++ ) {
           var tmp = {
+            Contador: i+1,
             Orden: data.Produccions[i].Orden,
             Cantidad: data.Produccions[i].Cantidad,
             Producto: {
@@ -102,12 +132,9 @@ export default {
           }
 
           this.pages[page].Items.push(tmp)
-
         }
-      }
-    }
-  },
-  methods: {
+      });
+    },
     MaxLength ( value ) {
       if( value ){
         //console.log(value.length)
