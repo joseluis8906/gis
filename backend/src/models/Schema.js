@@ -1873,7 +1873,8 @@ var Mutation = new GraphQLObjectType({
                 FechaSale: args.Fecha,
                 NumeroFacturaSale: args.Numero,
                 FechaEntra: null,
-                NumeroFacturaEntra: null
+                NumeroFacturaEntra: null,
+                Tipo: args.Tipo
               });
             });
           }
