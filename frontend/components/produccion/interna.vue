@@ -240,6 +240,7 @@ v-layout( row wrap )
     v-data-table(
       v-bind:headers="headers"
       v-bind:items="items"
+      hide-actions
       class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
       template(slot="items" scope="props")
