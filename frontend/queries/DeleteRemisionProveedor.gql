@@ -1,0 +1,15 @@
+mutation DeleteRemisionProveedor (
+  $Id: Int
+  $Numero: String
+  $EnvaseEntraId: Int
+  $EnvaseSaleId: Int
+) {
+  DeleteRemisionProveedor (
+    Id: $Id
+    Numero: $Numero
+    EnvaseEntraId: $EnvaseEntraId
+    EnvaseSaleId: $EnvaseSaleId
+  ){
+    Id
+  }
+}

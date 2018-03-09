@@ -20,7 +20,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       thead
       tbody
         tr
-          td(style="width: 70%") Cliente: {{ Cliente.Nombre }}
+          td(style="width: 70%") {{ TipoEnte }}: {{ Cliente.Nombre }}
           td(style="width: 30%") Nit: {{ Cliente.NumeroDocumento }}
         tr
           td Dirección: {{ Cliente.Direccion }}
@@ -43,14 +43,23 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th Total
       tbody
         tr(v-for="(item, j) in page.Items" :key="j")
-          td(style="text-align: right") {{ item.Produccion ? item.Produccion.Cantidad : item.Recprodcom ? item.Recprodcom.Cantidad : item.Envase.Capacidad }} {{ item.Produccion ? item.Produccion.Producto.UnidadDeMedida : item.Recprodcom ? item.Recprodcom.Producto.UnidadDeMedida : item.Envase.Producto.UnidadDeMedida }}
-          td(style="text-align: left") {{ item.Produccion ? item.Produccion.Producto.Nombre : item.Recprodcom ? item.Recprodcom.Producto.Nombre : item.Envase.Producto.Nombre }}
-          td(style="text-align: center") {{ item.Produccion ? item.Produccion.Envase.Numero : item.Recprodcom ? item.Recprodcom.Envase.Numero : '' }}
-          td(style="text-align: center") {{ item.Envase ? item.Envase.Numero : '' }}
-          td(style="text-align: center") {{ item.Produccion ? item.Produccion.FechaFabricacion : item.Recprodcom ? item.Recprodcom.FechaFabricacion : '' }}
-          td(style="text-align: center") {{ item.Produccion ? item.Produccion.FechaVencimiento : item.Recprodcom ? item.Recprodcom.FechaVencimiento : '' }}
-          td(style="text-align: center") {{ item.Produccion ? item.Produccion.Lote : item.Recprodcom ? item.Recprodcom.Lote : '' }}
-          td(style="text-align: right") {{ item.Total | currency('$', 0) }}
+          td(style="text-align: right")
+            | {{ item.Produccion ? item.Produccion.Cantidad : item.Recprodcom ? item.Recprodcom.Cantidad : item.EnvaseEntra ? item.EnvaseEntra.Capacidad : item.EnvaseSale.Capacidad }}
+            | {{ item.Produccion ? item.Produccion.Producto.UnidadDeMedida : item.Recprodcom ? item.Recprodcom.Producto.UnidadDeMedida : item.EnvaseEntra ? item.EnvaseEntra.Producto.UnidadDeMedida : item.EnvaseSale.Producto.UnidadDeMedida }}
+          td(style="text-align: left")
+            | {{ item.Produccion ? item.Produccion.Producto.Nombre : item.Recprodcom ? item.Recprodcom.Producto.Nombre : item.EnvaseEntra ? item.EnvaseEntra.Producto.Nombre : item.EnvaseSale.Producto.Nombre }}
+          td(style="text-align: center")
+            | {{ item.Produccion ? item.Produccion.Envase.Numero : item.Recprodcom ? item.Recprodcom.Envase.Numero : item.EnvaseSale ? item.EnvaseSale.Numero : '' }}
+          td(style="text-align: center")
+            | {{ item.EnvaseEntra ? item.EnvaseEntra.Numero : '' }}
+          td(style="text-align: center")
+            | {{ item.Produccion ? item.Produccion.FechaFabricacion : item.Recprodcom ? item.Recprodcom.FechaFabricacion : '' }}
+          td(style="text-align: center")
+            | {{ item.Produccion ? item.Produccion.FechaVencimiento : item.Recprodcom ? item.Recprodcom.FechaVencimiento : '' }}
+          td(style="text-align: center")
+            | {{ item.Produccion ? item.Produccion.Lote : item.Recprodcom ? item.Recprodcom.Lote : '' }}
+          td(style="text-align: right")
+            | {{ item.Total | currency('$', 0) }}
 
     table(style="width: 100%; height: 18mm; margin-top: 2mm; border-spacing: 1mm 0mm; border-collapse: separate")
       thead
@@ -88,6 +97,7 @@ export default {
         Dirección: null,
         Telefono: null
       },
+      TipoEnte: 'Cliente',
       items: []
     }
   },
@@ -119,6 +129,7 @@ export default {
           this.Fecha.MM = data.Remisions[0].Fecha.split('-')[1];
           this.Fecha.DD = data.Remisions[0].Fecha.split('-')[2];
           this.Cliente = data.Remisions[0].Ente;
+          this.TipoEnte = data.Remisions[0].Tipo;
 
           this.items = [];
 
@@ -155,10 +166,15 @@ export default {
                   UnidadDeMedida: data.Remisions[i].Recprodcom.Producto.UnidadDeMedida
                 }
               } : null,
-              Envase: data.Remisions[i].Envase ?  {
-                Numero: data.Remisions[i].Envase.Numero,
-                Capacidad: data.Remisions[i].Envase.Capacidad,
-                Producto: data.Remisions[i].Envase.Producto
+              EnvaseEntra: data.Remisions[i].EnvaseEntra ?  {
+                Numero: data.Remisions[i].EnvaseEntra.Numero,
+                Capacidad: data.Remisions[i].EnvaseEntra.Capacidad,
+                Producto: data.Remisions[i].EnvaseEntra.Producto
+              } : null,
+              EnvaseSale: data.Remisions[i].EnvaseSale ?  {
+                Numero: data.Remisions[i].EnvaseSale.Numero,
+                Capacidad: data.Remisions[i].EnvaseSale.Capacidad,
+                Producto: data.Remisions[i].EnvaseSale.Producto
               } : null,
               Total: data.Remisions[i].Total
             }

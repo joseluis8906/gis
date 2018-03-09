@@ -5,7 +5,7 @@ mutation DeleteRemision (
   $EnvaseProduccionId: Int
   $RecprodcomId: Int
   $EnvaseRecprodcomId: Int
-  $EnvaseId: Int
+  $EnvaseEntraId: Int
 ) {
   DeleteRemision (
     Id: $Id
@@ -14,7 +14,7 @@ mutation DeleteRemision (
     EnvaseProduccionId: $EnvaseProduccionId
     RecprodcomId: $RecprodcomId
     EnvaseRecprodcomId: $EnvaseRecprodcomId
-    EnvaseId: $EnvaseId
+    EnvaseEntraId: $EnvaseEntraId
   ){
     Id
   }

@@ -2064,19 +2064,18 @@ var Mutation = new GraphQLObjectType({
                 })
               }
             });
-
-            return Db.models.Remision.create({
-              Numero: args.Numero,
-              Fecha: args.Fecha,
-              EnteId: args.EnteId,
-              EnvaseSaleId: args.EnvaseSaleId,
-              EnvaseEntraId: args.EnvaseEntraId,
-              Total: args.Total,
-              Tipo: 'Proveedor'
-            }).then( R => {
-              return R;
-            });
           }
+
+          return Db.models.Remision.create({
+            Numero: args.Numero,
+            Fecha: args.Fecha,
+            EnteId: args.EnteId,
+            EnvaseSaleId: args.EnvaseSaleId,
+            EnvaseEntraId: args.EnvaseEntraId,
+            Tipo: 'Proveedor'
+          }).then( R => {
+            return R;
+          });
         }
 
       },
@@ -2089,7 +2088,7 @@ var Mutation = new GraphQLObjectType({
           EnvaseProduccionId: {type: GraphQLInt},
           RecprodcomId: {type: GraphQLInt},
           EnvaseRecprodcomId: {type: GraphQLInt},
-          EnvaseId: {type: GraphQLInt}
+          EnvaseEntraId: {type: GraphQLInt}
         },
         resolve(_, args) {
 
@@ -2150,7 +2149,7 @@ var Mutation = new GraphQLObjectType({
 
           Db.models.Kardex.findOne({
             where: {
-              EnvaseId: args.EnvaseId,
+              EnvaseId: args.EnvaseEntraId,
               NumeroFacturaEntra: args.Numero
             }
           }).then( KE => {
@@ -2173,6 +2172,53 @@ var Mutation = new GraphQLObjectType({
             return R.destroy();
           });
 
+        }
+      },
+      DeleteRemisionProveedor: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          EnvaseEntraId: {type: GraphQLInt},
+          EnvaseSaleId: {type: GraphQLInt},
+        },
+        resolve(_, args) {
+
+          Db.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseEntraId,
+              NumeroFacturaEntra: args.Numero
+            }
+          }).then( KE => {
+            if (KE) {
+              if(KE.FechaSale !== null && KE.NumeroFacturaSale !== null){
+                KE.FechaEntra = null;
+                KE.NumeroFacturaEntra = null;
+                KE.save();
+              } else {
+                KE.destroy();
+              }
+            }
+          });
+
+          Db.models.Kardex.findOne({
+            where: {
+              EnvaseId: args.EnvaseSaleId,
+              NumeroFacturaSale: args.Numero
+            }
+          }).then( KS => {
+            if (KS) {
+              KS.destroy();
+            }
+          });
+
+          return Db.models.Remision.findOne({
+            where: {
+              Id: args.Id
+            }
+          }).then( R => {
+            return R.destroy();
+          });
         }
       }
     };
