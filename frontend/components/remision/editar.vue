@@ -837,6 +837,7 @@ v-layout( row wrap )
         }
       },
       eliminar (item) {
+
         if ( item.Id === null ) {
           for (let i=0; i<this.items.length; i++) {
             if ( item.Produccion !== null ) {
@@ -920,8 +921,9 @@ v-layout( row wrap )
           const Remision = {
             Id: item.Id,
             Numero: this.Numero,
-            EnvaseSaleId: item.EnvaseSale ? item.EnvaseSale.Id : null,
-            EnvaseSaleId: item.EnvaseEntra ? item.EnvaseEntra.Id : null
+            EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
+            EnvaseSaleId: item.EnvaseSale ? item.EnvaseSale.Id : null
+
           }
           if (item.Id !== null) {
             this.$apollo.mutate ({

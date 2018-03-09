@@ -1272,7 +1272,7 @@ var Query = new GraphQLObjectType({
                   {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
                 ]
               },
-              order: [['NumeroFacturaSale', 'DESC']]
+              order: [['FechaEntra', 'DESC'], ['NumeroFacturaEntra', 'ASC'], ['FechaSale', 'DESC'], ['NumeroFacturaSale', 'ASC']]
             })
           } else if(args.Tipo === "Por Cliente") {
             return Db.models.Kardex.findAll({
@@ -1283,7 +1283,7 @@ var Query = new GraphQLObjectType({
                   {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
                 ]
               },
-              order: [['NumeroFacturaSale', 'DESC']]
+              order: [['FechaEntra', 'DESC'], ['NumeroFacturaEntra', 'ASC'], ['FechaSale', 'DESC'], ['NumeroFacturaSale', 'ASC']]
             })
           } else {
             return Db.models.Kardex.findAll({
@@ -1293,7 +1293,7 @@ var Query = new GraphQLObjectType({
                   {FechaSale: {$between: [args.FechaInicial, args.FechaFinal]}}
                 ]
               },
-              order: [['NumeroFacturaSale', 'DESC']]
+              order: [['FechaEntra', 'DESC'], ['NumeroFacturaEntra', 'ASC'], ['FechaSale', 'DESC'], ['NumeroFacturaSale', 'ASC']]
             })
           }
         }

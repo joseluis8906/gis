@@ -113,7 +113,6 @@ export default {
           FechaFinal: this.FechaFinal
         }
       },
-      loadingKey: 'loading',
       update (data) {
 
         let page = 0;
