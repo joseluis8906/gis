@@ -14,8 +14,10 @@ query Remisions (
     EnteId
     ProduccionId
     RecprodcomId
-    EnvaseId
+    EnvaseEntraId
+    EnvaseSaleId
     Total
+    Tipo
     Ente {
       Id
       TipoDocumento
@@ -61,7 +63,16 @@ query Remisions (
         Capacidad
       }
     }
-    Envase {
+    EnvaseEntra {
+      Id
+      Numero
+      Capacidad
+      Producto {
+        Nombre
+        UnidadDeMedida
+      }
+    }
+    EnvaseSale {
       Id
       Numero
       Capacidad

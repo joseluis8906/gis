@@ -102,14 +102,22 @@ v-layout( row wrap )
       class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
       template(slot="items" scope="props")
-        td(class="text-xs-center") {{ props.item.Produccion ? props.item.Produccion.Cantidad : props.item.Recprodcom ? props.item.Recprodcom.Cantidad : props.item.Envase.Capacidad }}
-        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Producto.Nombre : props.item.Recprodcom ? props.item.Recprodcom.Producto.Nombre : props.item.Envase.Producto.Nombre }}
-        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : props.item.Recprodcom ? props.item.Recprodcom.Envase.Numero : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : props.item.Recprodcom ? props.item.Recprodcom.FechaFabricacion : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : props.item.Recprodcom ? props.item.Recprodcom.FechaVencimiento : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ props.item.Produccion ? props.item.Produccion.Lote : props.item.Recprodcom ? props.item.Recprodcom.Lote : '' }}
-        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ props.item.Envase ? props.item.Envase.Numero : '' }}
-        td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
+        td(class="text-xs-center")
+          | {{ props.item.Produccion ? props.item.Produccion.Cantidad : props.item.Recprodcom ? props.item.Recprodcom.Cantidad : props.item.EnvaseEntra ? props.item.EnvaseEntra.Capacidad : props.item.EnvaseSale.Capacidad }}
+        td(class="text-xs-center" style="border-left: 1px solid #999999")
+          | {{ props.item.Produccion ? props.item.Produccion.Producto.Nombre : props.item.Recprodcom ? props.item.Recprodcom.Producto.Nombre : props.item.EnvaseEntra ? props.item.EnvaseEntra.Producto.Nombre : props.item.EnvaseSale.Producto.Nombre }}
+        td(class="text-xs-left" style="border-left: 1px solid #999999")
+          | {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : props.item.Recprodcom ? props.item.Recprodcom.Envase.Numero : props.item.EnvaseSale ? props.item.EnvaseSale.Numero : '' }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999")
+          | {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : props.item.Recprodcom ? props.item.Recprodcom.FechaFabricacion : '' }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999")
+          | {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : props.item.Recprodcom ? props.item.Recprodcom.FechaVencimiento : '' }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999")
+          | {{ props.item.Produccion ? props.item.Produccion.Lote : props.item.Recprodcom ? props.item.Recprodcom.Lote : '' }}
+        td(class="text-xs-left" style="border-left: 1px solid #999999")
+          | {{ props.item.EnvaseEntra ? props.item.EnvaseEntra.Numero : '' }}
+        td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999")
+          | {{ props.item.Total | currency('$', 0) }}
         td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
@@ -156,14 +164,14 @@ v-layout( row wrap )
 
       v-flex(xs12 md4)
         v-text-field(
-          v-model="NumeroEnvase"
+          v-model="NumeroEnvaseEntra"
           label="Buscar Entra"
           append-icon="search"
-          :append-icon-cb="BuscarEnvase" )
+          :append-icon-cb="BuscarEnvaseEntra" )
 
         v-select(
-          v-bind:items="ItemsEnvase"
-          v-model="EnvaseActual"
+          v-bind:items="ItemsEnvaseEntra"
+          v-model="EnvaseEntraActual"
           label="Envase Entra"
           item-text="Numero"
           return-object
@@ -251,10 +259,10 @@ v-layout( row wrap )
         ItemsClienteOProveedor: [],
         ItemsProduccionAndRecprodcom: [],
         ItemsAllEnvase: [],
-        ItemsEnvase: [],
+        ItemsEnvaseEntra: [],
         ItemsEnvaseSale: [],
         ProduccionAndRecprodcomActual: null,
-        EnvaseActual: null,
+        EnvaseEntraActual: null,
         EnvaseSaleActual: null,
         TotalActual: null,
         headers: [
@@ -284,7 +292,7 @@ v-layout( row wrap )
           'Noviembre',
           'Diciembre'],
         days: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-        NumeroEnvase: null,
+        NumeroEnvaseEntra: null,
         NumeroEnvaseSale: null,
         NumeroProduccionAndRecprodcom: null,
         NombreDocumento: null,
@@ -347,11 +355,17 @@ v-layout( row wrap )
                   },
                   Despachado: data.Remisions[i].Recprodcom.Despachado
                 } : null,
-                Envase: data.Remisions[i].Envase ? {
-                  Id: data.Remisions[i].Envase.Id,
-                  Numero: data.Remisions[i].Envase.Numero,
-                  Capacidad: data.Remisions[i].Envase.Capacidad,
-                  Producto: data.Remisions[i].Envase.Producto
+                EnvaseEntra: data.Remisions[i].EnvaseEntra ? {
+                  Id: data.Remisions[i].EnvaseEntra.Id,
+                  Numero: data.Remisions[i].EnvaseEntra.Numero,
+                  Capacidad: data.Remisions[i].EnvaseEntra.Capacidad,
+                  Producto: data.Remisions[i].EnvaseEntra.Producto
+                } : null,
+                EnvaseSale: data.Remisions[i].EnvaseSale ? {
+                  Id: data.Remisions[i].EnvaseSale.Id,
+                  Numero: data.Remisions[i].EnvaseSale.Numero,
+                  Capacidad: data.Remisions[i].EnvaseSale.Capacidad,
+                  Producto: data.Remisions[i].EnvaseSale.Producto
                 } : null,
                 Total: data.Remisions[i].Total,
                 SaveUpdate: 'update',
@@ -445,14 +459,14 @@ v-layout( row wrap )
           });
         }
       },
-      BuscarEnvase () {
-        this.EnvaseActual = null;
-        this.ItemsEnvase = [];
-        if(null !== this.NumeroEnvase && this.NumeroEnvase.length >= 2){
+      BuscarEnvaseEntra () {
+        this.EnvaseEntraActual = null;
+        this.ItemsEnvaseEntra = [];
+        if(null !== this.NumeroEnvaseEntra && this.NumeroEnvaseEntra.length >= 2){
           this.$apollo.query({
             query: ENVASES,
             variables: {
-              Numero: this.NumeroEnvase
+              Numero: this.NumeroEnvaseEntra
             },
             fetchPolicy: 'network-only',
             loadingKey: 'loading'
@@ -468,7 +482,7 @@ v-layout( row wrap )
                   UnidadDeMedida: res.data.Envases[i].Producto.UnidadDeMedida
                 }
               }
-              this.ItemsEnvase.push(tmp)
+              this.ItemsEnvaseEntra.push(tmp)
             }
           });
         }
@@ -593,8 +607,9 @@ v-layout( row wrap )
       },
       agregar () {
         if(
+          this.TipoEnte === 'Cliente' &&
           (null === this.ProduccionAndRecprodcomActual || typeof(this.ProduccionAndRecprodcomActual) !== 'object') &&
-          (null === this.EnvaseActual || typeof(this.EnvaseActual) !== 'object')
+          (null === this.EnvaseEntraActual || typeof(this.EnvaseEntraActual) !== 'object')
          ){
           console.log('Error en Envase, produccion o recprodcom');
           return;
@@ -635,7 +650,7 @@ v-layout( row wrap )
               UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
             }
           } : null : null,
-          Envase: this.EnvaseActual ? { Id: this.EnvaseActual.Id,  Numero: this.EnvaseActual.Numero } : null,
+          EnvaseEntra: this.EnvaseEntraActual ? { Id: this.EnvaseEntraActual.Id,  Numero: this.EnvaseEntraActual.Numero } : null,
           Total: this.TotalActual,
           SaveUpdate: 'save'
         }
@@ -646,12 +661,12 @@ v-layout( row wrap )
           return ( (tmp.Produccion !== null && tmp.Produccion.Id !== Item.Id) || (tmp.Recprodcom !== null && tmp.Recprodcom.Id !== Item.Id) )
         })
 
-        this.ItemsEnvase = this.ItemsEnvase.filter( Item => {
+        this.ItemsEnvaseEntra = this.ItemsEnvaseEntra.filter( Item => {
           return Item.Id !== (tmp.Envase ? tmp.Envase.Id : null);
         })
 
         this.ProduccionAndRecprodcomActual = null,
-        this.EnvaseActual = null,
+        this.EnvaseEntraActual = null,
         this.TotalActual = null;
 
       },
@@ -840,7 +855,7 @@ v-layout( row wrap )
       FiltrarEnvases () {
         for (let i=0; i<this.ItemsProduccionAndRecprodcom.length; i++){
           let tmpId = this.ItemsProduccionAndRecprodcom[i].Envase.Id
-          this.ItemsEnvase = this.ItemsEnvase.filter(function (item) {
+          this.ItemsEnvaseEntra = this.ItemsEnvaseEntra.filter(function (item) {
             return tmpId != item.Id;
           });
         }

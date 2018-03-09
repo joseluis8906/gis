@@ -1,4 +1,4 @@
-mutation CreateRemision (
+mutation CreateRemisionProveedor (
   $Numero: String
   $Fecha: String
   $EnteId: Int
@@ -6,10 +6,10 @@ mutation CreateRemision (
   $EnvaseProduccionId: Int
   $RecprodcomId: Int
   $EnvaseRecprodcomId: Int
-  $EnvaseEntraId: Int
+  $EnvaseId: Int
   $Total: Float
 ) {
-  CreateRemision (
+  CreateRemisionProveedor (
     Numero: $Numero
     Fecha: $Fecha
     EnteId: $EnteId
@@ -17,7 +17,7 @@ mutation CreateRemision (
     EnvaseProduccionId: $EnvaseProduccionId
     RecprodcomId: $RecprodcomId
     EnvaseRecprodcomId: $EnvaseRecprodcomId
-    EnvaseEntraId: $EnvaseEntraId
+    EnvaseId: $EnvaseId
     Total: $Total
   ){
     Id

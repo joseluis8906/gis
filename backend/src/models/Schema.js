@@ -638,16 +638,28 @@ var Remision = new GraphQLObjectType({
           return Remision.RecprodcomId;
         }
       },
-      EnvaseId: {
+      EnvaseEntraId: {
         type: GraphQLInt,
         resolve(Remision) {
-          return Remision.EnvaseId;
+          return Remision.EnvaseEntraId;
+        }
+      },
+      EnvaseSaleId: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.EnvaseSaleId;
         }
       },
       Total: {
         type: GraphQLFloat,
         resolve(Remision) {
           return Remision.Total;
+        }
+      },
+      Tipo: {
+        type: GraphQLString,
+        resolve(Remision) {
+          return Remision.Tipo;
         }
       },
       Ente: {
@@ -668,10 +680,16 @@ var Remision = new GraphQLObjectType({
           return Remision.getRecprodcom();
         }
       },
-      Envase: {
+      EnvaseEntra: {
         type: Envase,
         resolve(Remision) {
-          return Remision.getEnvase();
+          return Remision.getEnvaseEntra();
+        }
+      },
+      EnvaseSale: {
+        type: Envase,
+        resolve(Remision) {
+          return Remision.getEnvaseSale();
         }
       }
     }
@@ -1199,8 +1217,11 @@ var Query = new GraphQLObjectType({
           Fecha: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           ProduccionId: {type: GraphQLInt},
-          EnvaseId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
+          RecprodcomId: {type: GraphQLInt},
+          EnvaseEntraId: {type: GraphQLInt},
+          EnvaseSaleId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat},
+          Tipo: {type: GraphQLString}
         },
         resolve(root, args) {
           return Db.models.Remision.findAll({ where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
@@ -1214,8 +1235,11 @@ var Query = new GraphQLObjectType({
           Fecha: {type: GraphQLString},
           EnteId: {type: GraphQLInt},
           ProduccionId: {type: GraphQLInt},
-          EnvaseId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
+          RecprodcomId: {type: GraphQLInt},
+          EnvaseEntraId: {type: GraphQLInt},
+          EnvaseSaleId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat},
+          Tipo: {type: GraphQLFloat}
         },
         resolve(root, args) {
           return Db.models.Remision.findOne({where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
@@ -1821,9 +1845,8 @@ var Mutation = new GraphQLObjectType({
           EnvaseProduccionId: {type: GraphQLInt},
           RecprodcomId: {type: GraphQLInt},
           EnvaseRecprodcomId: {type: GraphQLInt},
-          EnvaseId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat},
-          Tipo: {type: GraphQLString}
+          EnvaseEntraId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
         },
         resolve(_, args) {
 
@@ -1848,7 +1871,7 @@ var Mutation = new GraphQLObjectType({
                 NumeroFacturaSale: args.Numero,
                 FechaEntra: null,
                 NumeroFacturaEntra: null,
-                Tipo: args.Tipo
+                Tipo: 'Cliente'
               });
             });
           }
@@ -1874,7 +1897,7 @@ var Mutation = new GraphQLObjectType({
                 NumeroFacturaSale: args.Numero,
                 FechaEntra: null,
                 NumeroFacturaEntra: null,
-                Tipo: args.Tipo
+                Tipo: 'Cliente'
               });
             });
           }
@@ -1901,10 +1924,10 @@ var Mutation = new GraphQLObjectType({
             });
           }
 
-          if(args.EnvaseId){
+          if(args.EnvaseEntraId){
             Db.models.Kardex.findOne({
               where: {
-                EnvaseId: args.EnvaseId,
+                EnvaseId: args.EnvaseEntraId,
                 EnteId: args.EnteId,
                 FechaEntra: null,
                 NumeroFacturaEntra: null
@@ -1917,7 +1940,7 @@ var Mutation = new GraphQLObjectType({
               }else{
                 Db.models.Envase.findOne({
                   where: {
-                    Id: args.EnvaseId
+                    Id: args.EnvaseEntraId
                   }
                 }).then(EN => {
                   Db.models.Kardex.create({
@@ -1932,7 +1955,7 @@ var Mutation = new GraphQLObjectType({
                     NumeroFacturaSale: null,
                     FechaEntra: args.Fecha,
                     NumeroFacturaEntra: args.Numero,
-                    Tipo: args.Tipo
+                    Tipo: 'Cliente'
                   });
                 })
               }
@@ -1945,12 +1968,117 @@ var Mutation = new GraphQLObjectType({
             EnteId: args.EnteId,
             ProduccionId: args.ProduccionId,
             RecprodcomId: args.RecprodcomId,
-            EnvaseId: args.EnvaseId,
-            Total: args.Total
+            EnvaseEntraId: args.EnvaseEntraId,
+            Total: args.Total,
+            Tipo: 'Cliente'
           }).then( R => {
             return R;
           });
         }
+
+      },
+      CreateRemisionProveedor: {
+        type: Remision,
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          EnvaseEntraId: {type: GraphQLInt},
+          EnvaseSaleId: {type: GraphQLInt},
+          Total: {type: GraphQLFloat}
+        },
+        resolve(_, args) {
+
+          if(args.EnvaseEntraId){
+            Db.models.Kardex.findOne({
+              where: {
+                EnvaseId: args.EnvaseEntraId,
+                EnteId: args.EnteId,
+                FechaEntra: null,
+                NumeroFacturaEntra: null
+              }
+            }).then( KE => {
+              if (KE) {
+                KE.FechaEntra = args.Fecha;
+                KE.NumeroFacturaEntra = args.Numero;
+                KE.save();
+              }else{
+                Db.models.Envase.findOne({
+                  where: {
+                    Id: args.EnvaseEntraId
+                  }
+                }).then(EN => {
+                  Db.models.Kardex.create({
+                    Cantidad: EN.Capacidad,
+                    ProductoId: EN.ProductoId,
+                    EnvaseId: EN.Id,
+                    FechaElaboracion: null,
+                    Lote: null,
+                    FechaVencimiento: null,
+                    EnteId: args.EnteId,
+                    FechaSale: null,
+                    NumeroFacturaSale: null,
+                    FechaEntra: args.Fecha,
+                    NumeroFacturaEntra: args.Numero,
+                    Tipo: 'Proveedor'
+                  });
+                })
+              }
+            });
+          }
+
+          else if(args.EnvaseSaleId){
+            Db.models.Kardex.findOne({
+              where: {
+                EnvaseId: args.EnvaseSaleId,
+                EnteId: args.EnteId,
+                FechaSale: null,
+                NumeroFacturaSale: null
+              }
+            }).then( KE => {
+              if (KE) {
+                KE.FechaSale = args.Fecha;
+                KE.NumeroFacturaSale = args.Numero;
+                KE.save();
+              }else{
+                Db.models.Envase.findOne({
+                  where: {
+                    Id: args.EnvaseSaleId
+                  }
+                }).then(EN => {
+                  Db.models.Kardex.create({
+                    Cantidad: EN.Capacidad,
+                    ProductoId: EN.ProductoId,
+                    EnvaseId: EN.Id,
+                    FechaElaboracion: null,
+                    Lote: null,
+                    FechaVencimiento: null,
+                    EnteId: args.EnteId,
+                    FechaSale: args.Fecha,
+                    NumeroFacturaSale: args.Numero,
+                    FechaEntra: null,
+                    NumeroFacturaEntra: null,
+                    Tipo: 'Proveedor'
+                  });
+                })
+              }
+            });
+
+            return Db.models.Remision.create({
+              Numero: args.Numero,
+              Fecha: args.Fecha,
+              EnteId: args.EnteId,
+              EnvaseSaleId: args.EnvaseSaleId,
+              EnvaseEntraId: args.EnvaseEntraId,
+              Total: args.Total,
+              Tipo: 'Proveedor'
+            }).then( R => {
+              return R;
+            });
+          }
+        }
+
       },
       DeleteRemision: {
         type: Remision,
