@@ -106,6 +106,7 @@ v-layout( row wrap )
 <script>
 import CORRERIAS from '~/queries/Correrias.gql';
 import CREATE_CORRERIA from '~/queries/CreateCorreria.gql';
+import LAST_CORRERIA from '~/queries/LastCorreria.gql';
 
 export default {
   data(){
@@ -145,9 +146,60 @@ export default {
       Autorizacion: false,
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.LastCorreria();
+    })
+  },
+  watch: {
+    Vendedor: {
+      handler (value) {
+        this.AutorizacionGuardar();
+      },
+      deep: true,
+    },
+    EnvaseActual: {
+      handler (value) {
+        this.AutorizacionGuardar();
+      },
+      deep: true,
+    }
+  },
   methods: {
+    VerificarConsecutivo (number) {
+      let nextNumber = Number(number) + 1;
+      if(nextNumber < 10){
+        return '00' + nextNumber.toString();
+      }
+      else if(nextNumber < 100){
+        return '0' + nextNumber.toString();
+      }
+
+      return nextNumber.toString();
+
+    },
     LastCorreria () {
-      console.log("last correria");
+      this.$apollo.query({
+        query: LAST_CORRERIA
+      })
+      .then(res => {
+        res.data.LastCorreria !== null ? this.Numero = this.VerificarConsecutivo(res.data.LastCorreria.Numero) : this.Numero = '001';
+      });
+    },
+    AutorizacionGuardar(){
+      let requisito1 = this.Vendedor;
+      let requisito2 = this.EnvaseActual;
+
+      if(
+        requisito1.hasOwnProperty("Id") &&
+        requisito2.hasOwnProperty("Id")
+      ){
+        this.Autorizacion = true;
+        return true;
+      }
+
+      this.Autorizacion = false;
+      return false;
     },
     BuscarVendedor () {
       console.log("buscar vendedor");

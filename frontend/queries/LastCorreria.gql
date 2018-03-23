@@ -1,0 +1,5 @@
+query LastCorreria {
+  LastCorreria {
+    Numero
+  }
+}

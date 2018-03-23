@@ -1376,6 +1376,13 @@ var Query = new GraphQLObjectType({
           return Db.models.Correria.findAll({ where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
         }
       },
+      LastCorreria : {
+        type: Correria,
+        args: {},
+        resolve (root, args) {
+          return Db.models.Correria.findOne({order: [['Numero', 'DESC']]})
+        }
+      },
     };
   }
 });
