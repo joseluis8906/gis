@@ -56,9 +56,11 @@ v-layout( row wrap )
         ],
         ItemsRelacion: [
           {text: 'Propia'},
+          {text: 'Vendedor'},
+          {text: 'Produccion'},
           {text: 'Cliente'},
           {text: 'Proveedor'},
-          {text: 'Cliente Y Proveedor'}
+          {text: 'Cliente Y Proveedor'},
         ],
 
 

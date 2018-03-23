@@ -694,7 +694,7 @@ var Remision = new GraphQLObjectType({
       }
     }
   }
-})
+});
 
 
 //Kardex
@@ -795,7 +795,71 @@ var Kardex = new GraphQLObjectType({
       }
     }
   }
-})
+});
+
+//Correria
+var Correria = new GraphQLObjectType({
+  name: "Correria",
+  description: "Object representation of Correria",
+  fields: () => {
+    return {
+      Id: {
+        type: GraphQLInt,
+        resolve(Correria) {
+          return Correria.Id;
+        }
+      },
+      Numero: {
+        type: GraphQLString,
+        resolve(Correria) {
+          return Correria.Numero;
+        }
+      },
+      Fecha: {
+        type: GraphQLString,
+        resolve(Correria) {
+          return Correria.Fecha;
+        }
+      },
+      EnteId: {
+        type: GraphQLInt,
+        resolve(Correria) {
+          return Correria.EnteId;
+        }
+      },
+      ProduccionId: {
+        type: GraphQLInt,
+        resolve(Correria) {
+          return Correria.ProduccionId;
+        }
+      },
+      RecprodcomId: {
+        type: GraphQLInt,
+        resolve(Correria) {
+          return Correria.RecprodcomId;
+        }
+      },
+      Ente: {
+        type: Ente,
+        resolve(Correria) {
+          return Correria.getEnte();
+        }
+      },
+      Produccion: {
+        type: Produccion,
+        resolve(Correria) {
+          return Correria.getProduccion();
+        }
+      },
+      Recprodcom: {
+        type: Recprodcom,
+        resolve(Correria) {
+          return Correria.getRecprodcom();
+        }
+      }
+    }
+  }
+});
 
 
 //Query
@@ -1297,7 +1361,21 @@ var Query = new GraphQLObjectType({
             })
           }
         }
-      }
+      },
+      Correrias: {
+        type: new GraphQLList(Correria),
+        args: {
+          Id: {type: GraphQLInt},
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          ProduccionId: {type: GraphQLInt},
+          RecprodcomId: {type: GraphQLInt},
+        },
+        resolve(root, args) {
+          return Db.models.Correria.findAll({ where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
+        }
+      },
     };
   }
 });
@@ -2220,7 +2298,41 @@ var Mutation = new GraphQLObjectType({
             return R.destroy();
           });
         }
-      }
+      },
+      CreateCorreria: {
+        type: Correria,
+        args: {
+          Numero: {type: GraphQLString},
+          Fecha: {type: GraphQLString},
+          EnteId: {type: GraphQLInt},
+          ProduccionId: {type: GraphQLInt},
+          RecprodcomId: {type: GraphQLInt},
+        },
+        resolve(_, args) {
+          return Db.models.Correria.create({
+            Numero: args.Numero,
+            Fecha: args.Fecha,
+            EnteId: args.EnteId,
+            ProduccionId: args.ProduccionId,
+            RecprodcomId: args.RecprodcomId
+          });
+        }
+      },
+      DeleteCorreria: {
+        type: Correria,
+        args: {
+          Id: {type: GraphQLInt}
+        },
+        resolve(_, args) {
+          return Db.models.Correria.findOne({
+            where: args
+          }).then(C => {
+            if(C){
+            return C.destroy();
+            }
+          })
+        }
+      },
     };
   }
 });

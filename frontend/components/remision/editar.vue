@@ -1,4 +1,4 @@
-ClienteOProveedor<template lang="pug">
+<template lang="pug">
 v-layout( row wrap )
   v-flex( xs12 )
     v-text-field(
@@ -102,22 +102,15 @@ v-layout( row wrap )
       class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
       template(slot="items" scope="props")
-        td(class="text-xs-center")
-          | {{ props.item.Produccion ? props.item.Produccion.Cantidad : props.item.Recprodcom ? props.item.Recprodcom.Cantidad : props.item.EnvaseEntra ? props.item.EnvaseEntra.Capacidad : props.item.EnvaseSale.Capacidad }}
-        td(class="text-xs-center" style="border-left: 1px solid #999999")
-          | {{ props.item.Produccion ? props.item.Produccion.Producto.Nombre : props.item.Recprodcom ? props.item.Recprodcom.Producto.Nombre : props.item.EnvaseEntra ? props.item.EnvaseEntra.Producto.Nombre : props.item.EnvaseSale.Producto.Nombre }}
-        td(class="text-xs-left" style="border-left: 1px solid #999999")
-          | {{ props.item.Produccion ? props.item.Produccion.Envase.Numero : props.item.Recprodcom ? props.item.Recprodcom.Envase.Numero : props.item.EnvaseSale ? props.item.EnvaseSale.Numero : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999")
-          | {{ props.item.Produccion ? props.item.Produccion.FechaFabricacion : props.item.Recprodcom ? props.item.Recprodcom.FechaFabricacion : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999")
-          | {{ props.item.Produccion ? props.item.Produccion.FechaVencimiento : props.item.Recprodcom ? props.item.Recprodcom.FechaVencimiento : '' }}
-        td(class="text-xs-right" style="border-left: 1px solid #999999")
-          | {{ props.item.Produccion ? props.item.Produccion.Lote : props.item.Recprodcom ? props.item.Recprodcom.Lote : '' }}
-        td(class="text-xs-left" style="border-left: 1px solid #999999")
-          | {{ props.item.EnvaseEntra ? props.item.EnvaseEntra.Numero : '' }}
-        td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999")
-          | {{ props.item.Total | currency('$', 0) }}
+        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.index+1 }}
+        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ ImprimirCantidad(props.item) }}
+        td(class="text-xs-center" style="border-left: 1px solid #999999") {{ ImprimirProducto(props.item) }}
+        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ ImprimirSale(props.item) }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ ImprimirFabricacion(props.item) }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ ImprimirVencimiento(props.item) }}
+        td(class="text-xs-right" style="border-left: 1px solid #999999") {{ ImprimirLote(props.item) }}
+        td(class="text-xs-left" style="border-left: 1px solid #999999") {{ ImprimirEntra(props.item) }}
+        td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
         td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
@@ -187,7 +180,7 @@ v-layout( row wrap )
     v-btn(
       fab
       dark
-      class="indigo mt-0" @click.native="agregar" )
+      class="indigo mt-0" @click.native="Guardar" :disabled="!Autorizacion")
 
       v-icon(dark) add
 
@@ -245,15 +238,7 @@ v-layout( row wrap )
           'Cliente',
           'Proveedor'
         ],
-        ClienteOProveedor: {
-          Id: null,
-          TipoDocumento: null,
-          NumeroDocumento: null,
-          Nombre: null,
-          Ciudad: null,
-          Direccion: null,
-          Telefono: null
-        },
+        ClienteOProveedor: {},
         ItemsDocumento: [
           {text: 'Nit'},
           {text: 'Cédula'}
@@ -263,11 +248,12 @@ v-layout( row wrap )
         ItemsAllEnvase: [],
         ItemsEnvaseEntra: [],
         ItemsEnvaseSale: [],
-        ProduccionAndRecprodcomActual: null,
-        EnvaseEntraActual: null,
-        EnvaseSaleActual: null,
+        ProduccionAndRecprodcomActual: {},
+        EnvaseEntraActual: {},
+        EnvaseSaleActual: {},
         TotalActual: null,
         headers: [
+          { text: 'N°', align: 'center', sortable: false,  value: '' },
           { text: 'Cant', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Producto', align: 'center', sortable: false, value: 'Producto' },
           { text: 'Sale', align: 'center', sortable: false,  value: 'Sale' },
@@ -298,8 +284,8 @@ v-layout( row wrap )
         NumeroEnvaseSale: null,
         NumeroProduccionAndRecprodcom: null,
         NombreDocumento: null,
-
         menu1: false,
+        Autorizacion: false,
       }
     },
     apollo: {
@@ -318,58 +304,16 @@ v-layout( row wrap )
             this.TipoEnte = data.Remisions[0].Tipo;
 
             this.ItemsClienteOProveedor.push(data.Remisions[0].Ente)
-            this.ClienteOProveedor = data.Remisions[0].Ente
+            this.ClienteOProveedor = data.Remisions[0].Ente || {}
 
             this.items = []
             for (let i=0; i<data.Remisions.length; i++) {
               var tmp = {
                 Id: data.Remisions[i].Id,
-                Produccion: data.Remisions[i].Produccion ? {
-                  Id: data.Remisions[i].Produccion.Id,
-                  Cantidad: data.Remisions[i].Produccion.Cantidad,
-                  FechaFabricacion: data.Remisions[i].Produccion.FechaFabricacion,
-                  FechaVencimiento: data.Remisions[i].Produccion.FechaVencimiento,
-                  Lote: data.Remisions[i].Produccion.Lote,
-                  Envase: {
-                    Id: data.Remisions[i].Produccion.Envase.Id,
-                    Numero: data.Remisions[i].Produccion.Envase.Numero,
-                  },
-                  Producto: {
-                    Id: data.Remisions[i].Produccion.Producto.Id,
-                    Nombre: data.Remisions[i].Produccion.Producto.Nombre,
-                    UnidadDeMedida: data.Remisions[i].Produccion.Producto.UnidadDeMedida
-                  },
-                  Despachado: data.Remisions[i].Produccion.Despachado
-                } : null,
-                Recprodcom: data.Remisions[i].Recprodcom ? {
-                  Id: data.Remisions[i].Recprodcom.Id,
-                  Cantidad: data.Remisions[i].Recprodcom.Cantidad,
-                  FechaFabricacion: data.Remisions[i].Recprodcom.FechaFabricacion,
-                  FechaVencimiento: data.Remisions[i].Recprodcom.FechaVencimiento,
-                  Lote: data.Remisions[i].Recprodcom.Lote,
-                  Envase: {
-                    Id: data.Remisions[i].Recprodcom.Envase.Id,
-                    Numero: data.Remisions[i].Recprodcom.Envase.Numero,
-                  },
-                  Producto: {
-                    Id: data.Remisions[i].Recprodcom.Producto.Id,
-                    Nombre: data.Remisions[i].Recprodcom.Producto.Nombre,
-                    UnidadDeMedida: data.Remisions[i].Recprodcom.Producto.UnidadDeMedida
-                  },
-                  Despachado: data.Remisions[i].Recprodcom.Despachado
-                } : null,
-                EnvaseEntra: data.Remisions[i].EnvaseEntra ? {
-                  Id: data.Remisions[i].EnvaseEntra.Id,
-                  Numero: data.Remisions[i].EnvaseEntra.Numero,
-                  Capacidad: data.Remisions[i].EnvaseEntra.Capacidad,
-                  Producto: data.Remisions[i].EnvaseEntra.Producto
-                } : null,
-                EnvaseSale: data.Remisions[i].EnvaseSale ? {
-                  Id: data.Remisions[i].EnvaseSale.Id,
-                  Numero: data.Remisions[i].EnvaseSale.Numero,
-                  Capacidad: data.Remisions[i].EnvaseSale.Capacidad,
-                  Producto: data.Remisions[i].EnvaseSale.Producto
-                } : null,
+                Produccion: data.Remisions[i].Produccion,
+                Recprodcom: data.Remisions[i].Recprodcom,
+                EnvaseEntra: data.Remisions[i].EnvaseEntra,
+                EnvaseSale: data.Remisions[i].EnvaseSale,
                 Total: data.Remisions[i].Total,
                 SaveUpdate: 'update',
               }
@@ -401,19 +345,106 @@ v-layout( row wrap )
         if(fecha > hoy){
           this.Fecha = hoy.toISOString().split('T')[0];
         }
+      },
+      ClienteOProveedor: {
+        handler (value) {
+          this.AutorizacionGuardar ();
+        },
+        deep: true
+      },
+      ProduccionAndRecprodcomActual: {
+        handler (value) {
+          this.AutorizacionGuardar ();
+        },
+        deep: true
+      },
+      EnvaseEntraActual: {
+        handler (value) {
+          this.AutorizacionGuardar ();
+        },
+        deep: true
+      },
+      EnvaseSaleActual: {
+        handler (value) {
+          this.AutorizacionGuardar ();
+        },
+        deep: true
       }
     },
     methods: {
+      ImprimirCantidad(item){
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+        let EnvaseEntra = item.EnvaseEntra;
+        let EnvaseSale = item.EnvaseSale;
+
+        if(null !== Produccion) return Produccion.Cantidad;
+        if(null !== Recprodcom) return Recprodcom.Cantidad;
+
+        return '';
+      },
+      ImprimirProducto(item) {
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+        let EnvaseEntra = item.EnvaseEntra;
+        let EnvaseSale = item.EnvaseSale;
+
+        if(null !== Produccion) return Produccion.Producto.Nombre;
+        if(null !== Recprodcom) return Recprodcom.Producto.Nombre;
+        if(null !== EnvaseEntra) return EnvaseEntra.Producto.Nombre;
+        if(null !== EnvaseSale) return EnvaseSale.Producto.Nombre;
+      },
+      ImprimirSale(item) {
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+        let EnvaseSale = item.EnvaseSale;
+
+        if(null !== Produccion) return Produccion.Envase.Numero;
+        if(null !== Recprodcom) return Recprodcom.Envase.Numero;
+        if(null !== EnvaseSale) return EnvaseSale.Numero;
+
+        return '';
+      },
+      ImprimirFabricacion(item) {
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+
+        if(null !== Produccion) return Produccion.FechaFabricacion;
+        if(null !== Recprodcom) return Recprodcom.FechaFabricacion;
+
+        return '';
+      },
+      ImprimirVencimiento(item) {
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+
+        if(null !== Produccion) return Produccion.FechaVencimiento;
+        if(null !== Recprodcom) return Recprodcom.FechaVencimiento;
+
+        return '';
+      },
+      ImprimirLote(item) {
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+
+        if(null !== Produccion) return Produccion.Lote;
+        if(null !== Recprodcom) return Recprodcom.Lote;
+
+        return '';
+      },
+      ImprimirEntra(item) {
+        let Produccion = item.Produccion;
+        let Recprodcom = item.Recprodcom;
+        let EnvaseEntra = item.EnvaseEntra;
+
+        if(null !== Produccion) return Produccion.Envase.Numero;
+        if(null !== Recprodcom) return Recprodcom.Envase.Numero;
+        if(null !== EnvaseEntra) return EnvaseEntra.Numero;
+
+        return '';
+      },
       ResetTipoEnte () {
-        this.ClienteOProveedor = {
-          Id: null,
-          TipoDocumento: null,
-          NumeroDocumento: null,
-          Nombre: null,
-          Ciudad: null,
-          Direccion: null,
-          Telefono: null
-        }
+        this.ClienteOProveedor = {},
         this.ItemsClienteOProveedor = []
         this.NombreDocumento = null
       },
@@ -463,7 +494,7 @@ v-layout( row wrap )
         }
       },
       BuscarEnvaseEntra () {
-        this.EnvaseEntraActual = null;
+        this.EnvaseEntraActual = {};
         this.ItemsEnvaseEntra = [];
         if(null !== this.NumeroEnvaseEntra && this.NumeroEnvaseEntra.length >= 2){
           this.$apollo.query({
@@ -480,10 +511,7 @@ v-layout( row wrap )
                 Id: res.data.Envases[i].Id,
                 Numero: res.data.Envases[i].Numero,
                 Disponible: res.data.Envases[i].Disponible,
-                Producto: {
-                  Nombre: res.data.Envases[i].Producto.Nombre,
-                  UnidadDeMedida: res.data.Envases[i].Producto.UnidadDeMedida
-                }
+                Producto: res.data.Envases[i].Producto
               }
               this.ItemsEnvaseEntra.push(tmp)
             }
@@ -491,7 +519,7 @@ v-layout( row wrap )
         }
       },
       BuscarEnvaseSale () {
-        this.EnvaseSaleActual = null;
+        this.EnvaseSaleActual = {};
         this.ItemsEnvaseSale = [];
         if(null !== this.NumeroEnvaseSale && this.NumeroEnvaseSale.length >= 2){
           this.$apollo.query({
@@ -508,10 +536,7 @@ v-layout( row wrap )
                 Id: res.data.Envases[i].Id,
                 Numero: res.data.Envases[i].Numero,
                 Disponible: res.data.Envases[i].Disponible,
-                Producto: {
-                  Nombre: res.data.Envases[i].Producto.Nombre,
-                  UnidadDeMedida: res.data.Envases[i].Producto.UnidadDeMedida
-                }
+                Producto: res.data.Envases[i].Producto
               }
               this.ItemsEnvaseSale.push(tmp)
             }
@@ -519,7 +544,7 @@ v-layout( row wrap )
         }
       },
       BuscarProduccionAndRecprodcom () {
-        this.ProduccionAndRecprodcomActual = null;
+        this.ProduccionAndRecprodcomActual = {};
         this.ItemsProduccionAndRecprodcom = [];
 
         if(null !== this.NumeroProduccionAndRecprodcom && this.NumeroProduccionAndRecprodcom.length >= 2 && this.Fecha !== null && this.Fecha !== ''){
@@ -547,15 +572,8 @@ v-layout( row wrap )
                 FechaVencimiento: Produccions[i].FechaVencimiento,
                 Lote: Produccions[i].Lote,
                 NumeroEnvase: Produccions[i].Envase.Numero,
-                Envase: {
-                  Id: Produccions[i].Envase.Id,
-                  Numero: Produccions[i].Envase.Numero
-                },
-                Producto: {
-                  Id: Produccions[i].Producto.Id,
-                  Nombre: Produccions[i].Producto.Nombre,
-                  UnidadDeMedida: Produccions[i].Producto.UnidadDeMedida
-                },
+                Envase: Produccions[i].Envase,
+                Producto: Produccions[i].Producto,
                 Despachado: Produccions[i].Despachado
               }
               tmp.Despachado === 'No' ? this.ItemsProduccionAndRecprodcom.push(tmp) : null
@@ -584,15 +602,8 @@ v-layout( row wrap )
                 FechaVencimiento: Recprodcoms[i].FechaVencimiento,
                 Lote: Recprodcoms[i].Lote,
                 NumeroEnvase: Recprodcoms[i].Envase.Numero,
-                Envase: {
-                  Id: Recprodcoms[i].Envase.Id,
-                  Numero: Recprodcoms[i].Envase.Numero
-                },
-                Producto: {
-                  Id: Recprodcoms[i].Producto.Id,
-                  Nombre: Recprodcoms[i].Producto.Nombre,
-                  UnidadDeMedida: Recprodcoms[i].Producto.UnidadDeMedida
-                },
+                Envase: Recprodcoms[i].Envase,
+                Producto: Recprodcoms[i].Producto,
                 Despachado: Recprodcoms[i].Despachado
               }
               tmp.Despachado === 'No' ? this.ItemsProduccionAndRecprodcom.push(tmp) : null
@@ -608,62 +619,41 @@ v-layout( row wrap )
         while (s.length < size) s = "0" + s;
         return s;
       },
-      agregar () {
-        if(
-          this.TipoEnte === 'Cliente' &&
-          (null === this.ProduccionAndRecprodcomActual || typeof(this.ProduccionAndRecprodcomActual) !== 'object') &&
-          (null === this.EnvaseEntraActual || typeof(this.EnvaseEntraActual) !== 'object')
-         ){
-          console.log('Error en Envase, produccion o recprodcom');
-          return;
-        }
+      AutorizacionGuardar(){
+        let requisito1 = this.ClienteOProveedor;
+        let requisito2 = this.ProduccionAndRecprodcomActual;
+        let requisito3 = this.EnvaseSaleActual;
+        let requisito4 = this.EnvaseEntraActual;
+
+        //console.log(requisito1.hasOwnProperty("Id"));
+        //console.log(requisito2.hasOwnProperty("Id"));
+        //console.log(requisito3.hasOwnProperty("Id"));
+        //console.log(requisito4.hasOwnProperty("Id"));
 
         if(
-          this.TipoEnte === 'Proveedor' &&
-          (null === this.EnvaseEntraActual || typeof(this.EnvaseEntraActual) !== 'object') &&
-          (null === this.EnvaseSaleActual || typeof(this.EnvaseSaleActual) !== 'object')
+          requisito1.hasOwnProperty("Id") &&
+          (
+            requisito2.hasOwnProperty("Id") ||
+            requisito3.hasOwnProperty("Id") ||
+            requisito4.hasOwnProperty("Id")
+          )
         ){
-          console.log('Error en Envase Sale o Entra');
+          this.Autorizacion = true;
+          return true;
         }
+
+        this.Autorizacion = false;
+        return true;
+      },
+      Guardar () {
+        if(!this.AutorizacionGuardar()) return;
 
         if(this.TipoEnte === 'Cliente'){
           var tmp = {
             Id: null,
-            Produccion: this.ProduccionAndRecprodcomActual ? this.ProduccionAndRecprodcomActual.Type === "Produccion" ?  {
-              Type: this.ProduccionAndRecprodcomActual.Type,
-              Id: this.ProduccionAndRecprodcomActual.Id,
-              FechaFabricacion: this.ProduccionAndRecprodcomActual.FechaFabricacion,
-              FechaVencimiento: this.ProduccionAndRecprodcomActual.FechaVencimiento,
-              Lote: this.ProduccionAndRecprodcomActual.Lote,
-              Cantidad: this.ProduccionAndRecprodcomActual.Cantidad,
-              Envase: {
-                Id: this.ProduccionAndRecprodcomActual.Envase.Id,
-                Numero: this.ProduccionAndRecprodcomActual.Envase.Numero,
-              },
-              Producto: {
-                Id: this.ProduccionAndRecprodcomActual.Producto.Id,
-                Nombre: this.ProduccionAndRecprodcomActual.Producto.Nombre,
-                UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
-              }
-            } : null : null,
-            Recprodcom: this.ProduccionAndRecprodcomActual ? this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? {
-              Type: this.ProduccionAndRecprodcomActual.Type,
-              Id: this.ProduccionAndRecprodcomActual.Id,
-              FechaFabricacion: this.ProduccionAndRecprodcomActual.FechaFabricacion,
-              FechaVencimiento: this.ProduccionAndRecprodcomActual.FechaVencimiento,
-              Lote: this.ProduccionAndRecprodcomActual.Lote,
-              Cantidad: this.ProduccionAndRecprodcomActual.Cantidad,
-              Envase: {
-                Id: this.ProduccionAndRecprodcomActual.Envase.Id,
-                Numero: this.ProduccionAndRecprodcomActual.Envase.Numero,
-              },
-              Producto: {
-                Id: this.ProduccionAndRecprodcomActual.Producto.Id,
-                Nombre: this.ProduccionAndRecprodcomActual.Producto.Nombre,
-                UnidadDeMedida: this.ProduccionAndRecprodcomActual.Producto.UnidadDeMedida,
-              }
-            } : null : null,
-            EnvaseEntra: this.EnvaseEntraActual ? { Id: this.EnvaseEntraActual.Id,  Numero: this.EnvaseEntraActual.Numero } : null,
+            Produccion: this.ProduccionAndRecprodcomActual.Type === "Produccion" ? this.ProduccionAndRecprodcomActual : null,
+            Recprodcom: this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? this.ProduccionAndRecprodcomActual : null,
+            EnvaseEntra: this.EnvaseEntraActual,
             Total: this.TotalActual,
             SaveUpdate: 'save'
           }
@@ -693,149 +683,85 @@ v-layout( row wrap )
           return Item.Id !== (tmp.EnvaseSale ? tmp.EnvaseSale.Id : null);
         });
 
-        this.ProduccionAndRecprodcomActual = null,
-        this.EnvaseEntraActual = null,
-        this.EnvaseSaleActual = null,
+        this.ProduccionAndRecprodcomActual = {},
+        this.EnvaseEntraActual = {},
+        this.EnvaseSaleActual = {},
         this.TotalActual = null;
 
       },
       guardarTipoCliente (item) {
-        if(
-          this.Fecha !== null &&
-          (this.ClienteOProveedor.Id !== null || typeof(this.ClienteOProveedor) !== 'object' ) &&
-          (item.Produccion !== null || item.Envase !== null || item.Recprodcom !== null)
-        ) {
 
-          const Remision = {
-            Numero: this.Numero,
-            Fecha: this.Fecha,
-            EnteId: this.ClienteOProveedor.Id,
-            ProduccionId: item.Produccion ? item.Produccion.Id : null,
-            EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
-            RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
-            EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
-            EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
-            Total: item.Total
-          }
-
-          this.$apollo.mutate ({
-            mutation: CREATE_REMISION,
-            variables: {
-              Numero: Remision.Numero,
-              Fecha: Remision.Fecha,
-              EnteId: Remision.EnteId,
-              ProduccionId: Remision.ProduccionId,
-              EnvaseProduccionId: Remision.EnvaseProduccionId,
-              RecprodcomId: Remision.RecprodcomId,
-              EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
-              EnvaseEntraId: Remision.EnvaseEntraId,
-              Total: Remision.Total
-            },
-            loadingKey: 'loading',
-            update: (store, { data: res }) => {
-              var tmp = {
-                Id: res.CreateRemision.Id,
-                Produccion: res.CreateRemision.Produccion ? {
-                  Id: res.CreateRemision.Produccion.Id,
-                  Cantidad: res.CreateRemision.Produccion.Cantidad,
-                  FechaFabricacion: res.CreateRemision.Produccion.FechaFabricacion,
-                  FechaVencimiento: res.CreateRemision.Produccion.FechaVencimiento,
-                  Lote: res.CreateRemision.Produccion.Lote,
-                  Envase: {
-                    Id: res.CreateRemision.Produccion.Envase.Id,
-                    Numero: res.CreateRemision.Produccion.Envase.Numero,
-                  },
-                  Producto: {
-                    Id: res.CreateRemision.Produccion.Producto.Id,
-                    Nombre: res.CreateRemision.Produccion.Producto.Nombre,
-                    UnidadDeMedida: res.CreateRemision.Produccion.Producto.UnidadDeMedida
-                  },
-                  Despachado: res.CreateRemision.Produccion.Despachado
-                } : null,
-                Recprodcom: res.CreateRemision.Recprodcom ? {
-                  Id: res.CreateRemision.Recprodcom.Id,
-                  Cantidad: res.CreateRemision.Recprodcom.Cantidad,
-                  FechaFabricacion: res.CreateRemision.Recprodcom.FechaFabricacion,
-                  FechaVencimiento: res.CreateRemision.Recprodcom.FechaVencimiento,
-                  Lote: res.CreateRemision.Recprodcom.Lote,
-                  Envase: {
-                    Id: res.CreateRemision.Recprodcom.Envase.Id,
-                    Numero: res.CreateRemision.Recprodcom.Envase.Numero,
-                  },
-                  Producto: {
-                    Id: res.CreateRemision.Recprodcom.Producto.Id,
-                    Nombre: res.CreateRemision.Recprodcom.Producto.Nombre,
-                    UnidadDeMedida: res.CreateRemision.Recprodcom.Producto.UnidadDeMedida
-                  },
-                  Despachado: res.CreateRemision.Recprodcom.Despachado
-                } : null,
-                EnvaseEntra: res.CreateRemision.EnvaseEntra ? {
-                  Id: res.CreateRemision.EnvaseEntra.Id,
-                  Numero: res.CreateRemision.EnvaseEntra.Numero,
-                  Capacidad: res.CreateRemision.EnvaseEntra.Capacidad,
-                  Producto: res.CreateRemision.EnvaseEntra.Producto
-                } : null,
-                Total: res.CreateRemision.Total,
-                SaveUpdate: 'update'
-              }
-
-              this.items.push(tmp)
-            }
-          });
-
-        } else {
-          console.log('Erro en función guardar');
+        const Remision = {
+          Numero: this.Numero,
+          Fecha: this.Fecha,
+          EnteId: this.ClienteOProveedor.Id,
+          ProduccionId: item.Produccion ? item.Produccion.Id : null,
+          EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
+          RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
+          EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
+          EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
+          Total: item.Total
         }
+
+        this.$apollo.mutate ({
+          mutation: CREATE_REMISION,
+          variables: {
+            Numero: Remision.Numero,
+            Fecha: Remision.Fecha,
+            EnteId: Remision.EnteId,
+            ProduccionId: Remision.ProduccionId,
+            EnvaseProduccionId: Remision.EnvaseProduccionId,
+            RecprodcomId: Remision.RecprodcomId,
+            EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
+            EnvaseEntraId: Remision.EnvaseEntraId,
+            Total: Remision.Total
+          },
+          loadingKey: 'loading',
+          update: (store, { data: res }) => {
+            var tmp = {
+              Id: res.CreateRemision.Id,
+              Produccion: res.CreateRemision.Produccion,
+              Recprodcom: res.CreateRemision.Recprodcom,
+              EnvaseEntra: res.CreateRemision.EnvaseEntra,
+              Total: res.CreateRemision.Total,
+              SaveUpdate: 'update'
+            }
+
+            this.items.push(tmp)
+          }
+        });
+
       },
       guardarTipoProveedor (item) {
-        if(
-          this.Fecha !== null &&
-          (this.ClienteOProveedor.Id !== null || typeof(this.ClienteOProveedor) !== 'object' ) &&
-          (item.EnvaseSale !== null || item.EnvaseEntra !== null )
-        ) {
 
-          const Remision = {
-            Numero: this.Numero,
-            Fecha: this.Fecha,
-            EnteId: this.ClienteOProveedor.Id,
-            EnvaseSaleId: item.EnvaseSale ? item.EnvaseSale.Id : null,
-            EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
-          }
-
-          this.$apollo.mutate ({
-            mutation: CREATE_REMISION_PROVEEDOR,
-            variables: {
-              Numero: Remision.Numero,
-              Fecha: Remision.Fecha,
-              EnteId: Remision.EnteId,
-              EnvaseEntraId: Remision.EnvaseEntraId,
-              EnvaseSaleId: Remision.EnvaseSaleId
-            },
-            update: (store, { data: res }) => {
-              var tmp = {
-                Id: res.CreateRemisionProveedor.Id,
-                EnvaseEntra: res.CreateRemisionProveedor.EnvaseEntra ? {
-                  Id: res.CreateRemisionProveedor.EnvaseEntra.Id,
-                  Numero: res.CreateRemisionProveedor.EnvaseEntra.Numero,
-                  Capacidad: res.CreateRemisionProveedor.EnvaseEntra.Capacidad,
-                  Producto: res.CreateRemisionProveedor.EnvaseEntra.Producto
-                } : null,
-                EnvaseSale: res.CreateRemisionProveedor.EnvaseSale ? {
-                  Id: res.CreateRemisionProveedor.EnvaseSale.Id,
-                  Numero: res.CreateRemisionProveedor.EnvaseSale.Numero,
-                  Capacidad: res.CreateRemisionProveedor.EnvaseSale.Capacidad,
-                  Producto: res.CreateRemisionProveedor.EnvaseSale.Producto
-                } : null,
-                SaveUpdate: 'update'
-              }
-
-              this.items.push(tmp)
-            }
-          });
-
-        } else {
-          console.log('Erro en función guardar');
+        const Remision = {
+          Numero: this.Numero,
+          Fecha: this.Fecha,
+          EnteId: this.ClienteOProveedor.Id,
+          EnvaseSaleId: item.EnvaseSale ? item.EnvaseSale.Id : null,
+          EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
         }
+
+        this.$apollo.mutate ({
+          mutation: CREATE_REMISION_PROVEEDOR,
+          variables: {
+            Numero: Remision.Numero,
+            Fecha: Remision.Fecha,
+            EnteId: Remision.EnteId,
+            EnvaseEntraId: Remision.EnvaseEntraId,
+            EnvaseSaleId: Remision.EnvaseSaleId
+          },
+          update: (store, { data: res }) => {
+            var tmp = {
+              Id: res.CreateRemisionProveedor.Id,
+              EnvaseEntra: res.CreateRemisionProveedor.EnvaseEntra,
+              EnvaseSale: res.CreateRemisionProveedor.EnvaseSale,
+              SaveUpdate: 'update'
+            }
+
+            this.items.push(tmp)
+          }
+        });
       },
       eliminar (item) {
 
@@ -959,16 +885,8 @@ v-layout( row wrap )
 
         this.Fecha = null,
 
-        this.ClienteOProveedor = {
-          Id: null,
-          TipoDocumento: null,
-          NumeroDocumento: null,
-          Nombre: null,
-          Direccion: null,
-          Direccion: null,
-          Telefono: null
-        }
-        this.ItemsClienteOProveedor = []
+        this.ClienteOProveedor = {};
+        this.ItemsClienteOProveedor = [];
 
         this.items = []
         this.TipoEnte = 'Cliente';

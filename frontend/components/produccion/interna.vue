@@ -244,6 +244,7 @@ v-layout( row wrap )
       class="elevation-5 grey lighten-1 grey--text text--darken-4" )
 
       template(slot="items" scope="props")
+        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.index+1 }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
@@ -279,7 +280,7 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-    v-btn(fab dark class="indigo mt-1" @click.native="agregar")
+    v-btn(fab dark class="indigo mt-1" @click.native="agregar" :disabled="!Autorizacion")
       v-icon(dark) add
 
     v-card-actions
@@ -326,6 +327,7 @@ v-layout( row wrap )
         ChangeProducto: true,
         ChangeProductoCounter: 0,
         headers: [
+          { text: 'N°', align: 'center', sortable: false,  value: '' },
           { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
           { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
@@ -361,7 +363,8 @@ v-layout( row wrap )
         menu5: false,
         menu6: false,
         menu7: false,
-        loading: 0
+        Autorizacion: false,
+        loading: 0,
       }
     },
     apollo: {

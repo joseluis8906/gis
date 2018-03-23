@@ -35,8 +35,6 @@ v-layout( align-center justify-center )
         v-tabs-content(id="editar")
           v-card-text
             app-remision-editar
-
-
 </template>
 
 <script>

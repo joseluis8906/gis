@@ -38,6 +38,10 @@ v-layout( align-center justify-center )
             v-icon search
             p(class="body-2 grey--text text--lighten-4") Buscar
 
+          v-tabs-item(href="#correria")
+            v-icon people
+            p(class="body-2 grey--text text--lighten-4") Correria
+
           v-tabs-slider(class="yellow")
 
         v-tabs-content(id="interna")
@@ -51,6 +55,10 @@ v-layout( align-center justify-center )
         v-tabs-content(id="listar")
           v-card-text
             app-produccion-listar
+
+        v-tabs-content(id="correria")
+          v-card-text
+            app-produccion-correria
 </template>
 
 <script>
@@ -58,6 +66,7 @@ v-layout( align-center justify-center )
   import AppProduccionInterna from '~/components/produccion/interna';
   import AppProduccionExterna from '~/components/produccion/externa';
   import AppProduccionListar from '~/components/produccion/listar';
+  import AppProduccionCorreria from '~/components/produccion/correria';
 
   export default {
     data: () => ({
@@ -97,7 +106,8 @@ v-layout( align-center justify-center )
     components: {
       AppProduccionInterna,
       AppProduccionExterna,
-      AppProduccionListar
+      AppProduccionListar,
+      AppProduccionCorreria
     }
   };
 </script>

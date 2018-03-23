@@ -250,6 +250,28 @@ Kardex.belongsTo(Producto)
 Envase.hasMany(Kardex)
 Kardex.belongsTo(Envase)
 
+const Correria = Db.define('Correria', {
+  Id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  Numero: Sequelize.STRING,
+  Fecha: Sequelize.DATEONLY,
+  EnteId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}},
+  ProduccionId: {type: Sequelize.INTEGER, references: {model: Produccion, key: "Id"}},
+  RecprodcomId: {type: Sequelize.INTEGER, references: {model: Recprodcom, key: "Id"}},
+},
+{
+  timestamps: false,
+  freezeTableName: true
+});
+
+Ente.hasMany(Correria)
+Correria.belongsTo(Ente)
+
+Produccion.hasOne(Correria)
+Correria.belongsTo(Produccion)
+
+Recprodcom.hasOne(Correria)
+Correria.belongsTo(Recprodcom)
+
 
 //open connection
 Db.authenticate().then(() => {
