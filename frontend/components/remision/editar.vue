@@ -293,7 +293,7 @@ v-layout( row wrap )
         query: REMISIONS,
         variables () {
           return {
-            Numero: this.Numero
+            Numero: this.Numero,
           }
         },
         fetchPolicy: 'network-only',
