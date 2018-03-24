@@ -2335,7 +2335,7 @@ var Mutation = new GraphQLObjectType({
             where: args
           }).then(C => {
             if(C){
-            return C.destroy();
+             return C.destroy();
             }
           })
         }

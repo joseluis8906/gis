@@ -376,7 +376,6 @@ v-layout( row wrap )
             Orden: this.Orden,
           }
         },
-        loadingKey: 'loading',
         update (data) {
           this.items = [];
           if (data.Produccions.length > 0) {
@@ -393,7 +392,7 @@ v-layout( row wrap )
             this.PurezaFinal = data.Produccions[0].PurezaFinal
             this.PresionFinal = data.Produccions[0].PresionFinal
             this.Observacion = data.Produccions[0].Observacion
-            this.items = []
+            
             for ( let i=0; i<data.Produccions.length; i++ ) {
               var tmp = {
                 Id: data.Produccions[i].Id,

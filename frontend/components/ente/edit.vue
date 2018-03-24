@@ -79,7 +79,7 @@ v-layout( row wrap )
         },
         //loadingKey: 'loading',
         update (data) {
-          console.log(data);
+          //console.log(data);
           if(!data){this.Reset();}
 
           this.Nombre = data.OneEnte ? data.OneEnte.Nombre : null;

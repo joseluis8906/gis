@@ -1,0 +1,9 @@
+mutation DeleteCorreria (
+  $Id: Int
+) {
+  DeleteCorreria (
+    Id: $Id
+  ){
+    Id
+  }
+}

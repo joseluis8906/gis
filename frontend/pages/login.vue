@@ -36,8 +36,9 @@
           UserName: this.UserName,
           Password: this.Password
         }).then(res => {
-          //console.log(res.data)
+
           if(res.data.Result === 1){
+            sessionStorage.setItem('x-access-username', this.UserName)
             sessionStorage.setItem('x-access-token', res.data.Token)
             sessionStorage.setItem('x-access-roles', JSON.stringify(res.data.Roles))
             this.$router.push('/inspire')

@@ -38,7 +38,7 @@ v-layout( align-center justify-center )
 </template>
 
 <script>
-  import AppRemisionEditar from '~/components/remision/editar.vue';
+import AppRemisionEditar from '~/components/remision/editar.vue';
 
 export default {
   data: () => ({

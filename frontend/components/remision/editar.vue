@@ -254,7 +254,7 @@ v-layout( row wrap )
         TotalActual: null,
         headers: [
           { text: 'N°', align: 'center', sortable: false,  value: '' },
-          { text: 'Cant', align: 'center', sortable: false,  value: 'Cantidad' },
+          { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Producto', align: 'center', sortable: false, value: 'Producto' },
           { text: 'Sale', align: 'center', sortable: false,  value: 'Sale' },
           { text: 'F.Elaboración', align: 'center', sortable: false,  value: 'Elaboración' },
@@ -378,8 +378,8 @@ v-layout( row wrap )
         let EnvaseEntra = item.EnvaseEntra;
         let EnvaseSale = item.EnvaseSale;
 
-        if(null !== Produccion) return Produccion.Cantidad;
-        if(null !== Recprodcom) return Recprodcom.Cantidad;
+        if(null !== Produccion) return `${Produccion.Cantidad} ${Produccion.Producto.UnidadDeMedida}`;
+        if(null !== Recprodcom) return `${Recprodcom.Cantidad} ${Recprodcom.Producto.UnidadDeMedida}`;
 
         return '';
       },
