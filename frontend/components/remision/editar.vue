@@ -298,7 +298,7 @@ v-layout( row wrap )
         },
         fetchPolicy: 'network-only',
         update (data) {
-
+          console.log(this.$store.state.security.UserName);
           if (data.Remisions.length > 0) {
             this.Fecha = data.Remisions[0].Fecha
             this.TipoEnte = data.Remisions[0].Tipo;

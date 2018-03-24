@@ -55,6 +55,8 @@ export default {
     if ( sessionStorage.getItem('x-access-token') === null ) {
       this.$router.push('/')
     } else {
+      this.$store.commit('security/SetUserName', sessionStorage.getItem('x-access-username'))
+
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
       this.$store.commit('security/AddRoles', Roles);
 

@@ -190,6 +190,7 @@ export default {
         }
       },
       update (data) {
+        
         this.ItemsVendedor = [];
         this.items = [];
         if (data.Correrias.length > 0) {
