@@ -43,7 +43,7 @@ v-layout( row wrap )
         @click.native="inventario"
         class="mt-0 blue darken-1"
         :disabled="!Criterio" ) Buscar
-        
+
 </template>
 
 <style>
@@ -68,7 +68,6 @@ v-layout( row wrap )
       Productos: {
         query: PRODUCTOS,
         fetchPolicy: 'network-only',
-        loadingKey: 'loading',
         update (data) {
           this.ItemsProducto = [];
           this.ItemsProducto = data.Productos;
@@ -84,11 +83,11 @@ v-layout( row wrap )
         ){
           this.$apollo.query({
             query: ENVASES,
+            fetchPolicy: 'network-only',
             variables: {
               Numero: this.NumeroEnvase,
               Disponible: 'No'
             },
-            fetchPolicy: 'network-only',
           }).then( res => {
             //console.log(res.data);
             let Envases = res.data.Envases

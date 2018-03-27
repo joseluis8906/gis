@@ -1,0 +1,40 @@
+query Produccions (
+  $VendedorId: Int
+  $NumeroEnvase: String
+  $FechaFabricacion: String
+) {
+  ProduccionsByCorreria (
+    VendedorId: $VendedorId
+    NumeroEnvase: $NumeroEnvase
+    FechaFabricacion: $FechaFabricacion
+  ){
+    Id
+    Orden
+    Turno
+    Fecha
+    Lote
+    FechaInicial
+    FechaFinal
+    HoraInicial
+    HoraFinal
+    FechaFabricacion
+    FechaVencimiento
+    Cantidad
+    ProductoId
+    EnvaseId
+    PurezaFinal
+    PresionFinal
+    Observacion
+    Despachado
+    Envase {
+      Id
+      Numero
+      Capacidad
+    }
+    Producto {
+      Id
+      Nombre
+      UnidadDeMedida
+    }
+  }
+}

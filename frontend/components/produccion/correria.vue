@@ -190,7 +190,7 @@ export default {
         }
       },
       update (data) {
-        
+
         this.ItemsVendedor = [];
         this.items = [];
         if (data.Correrias.length > 0) {
@@ -274,7 +274,8 @@ export default {
     },
     LastCorreria () {
       this.$apollo.query({
-        query: LAST_CORRERIA
+        query: LAST_CORRERIA,
+        fetchPolicy: 'network-only',
       })
       .then(res => {
         res.data.LastCorreria !== null ? this.Numero = this.VerificarConsecutivo(res.data.LastCorreria.Numero) : this.Numero = '001';
@@ -301,11 +302,11 @@ export default {
 
         this.$apollo.query({
           query: ENTES,
+          fetchPolicy: 'network-only',
           variables: {
             NombreDocumento: this.NombreDocumento,
             Relacion: 'Vendedor',
           },
-          fetchPolicy: 'network-only',
         }).then( res => {
           console.log(res.data.Entes.length);
           this.ItemsVendedor = res.data.Entes;
@@ -321,12 +322,11 @@ export default {
         //Produccions
         this.$apollo.query({
           query: PRODUCCIONSBYENVASE,
+          fetchPolicy: 'network-only',
           variables: {
             NumeroEnvase: this.NumeroProduccionAndRecprodcom,
             FechaFabricacion: this.Fecha
           },
-          fetchPolicy: 'network-only',
-          loadingKey: 'loading'
         }).then( res => {
           console.log(res.data.ProduccionsByEnvase.length);
           let Produccions = res.data.ProduccionsByEnvase;
@@ -355,11 +355,11 @@ export default {
         //Recprodcoms
         this.$apollo.query({
           query: RECPRODCOMSBYENVASE,
+          fetchPolicy: 'network-only',
           variables: {
             NumeroEnvase: this.NumeroProduccionAndRecprodcom,
             FechaFabricacion: this.Fecha
           },
-          fetchPolicy: 'network-only'
         }).then( res => {
           console.log(res.data.RecprodcomsByEnvase.length);
           let Recprodcoms = res.data.RecprodcomsByEnvase;
@@ -399,7 +399,10 @@ export default {
         },
         update: (store, { data: res }) => {
           var tmp = res.CreateCorreria;
-          this.items.push(tmp)
+          this.items.push(tmp);
+          this.NumeroProduccionAndRecprodcom = null;
+          this.ProduccionAndRecprodcomActual = {};
+          this.ItemsProduccionAndRecprodcom = [];
         }
       });
 

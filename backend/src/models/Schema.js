@@ -1167,6 +1167,37 @@ var Query = new GraphQLObjectType({
           });
         }
       },
+      ProduccionsByCorreria: {
+        type: new GraphQLList(Produccion),
+        args: {
+          VendedorId: {type: GraphQLInt},
+          NumeroEnvase: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Produccion.findAll({
+            where:{
+              Despachado: 'No',
+              FechaFabricacion: { $lte: new Date(args.FechaFabricacion+'T00:00:00') }
+            },
+            order: [['Orden', 'ASC']],
+            include: [
+              {
+                model: Db.models.Envase,
+                where:{
+                  Numero: {$like: ("%"+args.NumeroEnvase+"%")},
+                }
+              },
+              {
+                model: Db.models.Correria,
+                where: {
+                  EnteId: args.VendedorId
+                }
+              }
+            ]
+          });
+        }
+      },
       OneProduccion: {
         type: Produccion,
         args: {
@@ -1267,6 +1298,37 @@ var Query = new GraphQLObjectType({
                 model: Db.models.Envase,
                 where:{
                   Numero: {$like: ("%"+args.NumeroEnvase+"%")},
+                }
+              }
+            ]
+          });
+        }
+      },
+      RecprodcomsByCorreria: {
+        type: new GraphQLList(Recprodcom),
+        args: {
+          VendedorId: {type: GraphQLInt},
+          NumeroEnvase: {type: GraphQLString},
+          FechaFabricacion: {type: GraphQLString}
+        },
+        resolve(root, args) {
+          return Db.models.Recprodcom.findAll({
+            where:{
+              Despachado: 'No',
+              FechaFabricacion: { $lte: new Date(args.FechaFabricacion+'T00:00:00') }
+            },
+            order: [['Numero', 'ASC']],
+            include: [
+              {
+                model: Db.models.Envase,
+                where:{
+                  Numero: {$like: ("%"+args.NumeroEnvase+"%")},
+                }
+              },
+              {
+                model: Db.models.Correria,
+                where: {
+                  EnteId: args.VendedorId
                 }
               }
             ]

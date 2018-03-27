@@ -249,7 +249,8 @@ v-layout( row wrap )
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
-        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Despachado }}
+        //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
@@ -332,7 +333,8 @@ v-layout( row wrap )
           { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
-          { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+          //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+          { text: 'Despachado', align: 'center', sortable: false,  value: 'Despachado' }
         ],
         items: [],
         pagination: {
@@ -363,7 +365,7 @@ v-layout( row wrap )
         menu5: false,
         menu6: false,
         menu7: false,
-        Autorizacion: false,
+        Autorizacion: true,
         loading: 0,
       }
     },
@@ -379,6 +381,7 @@ v-layout( row wrap )
         update (data) {
           this.items = [];
           if (data.Produccions.length > 0) {
+            this.Autorizacion=true;
             this.Turno = data.Produccions[0].Turno
             this.Fecha = data.Produccions[0].Fecha
             this.Lote = data.Produccions[0].Lote
@@ -392,7 +395,7 @@ v-layout( row wrap )
             this.PurezaFinal = data.Produccions[0].PurezaFinal
             this.PresionFinal = data.Produccions[0].PresionFinal
             this.Observacion = data.Produccions[0].Observacion
-            
+
             for ( let i=0; i<data.Produccions.length; i++ ) {
               var tmp = {
                 Id: data.Produccions[i].Id,
@@ -408,6 +411,7 @@ v-layout( row wrap )
                 Despachado: data.Produccions[i].Despachado
               }
               this.items.push(tmp)
+              if(this.Autorizacion && tmp.Despachado === 'Si') this.Autorizacion=false;
             }
 
           } else {
@@ -419,7 +423,6 @@ v-layout( row wrap )
       Productos: {
         query: PRODUCTOS,
         fetchPolicy: 'network-only',
-        loadingKey: 'loading',
         update (data) {
           this.ItemsProducto = [];
           this.ItemsProducto = data.Productos;
@@ -470,12 +473,12 @@ v-layout( row wrap )
     methods: {
       SetToday() {
         this.Fecha = new Date(Date.now()-(1000*60*60*5)).toISOString().split('T')[0];
-        this.SetLote();
       },
       SetLote() {
         if(this.items.length === 0){
           this.$apollo.query({
             query: LAST_LOTE,
+            fetchPolicy: 'network-only',
             variables: {
               Fecha: this.Fecha
             }
@@ -501,7 +504,8 @@ v-layout( row wrap )
       },
       LastProduccion () {
         this.$apollo.query({
-          query: LAST_PRODUCCION
+          query: LAST_PRODUCCION,
+          fetchPolicy: 'network-only',
         })
         .then(res => {
           res.data.LastProduccion !== null ? this.Orden = this.VerificarConsecutivo(res.data.LastProduccion.Orden) : this.Orden = '001';
@@ -518,12 +522,11 @@ v-layout( row wrap )
         ){
           this.$apollo.query({
             query: ENVASESBYPRODUCTO,
+            fetchPolicy: 'network-only',
             variables: {
               Numero: this.NumeroEnvase,
               NombreProducto: this.Producto.Nombre
             },
-            fetchPolicy: 'network-only',
-            loadingKey: 'loading'
           }).then( res => {
             //console.log(res.data);
             let Envases = res.data.EnvasesByProducto

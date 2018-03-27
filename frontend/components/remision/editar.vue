@@ -48,7 +48,7 @@ v-layout( row wrap )
             :items="OptionsTipoEnte"
             label="Tipo de Ente"
             @click.native="ResetTipoEnte"
-            :disabled="items.length > 0"
+            :disabled="items.length > 0 || this.EsSoloVendedor"
           )
 
         v-flex(xs12)
@@ -111,14 +111,15 @@ v-layout( row wrap )
         td(class="text-xs-right" style="border-left: 1px solid #999999") {{ ImprimirLote(props.item) }}
         td(class="text-xs-left" style="border-left: 1px solid #999999") {{ ImprimirEntra(props.item) }}
         td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
-        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
             small
             error
             style="width: 16px; height:16px"
-            @click.native="eliminar(props.item)")
+            @click.native="eliminar(props.item)"
+            :disabled="EsSoloVendedor")
 
             v-icon(dark) remove
 
@@ -209,8 +210,8 @@ v-layout( row wrap )
 
   import REMISIONS from '~/queries/Remisions.gql'
   import PRODUCCIONS2 from '~/queries/Produccions2.gql'
-  import PRODUCCIONSBYENVASE from '~/queries/ProduccionsByEnvase.gql'
-  import RECPRODCOMSBYENVASE from '~/queries/RecprodcomsByEnvase.gql'
+  import PRODUCCIONSBYCORRERIA from '~/queries/ProduccionsByCorreria.gql'
+  import RECPRODCOMSBYCORRERIA from '~/queries/RecprodcomsByCorreria.gql'
   import CREATE_REMISION from '~/queries/CreateRemision.gql'
   import CREATE_REMISION_PROVEEDOR from '~/queries/CreateRemisionProveedor.gql'
   import UPDATE_REMISION from '~/queries/UpdateRemision.gql'
@@ -262,7 +263,7 @@ v-layout( row wrap )
           { text: 'Lote', align: 'center', sortable: false,  value: 'Lote' },
           { text: 'Entra', align: 'center', sortable: false,  value: 'Entra' },
           { text: 'Total', align: 'center', sortable: false,  value: 'Total' },
-          { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+          //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
         ],
         items: [],
 
@@ -286,19 +287,21 @@ v-layout( row wrap )
         NombreDocumento: null,
         menu1: false,
         Autorizacion: false,
+        VendedorId: null,
+        EsSoloVendedor: false,
       }
     },
     apollo: {
       Remisions:{
         query: REMISIONS,
+        fetchPolicy: 'network-only',
         variables () {
           return {
             Numero: this.Numero,
           }
         },
-        fetchPolicy: 'network-only',
         update (data) {
-          console.log(this.$store.state.security.UserName);
+          //console.log(this.$store.state.security.UserName);
           if (data.Remisions.length > 0) {
             this.Fecha = data.Remisions[0].Fecha
             this.TipoEnte = data.Remisions[0].Tipo;
@@ -324,6 +327,25 @@ v-layout( row wrap )
           }
         }
       },
+      Vendedor: {
+        query: ENTES,
+        fetchPolicy: 'network-only',
+        variables () {
+          return {
+            NombreDocumento: this.$store.state.security.UserName,
+            Relacion: 'Vendedor'
+          }
+        },
+        update (data) {
+          if(data.Entes.length > 0){
+            this.VendedorId = data.Entes[0].Id
+          }
+          else {
+            this.VendedorId = null
+          }
+
+        }
+      }
       /*LastRemision: {
         query: LAST_REMISION,
         loading: 'loading',
@@ -337,6 +359,13 @@ v-layout( row wrap )
 
         }
       },*/
+    },
+    mounted() {
+      this.$nextTick(() => {
+        if(!this.$store.state.security.Roles.includes("Gerencia")){
+          this.EsSoloVendedor = true;
+        }
+      })
     },
     watch: {
       Fecha (value) {
@@ -481,12 +510,11 @@ v-layout( row wrap )
         if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
           this.$apollo.query({
             query: ENTES,
+            fetchPolicy: 'network-only',
             variables: {
               NombreDocumento: this.NombreDocumento,
               Relacion: this.TipoEnte === 'Cliente' ? 'Cliente' : 'Proveedor'
             },
-            fetchPolicy: 'network-only',
-            loadingKey: 'loading'
           }).then( res => {
             console.log(res.data.Entes.length);
             this.ItemsClienteOProveedor = res.data.Entes;
@@ -499,11 +527,10 @@ v-layout( row wrap )
         if(null !== this.NumeroEnvaseEntra && this.NumeroEnvaseEntra.length >= 2){
           this.$apollo.query({
             query: ENVASES,
+            fetchPolicy: 'network-only',
             variables: {
               Numero: this.NumeroEnvaseEntra
             },
-            fetchPolicy: 'network-only',
-            loadingKey: 'loading'
           }).then (res => {
             console.log(res.data.Envases.length);
             for (let i=0; i<res.data.Envases.length; i++) {
@@ -524,11 +551,10 @@ v-layout( row wrap )
         if(null !== this.NumeroEnvaseSale && this.NumeroEnvaseSale.length >= 2){
           this.$apollo.query({
             query: ENVASES,
+            fetchPolicy: 'network-only',
             variables: {
               Numero: this.NumeroEnvaseSale
             },
-            fetchPolicy: 'network-only',
-            loadingKey: 'loading'
           }).then (res => {
             console.log(res.data.Envases.length);
             for (let i=0; i<res.data.Envases.length; i++) {
@@ -551,16 +577,16 @@ v-layout( row wrap )
 
           //Produccions
           this.$apollo.query({
-            query: PRODUCCIONSBYENVASE,
+            query: PRODUCCIONSBYCORRERIA,
+            fetchPolicy: 'network-only',
             variables: {
+              VendedorId: this.VendedorId,
               NumeroEnvase: this.NumeroProduccionAndRecprodcom,
               FechaFabricacion: this.Fecha
             },
-            fetchPolicy: 'network-only',
-            loadingKey: 'loading'
           }).then( res => {
-            console.log(res.data.ProduccionsByEnvase.length);
-            let Produccions = res.data.ProduccionsByEnvase;
+            console.log(res.data.ProduccionsByCorreria.length);
+            let Produccions = res.data.ProduccionsByCorreria;
 
             for ( let i=0; i<Produccions.length; i++ ) {
               var tmp = {
@@ -582,15 +608,16 @@ v-layout( row wrap )
 
           //Recprodcoms
           this.$apollo.query({
-            query: RECPRODCOMSBYENVASE,
+            query: RECPRODCOMSBYCORRERIA,
+            fetchPolicy: 'network-only',
             variables: {
+              VendedorId: this.VendedorId,
               NumeroEnvase: this.NumeroProduccionAndRecprodcom,
               FechaFabricacion: this.Fecha
             },
-            fetchPolicy: 'network-only'
           }).then( res => {
-            console.log(res.data.RecprodcomsByEnvase.length);
-            let Recprodcoms = res.data.RecprodcomsByEnvase;
+            console.log(res.data.RecprodcomsByCorreria.length);
+            let Recprodcoms = res.data.RecprodcomsByCorreria;
 
             for ( let i=0; i<Recprodcoms.length; i++ ) {
               var tmp = {

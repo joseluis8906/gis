@@ -166,7 +166,7 @@ v-layout( row wrap )
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
-        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
@@ -240,7 +240,7 @@ v-layout( row wrap )
         Observacion: null,
         NombreDocumento: null,
         ItemsProveedor: [],
-        Proveedor: {Nombre: null, NumeroDocumento: null, Id: null},
+        Proveedor: {},
         saveUpdate: 'save',
         ChangeProducto: true,
         ChangeProductoCounter: 0,
@@ -250,7 +250,7 @@ v-layout( row wrap )
           { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
-          { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+          //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
         ],
         items: [],
         pagination: {
@@ -296,6 +296,8 @@ v-layout( row wrap )
         },
         update (data) {
           this.ItemsProveedor = [];
+          this.Proveedor = {}
+
           this.items = [];
           if (data.Recprodcoms.length > 0) {
             this.Fecha = data.Recprodcoms[0].Fecha
@@ -377,12 +379,11 @@ v-layout( row wrap )
         if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
           this.$apollo.query({
             query: ENTES,
+            fetchPolicy: 'network-only',
             variables: {
               NombreDocumento: this.NombreDocumento,
               Relacion: 'Proveedor'
             },
-            fetchPolicy: 'network-only',
-            loadingKey: 'loading'
           }).then( res => {
             //console.log(res.data.Entes.length);
             this.ItemsProveedor = res.data.Entes;
@@ -392,12 +393,12 @@ v-layout( row wrap )
       },
       SetToday() {
         this.Fecha = new Date(Date.now()-(1000*60*60*5)).toISOString().split('T')[0];
-        this.SetLote();
       },
       SetLote() {
         if(this.items.length === 0){
           this.$apollo.query({
             query: LAST_LOTE_RECPRODCOM,
+            fetchPolicy: 'network-only',
             variables: {
               Fecha: this.Fecha
             }
@@ -423,7 +424,8 @@ v-layout( row wrap )
       },
       LastRecprodcom () {
         this.$apollo.query({
-          query: LAST_RECPRODCOM
+          query: LAST_RECPRODCOM,
+          fetchPolicy: 'network-only',
         })
         .then(res => {
           res.data.LastRecprodcom !== null ? this.Numero = this.VerificarConsecutivo(res.data.LastRecprodcom.Numero) : this.Numero = '001';
@@ -440,11 +442,11 @@ v-layout( row wrap )
         ){
           this.$apollo.query({
             query: ENVASESBYPRODUCTO,
+            fetchPolicy: 'network-only',
             variables: {
               Numero: this.NumeroEnvase,
               NombreProducto: this.Producto.Nombre
             },
-            fetchPolicy: 'network-only',
           }).then( res => {
             //console.log(res.data);
             let Envases = res.data.EnvasesByProducto

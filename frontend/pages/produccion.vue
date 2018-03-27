@@ -34,13 +34,15 @@ v-layout( align-center justify-center )
             v-icon add_shopping_cart
             p(class="body-2 grey--text text--lighten-4") Externa
 
+          v-tabs-item(href="#correria")
+            v-icon people
+            p(class="body-2 grey--text text--lighten-4") Correria
+
           v-tabs-item(href="#listar")
             v-icon search
             p(class="body-2 grey--text text--lighten-4") Buscar
 
-          v-tabs-item(href="#correria")
-            v-icon people
-            p(class="body-2 grey--text text--lighten-4") Correria
+
 
           v-tabs-slider(class="yellow")
 

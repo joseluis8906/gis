@@ -76,7 +76,7 @@ app.get('/login/:UserName/:Password', (req, res, next) => {
   Db.models.User.findOne({where: {UserName: Data.UserName}}).then( R => {
     Bcrypt.compare(Data.Password, R.Password, (Err, Res) => {
       if(Res) {
-        Jwt.sign({ User: Data.UserName },
+        Jwt.sign({ User: Data.UserName},
           req.app.get('superSecret'),
           {expiresIn: "365d" /*expires in 365 dias*/},
           (Err, Token) => {
