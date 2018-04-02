@@ -88,7 +88,8 @@ v-layout( row wrap )
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ ImprimirEnvase(props.item) }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ ImprimirCantidad(props.item) }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ ImprimirProducto(props.item) }}
-        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Produccion ? props.item.Produccion.Despachado : '' }} {{ props.item.Recprodcom ? props.item.Recprodcom.Despachado : '' }}
+        //- td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
@@ -146,7 +147,9 @@ export default {
         { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
         { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
         { text: 'Producto', align: 'center', sortable: false,  value: 'Producto' },
-        { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+        { text: 'Despachado', align: 'center', sortable: false,  value: 'Despachado' }
+        //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+
       ],
       Autorizacion: false,
     }
@@ -190,14 +193,14 @@ export default {
         }
       },
       update (data) {
-
+        
         this.ItemsVendedor = [];
         this.items = [];
+
         if (data.Correrias.length > 0) {
           this.Fecha = data.Correrias[0].Fecha;
           this.ItemsVendedor.push(data.Correrias[0].Ente);
           this.Vendedor = this.ItemsVendedor[0];
-
 
           for ( let i=0; i<data.Correrias.length; i++ ) {
             var tmp = {
