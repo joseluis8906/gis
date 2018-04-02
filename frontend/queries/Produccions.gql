@@ -15,6 +15,7 @@ query Produccions (
   $PurezaFinal: Float,
   $PresionFinal: Float
   $Observacion: String
+  $Despachado: String
 ) {
   Produccions (
     Orden: $Orden,
@@ -33,6 +34,7 @@ query Produccions (
     PurezaFinal: $PurezaFinal,
     PresionFinal: $PresionFinal,
     Observacion: $Observacion
+    Despachado: $Despachado
   ){
     Id
     Orden

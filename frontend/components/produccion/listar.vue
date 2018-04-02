@@ -108,7 +108,7 @@ v-layout( row wrap )
       inventario () {
         this.$store.commit('produccion/changeEnvaseId', this.EnvaseActual ? this.EnvaseActual.Id : null);
         this.$store.commit('produccion/changeProductoId', this.ProductoActual ? this.ProductoActual.Id : null);
-        this.$store.commit('produccion/changeDespachado', this.Despachado ? this.Despachado : null);
+        //this.$store.commit('produccion/changeDespachado', this.Despachado ? this.Despachado : null);
         this.$router.push('/reporte/inventario');
       }
     }

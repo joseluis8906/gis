@@ -112,9 +112,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       Buscar () {
         var variables = {};
 
-        if(this.Orden !== null){
+        /*if(this.Orden !== null){
           variables.Orden = this.Orden;
-        }
+        }*/
 
         if(this.EnvaseId !== null){
           variables.EnvaseId = this.EnvaseId;
@@ -124,11 +124,12 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           variables.ProductoId = this.ProductoId;
         }
 
-        if(this.Despachado !== null){
+        /*if(this.Despachado !== null){
           variables.Despachado = this.Despachado;
         }else{
           variables.Despachado = 'No';
-        }
+        }*/
+        variables.Despachado = 'No';
 
         this.$apollo.query({
           query: PRODUCCIONS,
@@ -136,6 +137,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           variables: variables,
         }).then( res => {
           let data = res.data;
+          console.log(data.Produccions.length);
+          
           for( let i=0; i < data.Produccions.length; i++ ) {
             var tmp = {
               Type: 'INTERNA',
