@@ -165,6 +165,7 @@ v-layout( row wrap )
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }} {{ Producto.UnidadDeMedida }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Propietario.Nombre }}
+        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Despachado }}
         //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
@@ -250,6 +251,7 @@ v-layout( row wrap )
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
           //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+          { text: 'Despachado', align: 'center', sortable: false,  value: 'Despachado' }
         ],
         items: [],
         pagination: {
@@ -317,12 +319,7 @@ v-layout( row wrap )
             for ( let i=0; i<data.Recprodcoms.length; i++ ) {
               var tmp = {
                 Id: data.Recprodcoms[i].Id,
-                Envase: {
-                  Id: data.Recprodcoms[i].Envase.Id,
-                  Numero: data.Recprodcoms[i].Envase.Numero,
-                  Capacidad: data.Recprodcoms[i].Envase.Capacidad,
-                  Cliente: data.Recprodcoms[i].Envase.Propietario,
-                },
+                Envase: data.Recprodcoms[i].Envase,
                 Cantidad: data.Recprodcoms[i].Cantidad,
                 SaveUpdate: 'update',
                 EliminarDisable: data.Recprodcoms[i].Despachado === 'Si' ? true : false,
@@ -504,7 +501,7 @@ v-layout( row wrap )
       },
       Guardar () {
         //console.log(item)
-        if (this.AutorizacionGuardar()) return;
+        if (!this.AutorizacionGuardar()) return;
 
           this.$apollo.mutate ({
             mutation: CREATE_RECPRODCOM,

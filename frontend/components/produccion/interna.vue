@@ -406,6 +406,7 @@ v-layout( row wrap )
                 Despachado: data.Produccions[i].Despachado
               }
               this.items.push(tmp)
+
               if(!this.Cerrado && tmp.Despachado === 'Si') this.Cerrado=true;
             }
 
@@ -602,8 +603,7 @@ v-layout( row wrap )
               PresionFinal: this.PresionFinal,
               Observacion: this.Observacion,
               Despachado: 'No'
-            },
-            loadingKey: 'loading'
+            }
           }).then(res => {
             let data = res.data;
             var tmp = {
@@ -614,6 +614,9 @@ v-layout( row wrap )
               Despachado: data.CreateProduccion[i].Despachado
             }
             this.items.push(tmp);
+
+            this.ItemsEnvase = [];
+            this.EnvaseActual = {};
           });
       },
       eliminar (item) {
