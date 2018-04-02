@@ -404,11 +404,13 @@ v-layout( row wrap )
       ImprimirCantidad(item){
         let Produccion = item.Produccion;
         let Recprodcom = item.Recprodcom;
-        let EnvaseEntra = item.EnvaseEntra;
         let EnvaseSale = item.EnvaseSale;
+        let EnvaseEntra = item.EnvaseEntra;
 
         if(null !== Produccion) return `${Produccion.Cantidad} ${Produccion.Producto.UnidadDeMedida}`;
         if(null !== Recprodcom) return `${Recprodcom.Cantidad} ${Recprodcom.Producto.UnidadDeMedida}`;
+        if(null !== EnvaseSale) return `${EnvaseSale.Capacidad} ${EnvaseSale.Producto.UnidadDeMedida}`;
+        if(null !== EnvaseEntra) return `${EnvaseEntra.Capacidad} ${EnvaseEntra.Producto.UnidadDeMedida}`;
 
         return '';
       },
@@ -462,12 +464,8 @@ v-layout( row wrap )
         return '';
       },
       ImprimirEntra(item) {
-        let Produccion = item.Produccion;
-        let Recprodcom = item.Recprodcom;
         let EnvaseEntra = item.EnvaseEntra;
 
-        if(null !== Produccion) return Produccion.Envase.Numero;
-        if(null !== Recprodcom) return Recprodcom.Envase.Numero;
         if(null !== EnvaseEntra) return EnvaseEntra.Numero;
 
         return '';

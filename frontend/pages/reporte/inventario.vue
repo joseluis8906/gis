@@ -25,7 +25,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       thead
         tr(class="green lighten-3")
           th(style="width: 4%") N°
-          th(style="width: 4%") Tipo
+          th(style="width: 6%") Tipo
           th(style="width: 8%") Orden / Numero
           th(style="width: 8%") Cantidad
           th(style="width: 20%") Producto
@@ -35,7 +35,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(style="width: 10%") Fecha
             br
             | Vencimiento
-          th(style="width: 16%") Envase
+          th(style="width: 14%") Envase
           th(style="width: 10%") Pureza
           th(style="width: 10%") Presión
 
@@ -63,6 +63,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       return {
         pages: [],
         loading: 0,
+        itemsProduccionAndRecprodcom: [],
+        produccionListo: false,
+        recprodcomListo: false,
         Fecha: '2017-11-10'
       }
     },
@@ -87,6 +90,25 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       });
     },
     methods: {
+      Unificar (clase) {
+
+        if(!(this.produccionListo && this.recprodcomListo)) return;
+
+        let page = 0;
+        var contador = 0;
+
+        for( let i=0; i < this.itemsProduccionAndRecprodcom.length; i++ ) {
+          contador += 1;
+          if( Number.isInteger(i / 34) ){
+            page = Math.trunc(i / 34);
+            this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
+          }
+
+          this.itemsProduccionAndRecprodcom[i].Contador = contador;
+          this.pages[page].Items.push(this.itemsProduccionAndRecprodcom[i]);
+        }
+
+      },
       Buscar () {
         var variables = {};
 
@@ -108,20 +130,15 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           variables.Despachado = 'No';
         }
 
-        var Contador = 0;
-
         this.$apollo.query({
           query: PRODUCCIONS,
           fetchPolicy: 'network-only',
           variables: variables,
         }).then( res => {
           let data = res.data;
-          let page = 0;
           for( let i=0; i < data.Produccions.length; i++ ) {
-            Contador += 1;
             var tmp = {
-              Contador: Contador,
-              Type: 'PI',
+              Type: 'INTERNA',
               Orden: data.Produccions[i].Orden,
               Cantidad: data.Produccions[i].Cantidad,
               Producto: {
@@ -137,13 +154,12 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
               PresionFinal: data.Produccions[i].PresionFinal
             }
 
-            if( Number.isInteger(i / 34) ){
-              page = Math.trunc(i / 34);
-              this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
-            }
-
-            this.pages[page].Items.push(tmp)
+            this.itemsProduccionAndRecprodcom.push(tmp);
           }
+
+          this.produccionListo = true;
+          this.Unificar();
+
         });
 
         this.$apollo.query({
@@ -152,12 +168,9 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           variables: variables,
         }).then( res => {
           let data = res.data;
-          let page = 0;
           for( let i=0; i < data.Recprodcoms.length; i++ ) {
-            Contador += 1;
             var tmp = {
-              Contador: Contador,
-              Type: 'PC',
+              Type: 'EXTERNA',
               Numero: data.Recprodcoms[i].Numero,
               Cantidad: data.Recprodcoms[i].Cantidad,
               Producto: {
@@ -173,13 +186,12 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
               PresionFinal: data.Recprodcoms[i].PresionFinal
             }
 
-            if( Number.isInteger(i / 34) ){
-              page = Math.trunc(i / 34);
-              this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
-            }
-
-            this.pages[page].Items.push(tmp)
+            this.itemsProduccionAndRecprodcom.push(tmp);
           }
+
+          this.recprodcomListo = true;
+          this.Unificar();
+
         });
       },
       MaxLength ( value ) {
