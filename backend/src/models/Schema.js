@@ -1799,6 +1799,18 @@ var Mutation = new GraphQLObjectType({
           Despachado: {type: GraphQLString}
         },
         resolve(_, args) {
+
+          Db.models.Envase.findOne({
+            where: {
+              Id: args.EnvaseId
+            }
+          }).then( R => {
+            if(R){
+              R.Disponible = "No";
+              R.save();
+            }
+          });
+
           return Db.models.Produccion.create({
             Orden: args.Orden,
             Turno: args.Turno,
@@ -1897,6 +1909,18 @@ var Mutation = new GraphQLObjectType({
               Id: args.Id
             }
           }).then( R => {
+
+            Db.models.Envase.findOne({
+              where: {
+                Id: R.EnvaseId
+              }
+            }).then( E => {
+              if(E){
+                E.Disponible = "Si";
+                E.save();
+              }
+            });
+
             return R.destroy();
           });
         }
@@ -1922,6 +1946,19 @@ var Mutation = new GraphQLObjectType({
           Despachado: {type: GraphQLString}
         },
         resolve(_, args) {
+
+          Db.models.Envase.findOne({
+            where: {
+              Id: args.EnvaseId
+            }
+          }).then( R => {
+
+            if(R){
+              R.Disponible = "No";
+              R.save();
+            }
+          });
+
           return Db.models.Recprodcom.create({
             Numero: args.Numero,
             Fecha: args.Fecha,
@@ -1940,7 +1977,9 @@ var Mutation = new GraphQLObjectType({
             Observacion: args.Observacion,
             Despachado: 'No'
           }).then( R => {
+
               return R;
+
           });
         }
       },
@@ -1977,7 +2016,20 @@ var Mutation = new GraphQLObjectType({
               Id: args.Id
             }
           }).then( R => {
+
+            Db.models.Envase.findOne({
+              where: {
+                Id: R.EnvaseId
+              }
+            }).then( E => {
+              if(E){
+                E.Disponible = "Si";
+                E.save();
+              }
+            });
+
             return R.destroy();
+
           });
         }
       },

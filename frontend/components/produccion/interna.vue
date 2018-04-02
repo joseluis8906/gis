@@ -246,9 +246,8 @@ v-layout( row wrap )
       template(slot="items" scope="props")
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.index+1 }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
-        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
-        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
-        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
+        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }} {{ Producto.UnidadDeMedida }}
+        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Propietario.Nombre }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Despachado }}
         //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
@@ -281,7 +280,7 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-    v-btn(fab dark class="indigo mt-1" @click.native="agregar" :disabled="!Autorizacion")
+    v-btn(fab dark class="indigo mt-1" @click.native="agregar" :disabled="!Autorizacion || Cerrado")
       v-icon(dark) add
 
     v-card-actions
@@ -320,7 +319,7 @@ v-layout( row wrap )
         HoraFinal: null,
         FechaFabricacion: null,
         FechaVencimiento: null,
-        Producto: {Id: null, Nombre: null},
+        Producto: {},
         PurezaFinal: null,
         PresionFinal: null,
         Observacion: null,
@@ -330,7 +329,7 @@ v-layout( row wrap )
         headers: [
           { text: 'N°', align: 'center', sortable: false,  value: '' },
           { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
-          { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
+          //{ text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
           //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
@@ -342,7 +341,7 @@ v-layout( row wrap )
         },
         ItemsProducto: [],
         ItemsEnvase: [],
-        EnvaseActual: null,
+        EnvaseActual: {},
         months: [
           'Enero',
           'Febrero',
@@ -365,7 +364,8 @@ v-layout( row wrap )
         menu5: false,
         menu6: false,
         menu7: false,
-        Autorizacion: true,
+        Autorizacion: false,
+        Cerrado: false,
         loading: 0,
       }
     },
@@ -399,19 +399,14 @@ v-layout( row wrap )
             for ( let i=0; i<data.Produccions.length; i++ ) {
               var tmp = {
                 Id: data.Produccions[i].Id,
-                Envase: {
-                  Id: data.Produccions[i].Envase.Id,
-                  Numero: data.Produccions[i].Envase.Numero,
-                  Capacidad: data.Produccions[i].Envase.Capacidad,
-                  Cliente: data.Produccions[i].Envase.Propietario,
-                },
+                Envase: data.Produccions[i].Envase,
                 Cantidad: data.Produccions[i].Cantidad,
                 SaveUpdate: 'update',
                 EliminarDisable: data.Produccions[i].Despachado === 'Si' ? true : false,
                 Despachado: data.Produccions[i].Despachado
               }
               this.items.push(tmp)
-              if(this.Autorizacion && tmp.Despachado === 'Si') this.Autorizacion=false;
+              if(!this.Cerrado && tmp.Despachado === 'Si') this.Cerrado=true;
             }
 
           } else {
@@ -438,6 +433,13 @@ v-layout( row wrap )
       Producto: {
         handler: function () {
           this.changeProductoCounter ();
+          this.AutorizacionGuardar();
+        },
+        deep: true
+      },
+      EnvaseActual: {
+        handler (value) {
+          this.AutorizacionGuardar();
         },
         deep: true
       },
@@ -471,6 +473,21 @@ v-layout( row wrap )
       }
     },
     methods: {
+      AutorizacionGuardar(){
+        let requisito1 = this.Producto;
+        let requisito2 = this.EnvaseActual;
+
+        if(
+          requisito1.hasOwnProperty("Id") &&
+          requisito2.hasOwnProperty("Id")
+        ){
+          this.Autorizacion = true;
+          return true;
+        }
+
+        this.Autorizacion = false;
+        return false;
+      },
       SetToday() {
         this.Fecha = new Date(Date.now()-(1000*60*60*5)).toISOString().split('T')[0];
       },
@@ -561,42 +578,13 @@ v-layout( row wrap )
           this.BuscarEnvase();
         })
       },
-      agregar () {
-        if(
-          this.EnvaseActual !== null &&
-          this.Producto.Id !== null
-        ){
-          var tmp = {
-            Id: null,
-            Envase: {
-              Id: this.EnvaseActual.Id,
-              Numero: this.EnvaseActual.Numero,
-              Capacidad: this.EnvaseActual.Capacidad,
-              Cliente: this.EnvaseActual.Cliente
-            },
-            Cantidad: this.EnvaseActual.Capacidad,
-            SaveUpdate: 'save'
-          }
+      Guardar () {
 
-          this.guardar(tmp)
+        if (!this.AutorizacionGuardar()) return;
 
-          this.EnvaseActual = null
-        }
-      },
-      guardar (item) {
-        //console.log(item)
-        if (
-          item.Envase.Id !== null &&
-          item.Envase.Cantidad !== null &&
-          item.Envase.Cantidad !== '' &&
-          this.Producto.Id !== null
-        ) {
-
-          if ( item.Id === null ) {
-
-            item.SaveUpdate = 'update'
-
-            const Produccion = {
+          this.$apollo.mutate ({
+            mutation: CREATE_PRODUCCION,
+            variables: {
               Orden: this.Orden,
               Turno: this.Turno,
               Fecha: this.Fecha,
@@ -607,172 +595,45 @@ v-layout( row wrap )
               HoraFinal: this.HoraFinal,
               FechaFabricacion: this.FechaFabricacion,
               FechaVencimiento: this.FechaVencimiento,
-              Cantidad: item.Cantidad,
+              Cantidad: this.EnvaseActual.Capacidad,
               ProductoId: this.Producto.Id,
-              EnvaseId: item.Envase.Id,
+              EnvaseId: this.EnvaseActual.Id,
               PurezaFinal: this.PurezaFinal,
               PresionFinal: this.PresionFinal,
               Observacion: this.Observacion,
               Despachado: 'No'
+            },
+            loadingKey: 'loading'
+          }).then(res => {
+            let data = res.data;
+            var tmp = {
+              Id: data.CreateProduccion[i].Id,
+              Envase: data.CreateProduccion[i].Envase,
+              Cantidad: data.CreateProduccion[i].Cantidad,
+              EliminarDisable: data.CreateProduccion[i].Despachado === 'Si' ? true : false,
+              Despachado: data.CreateProduccion[i].Despachado
             }
-
-            this.$apollo.mutate ({
-              mutation: CREATE_PRODUCCION,
-              variables: {
-                Orden: Produccion.Orden,
-                Turno: Produccion.Turno,
-                Fecha: Produccion.Fecha,
-                Lote: Produccion.Lote,
-                FechaInicial: Produccion.FechaInicial,
-                FechaFinal: Produccion.FechaFinal,
-                HoraInicial: Produccion.HoraInicial,
-                HoraFinal: Produccion.HoraFinal,
-                FechaFabricacion: Produccion.FechaFabricacion,
-                FechaVencimiento: Produccion.FechaVencimiento,
-                Cantidad: Produccion.Cantidad,
-                ProductoId: Produccion.ProductoId,
-                EnvaseId: Produccion.EnvaseId,
-                PurezaFinal: Produccion.PurezaFinal,
-                PresionFinal: Produccion.PresionFinal,
-                Observacion: Produccion.Observacion,
-                Despachado: Produccion.Despachado
-              },
-              loadingKey: 'loading'
-            }).then(() => {
-              this.$apollo.queries.Produccions.refetch();
-            })
-
-            this.UpdateEnvase(item.Envase, 'No');
-
-          } else {
-
-            const Produccion = {
-              Id: item.Id,
-              Orden: this.Orden,
-              Turno: this.Turno,
-              Fecha: this.Fecha,
-              Lote: this.Lote,
-              FechaInicial: this.FechaInicial,
-              FechaFinal: this.FechaFinal,
-              HoraInicial: this.HoraInicial,
-              HoraFinal: this.HoraFinal,
-              FechaFabricacion: this.FechaFabricacion,
-              FechaVencimiento: this.FechaVencimiento,
-              Cantidad: item.Cantidad,
-              ProductoId: this.Producto.Id,
-              EnvaseId: item.Envase.Id,
-              PurezaFinal: this.PurezaFinal,
-              PresionFinal: this.PresionFinal,
-              Observacion: this.Observacion,
-              Despachado: item.Despachado
-            }
-
-            this.$apollo.mutate ({
-              mutation: UPDATE_ONE_PRODUCCION,
-              variables: {
-                Id: Produccion.Id,
-                Orden: Produccion.Orden,
-                Turno: Produccion.Turno,
-                Fecha: Produccion.Fecha,
-                Lote: Produccion.Lote,
-                FechaInicial: Produccion.FechaInicial,
-                FechaFinal: Produccion.FechaFinal,
-                HoraInicial: Produccion.HoraInicial,
-                HoraFinal: Produccion.HoraFinal,
-                FechaFabricacion: Produccion.FechaFabricacion,
-                FechaVencimiento: Produccion.FechaVencimiento,
-                Cantidad: Produccion.Cantidad,
-                ProductoId: Produccion.ProductoId,
-                EnvaseId: Produccion.EnvaseId,
-                PurezaFinal: Produccion.PurezaFinal,
-                PresionFinal: Produccion.PresionFinal,
-                Observacion: Produccion.Observacion,
-                Despachado: Produccion.Despachado
-              },
-              loadingKey: 'loading'
-            }).then(() => {
-              this.$apollo.queries.Produccions.refetch();
-            })
-
-          }
-
-        }
+            this.items.push(tmp);
+          });
       },
       eliminar (item) {
 
-        if ( item.Id === null ) {
-
-          for (let i=0; i<this.items.length; i++) {
-            if ( item.Envase.Id === this.items[i].Envase.Id ) {
-              this.items.splice(i, 1)
-            }
+        for (let i=0; i<this.items.length; i++) {
+          if ( item.Id === this.items[i].Id ) {
+            this.items.splice(i, 1);
           }
-
-        } else {
-
-          for (let i=0; i<this.items.length; i++) {
-            if ( item.Id === this.items[i].Id ) {
-              this.items.splice(i, 1)
-            }
-          }
-
-          if(item.Id === null){
-            return;
-          }
-
-          const Produccion = {
-            Id: item.Id,
-            Orden: this.Orden,
-            Turno: this.Turno,
-            Fecha: this.Fecha,
-            Lote: this.Lote,
-            FechaInicial: this.FechaInicial,
-            FechaFinal: this.FechaFinal,
-            HoraInicial: this.HoraInicial,
-            HoraFinal: this.HoraFinal,
-            FechaFabricacion: this.FechaFabricacion,
-            FechaVencimiento: this.FechaVencimiento,
-            Cantidad: item.Cantidad,
-            ProductoId: this.Producto.Id,
-            EnvaseId: item.Envase.Id,
-            PurezaFinal: this.PurezaFinal,
-            PresionFinal: this.PresionFinal,
-            Observacion: this.Observacion,
-            Despachado: 'No'
-          }
-
-          this.$apollo.mutate ({
-            mutation: DELETE_PRODUCCION,
-            variables: {
-              Id: Produccion.Id,
-              Orden: Produccion.Orden,
-              Turno: Produccion.Turno,
-              Fecha: Produccion.Fecha,
-              Lote: Produccion.Lote,
-              FechaInicial: Produccion.FechaInicial,
-              FechaFinal: Produccion.FechaFinal,
-              HoraInicial: Produccion.HoraInicial,
-              HoraFinal: Produccion.HoraFinal,
-              FechaFabricacion: Produccion.FechaFabricacion,
-              FechaVencimiento: Produccion.FechaVencimiento,
-              Cantidad: Produccion.Cantidad,
-              ProductoId: Produccion.ProductoId,
-              EnvaseId: Produccion.EnvaseId,
-              PurezaFinal: Produccion.PurezaFinal,
-              PresionFinal: Produccion.PresionFinal,
-              Observacion: Produccion.Observacion,
-              Despachado: Produccion.Despachado
-            },
-             loadingKey: 'loading'
-           }).then(() => {
-             this.$apollo.queries.Produccions.refetch();
-           })
-
-           this.UpdateEnvase(item.Envase, 'Si');
-
         }
 
-       },
+        this.$apollo.mutate ({
+          mutation: DELETE_PRODUCCION,
+          variables: {
+            Id: item.Id,
+          }
+         }).then(() => {
+           //Eliminado
+         });
+
+      },
       reset () {
 
         this.ChangeProducto = true

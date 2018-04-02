@@ -652,11 +652,6 @@ v-layout( row wrap )
         let requisito3 = this.EnvaseSaleActual;
         let requisito4 = this.EnvaseEntraActual;
 
-        //console.log(requisito1.hasOwnProperty("Id"));
-        //console.log(requisito2.hasOwnProperty("Id"));
-        //console.log(requisito3.hasOwnProperty("Id"));
-        //console.log(requisito4.hasOwnProperty("Id"));
-
         if(
           requisito1.hasOwnProperty("Id") &&
           (
@@ -670,7 +665,7 @@ v-layout( row wrap )
         }
 
         this.Autorizacion = false;
-        return true;
+        return false;
       },
       Guardar () {
         if(!this.AutorizacionGuardar()) return;

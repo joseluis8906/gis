@@ -163,9 +163,8 @@ v-layout( row wrap )
       template(slot="items" scope="props")
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.index+1 }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Envase.Numero }}
-        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ Producto.UnidadDeMedida }}
-        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }}
-        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Cliente.Nombre }}
+        td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }} {{ Producto.UnidadDeMedida }}
+        td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Propietario.Nombre }}
         //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
@@ -197,7 +196,7 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-    v-btn(fab dark class="indigo mt-1" @click.native="agregar" :disable="!Autorizacion")
+    v-btn(fab dark class="indigo mt-1" @click.native="Guardar" :disable="!Autorizacion || Cerrado")
       v-icon(dark) add
 
     v-card-actions
@@ -231,7 +230,7 @@ v-layout( row wrap )
         Lote: null,
         FechaFabricacion: null,
         FechaVencimiento: null,
-        Producto: {Id: null, Nombre: null},
+        Producto: {},
         PurezaFinal: null,
         PresionFinal: null,
         Certificado: null,
@@ -247,7 +246,7 @@ v-layout( row wrap )
         headers: [
           { text: 'N°', align: 'center', sortable: false,  value: '' },
           { text: 'Envase', align: 'center', sortable: false,  value: 'Numero' },
-          { text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
+          //{ text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
           //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
@@ -258,7 +257,7 @@ v-layout( row wrap )
         },
         ItemsProducto: [],
         ItemsEnvase: [],
-        EnvaseActual: null,
+        EnvaseActual: {},
         months: [
           'Enero',
           'Febrero',
@@ -283,6 +282,7 @@ v-layout( row wrap )
         menu6: false,
         menu7: false,
         Autorizacion: false,
+        Cerrado: false,
       }
     },
     apollo: {
@@ -355,6 +355,13 @@ v-layout( row wrap )
       Producto: {
         handler: function () {
           this.changeProductoCounter ();
+          this.AutorizacionGuardar();
+        },
+        deep: true
+      },
+      EnvaseActual: {
+        handler (value) {
+          this.AutorizacionGuardar();
         },
         deep: true
       },
@@ -374,6 +381,21 @@ v-layout( row wrap )
       }
     },
     methods: {
+      AutorizacionGuardar(){
+        let requisito1 = this.Producto;
+        let requisito2 = this.EnvaseActual;
+
+        if(
+          requisito1.hasOwnProperty("Id") &&
+          requisito2.hasOwnProperty("Id")
+        ){
+          this.Autorizacion = true;
+          return true;
+        }
+
+        this.Autorizacion = false;
+        return false;
+      },
       BuscarProveedor () {
         this.ItemsProveedor = [];
         if(null !== this.NombreDocumento && this.NombreDocumento.length >= 3){
@@ -480,44 +502,13 @@ v-layout( row wrap )
           this.BuscarEnvase();
         })
       },
-      agregar () {
-        if(
-          this.EnvaseActual !== null &&
-          this.Producto.Id !== null &&
-          this.Proveedor.Id !== null
-        ){
-          var tmp = {
-            Id: null,
-            Envase: {
-              Id: this.EnvaseActual.Id,
-              Numero: this.EnvaseActual.Numero,
-              Capacidad: this.EnvaseActual.Capacidad,
-              Cliente: this.EnvaseActual.Cliente
-            },
-            Cantidad: this.EnvaseActual.Capacidad,
-            SaveUpdate: 'save'
-          }
-
-          this.guardar(tmp)
-
-          this.EnvaseActual = null
-        }
-      },
-      guardar (item) {
+      Guardar () {
         //console.log(item)
-        if (
-          item.Envase.Id !== null &&
-          item.Envase.Cantidad !== null &&
-          item.Envase.Cantidad !== '' &&
-          this.Producto.Id !== null &&
-          this.Proveedor.Id !== null
-        ) {
+        if (this.AutorizacionGuardar()) return;
 
-          if ( item.Id === null ) {
-
-            item.SaveUpdate = 'update'
-
-            const Recprodcom = {
+          this.$apollo.mutate ({
+            mutation: CREATE_RECPRODCOM,
+            variables: {
               Numero: this.Numero,
               Fecha: this.Fecha,
               Lote: this.Lote,
@@ -534,99 +525,40 @@ v-layout( row wrap )
               Otros: this.Otros,
               Observacion: this.Observacion,
               Despachado: 'No'
+            },
+          }).then(() => {
+            let data = res.data;
+            var tmp = {
+              Id: data.CreateRecprodcom[i].Id,
+              Envase: data.CreateRecprodcom[i].Envase,
+              Cantidad: data.CreateRecprodcom[i].Cantidad,
+              EliminarDisable: data.CreateRecprodcom[i].Despachado === 'Si' ? true : false,
+              Despachado: data.CreateRecprodcom[i].Despachado
             }
+            this.items.push(tmp);
 
-            this.$apollo.mutate ({
-              mutation: CREATE_RECPRODCOM,
-              variables: {
-                Numero: Recprodcom.Numero,
-                Fecha: Recprodcom.Fecha,
-                Lote: Recprodcom.Lote,
-                FechaFabricacion: Recprodcom.FechaFabricacion,
-                FechaVencimiento: Recprodcom.FechaVencimiento,
-                Cantidad: Recprodcom.Cantidad,
-                EnteId: Recprodcom.EnteId,
-                ProductoId: Recprodcom.ProductoId,
-                EnvaseId: Recprodcom.EnvaseId,
-                PurezaFinal: Recprodcom.PurezaFinal,
-                PresionFinal: Recprodcom.PresionFinal,
-                Certificado: Recprodcom.Certificado,
-                RegistroSanitario: Recprodcom.RegistroSanitario,
-                Otros: Recprodcom.Otros,
-                Observacion: Recprodcom.Observacion,
-                Despachado: Recprodcom.Despachado
-              },
-            }).then(() => {
-              this.$apollo.queries.Recprodcoms.refetch();
-            })
-
-            this.UpdateEnvase(item.Envase, 'No');
-
-          } else {
-
-            const Recprodcom = {
-              Id: item.Id,
-              Cantidad: item.Cantidad,
-              EnvaseId: item.Envase.Id,
-              Despachado: item.Despachado
-            }
-
-            this.$apollo.mutate ({
-              mutation: UPDATE_ONE_RECPRODCOM,
-              variables: {
-                Id: Recprodcom.Id,
-                Cantidad: Recprodcom.Cantidad,
-                EnvaseId: Recprodcom.EnvaseId,
-                Despachado: Recprodcom.Despachado
-              },
-            }).then(() => {
-              this.$apollo.queries.Recprodcoms.refetch();
-            })
-
-          }
-
-        }
+            this.ItemsEnvase = [];
+            this.EnvaseActual = {};
+          });
       },
       eliminar (item) {
 
-        if ( item.Id === null ) {
-
-          for (let i=0; i<this.items.length; i++) {
-            if ( item.Envase.Id === this.items[i].Envase.Id ) {
-              this.items.splice(i, 1)
-            }
+        for (let i=0; i<this.items.length; i++) {
+          if ( item.Id === this.items[i].Id ) {
+            this.items.splice(i, 1)
           }
-
-        } else {
-
-          for (let i=0; i<this.items.length; i++) {
-            if ( item.Id === this.items[i].Id ) {
-              this.items.splice(i, 1)
-            }
-          }
-
-          if(item.Id === null){
-            return;
-          }
-
-          const Recprodcom = {
-            Id: item.Id
-          }
-
-          this.$apollo.mutate ({
-            mutation: DELETE_RECPRODCOM,
-            variables: {
-              Id: Recprodcom.Id
-            },
-           }).then(() => {
-             this.$apollo.queries.Recprodcoms.refetch();
-           })
-
-           this.UpdateEnvase(item.Envase, 'Si');
-
         }
 
-       },
+        this.$apollo.mutate ({
+          mutation: DELETE_RECPRODCOM,
+          variables: {
+            Id: Recprodcom.Id
+          },
+         }).then(() => {
+           //eliminado
+         });
+
+      },
       reset () {
 
         this.ChangeProducto = true
