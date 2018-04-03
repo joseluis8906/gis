@@ -2139,7 +2139,8 @@ var Mutation = new GraphQLObjectType({
               E.Disponible = 'Si';
               E.save();
             });
-          }*/
+          }
+          */
 
           if(args.EnvaseEntraId){
             Db.models.Envase.findOne({
