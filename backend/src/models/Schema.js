@@ -2118,6 +2118,7 @@ var Mutation = new GraphQLObjectType({
             });
           }
 
+          /*
           if(args.EnvaseProduccionId){
             Db.models.Envase.findOne({
               where: {
@@ -2138,9 +2139,18 @@ var Mutation = new GraphQLObjectType({
               E.Disponible = 'Si';
               E.save();
             });
-          }
+          }*/
 
           if(args.EnvaseEntraId){
+            Db.models.Envase.findOne({
+              where: {
+                Id: args.EnvaseEntraId
+              }
+            }).then( E => {
+              E.Disponible = 'Si';
+              E.save();
+            });
+
             Db.models.Kardex.findOne({
               where: {
                 EnvaseId: args.EnvaseEntraId,
