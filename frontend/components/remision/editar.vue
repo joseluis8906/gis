@@ -303,6 +303,7 @@ v-layout( row wrap )
         },
         update (data) {
           //console.log(this.$store.state.security.UserName);
+          console.log(data)
           if (data.Remisions.length > 0) {
             this.Fecha = data.Remisions[0].Fecha
             this.TipoEnte = data.Remisions[0].Tipo;
