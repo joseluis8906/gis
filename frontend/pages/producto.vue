@@ -88,7 +88,7 @@ export default {
       var Roles = JSON.parse(sessionStorage.getItem('x-access-roles'))
       this.$store.commit('security/AddRoles', Roles);
 
-      var AvailableRoles = ["Gerencia"];
+      var AvailableRoles = ["Gerencia", "Produccion"];
 
       var allowAccess = false;
       for (let i=0;i<Roles.length; i++) {
