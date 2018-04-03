@@ -111,7 +111,7 @@ v-layout( row wrap )
         td(class="text-xs-right" style="border-left: 1px solid #999999") {{ ImprimirLote(props.item) }}
         td(class="text-xs-left" style="border-left: 1px solid #999999") {{ ImprimirEntra(props.item) }}
         td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
-        //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        //- td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
@@ -298,6 +298,7 @@ v-layout( row wrap )
         variables () {
           return {
             Numero: this.Numero,
+            VendedorId: this.VendedorId
           }
         },
         update (data) {
@@ -332,11 +333,12 @@ v-layout( row wrap )
         fetchPolicy: 'network-only',
         variables () {
           return {
-            NombreDocumento: this.$store.state.security.UserName,
+            NumeroDocumento: this.$store.state.security.UserName,
             Relacion: 'Vendedor'
           }
         },
         update (data) {
+
           if(data.Entes.length > 0){
             this.VendedorId = data.Entes[0].Id
           }
@@ -675,6 +677,7 @@ v-layout( row wrap )
             Recprodcom: this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? this.ProduccionAndRecprodcomActual : null,
             EnvaseEntra: this.EnvaseEntraActual,
             Total: this.TotalActual,
+            VendedorId: this.VendedorId,
             SaveUpdate: 'save'
           }
 
@@ -685,6 +688,7 @@ v-layout( row wrap )
             Id: null,
             EnvaseEntra: this.EnvaseEntraActual ? { Id: this.EnvaseEntraActual.Id,  Numero: this.EnvaseEntraActual.Numero } : null,
             EnvaseSale: this.EnvaseSaleActual ? { Id: this.EnvaseSaleActual.Id,  Numero: this.EnvaseSaleActual.Numero } : null,
+            VendedorId: this.VendedorId,
             SaveUpdate: 'save'
           }
 

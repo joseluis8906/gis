@@ -1,8 +1,12 @@
 query Entes(
+  $NumeroDocumento: String
+  $Ciudad: String
   $NombreDocumento: String
   $Relacion: String
 ) {
   Entes(
+    NumeroDocumento: $NumeroDocumento
+    Ciudad: $Ciudad
     NombreDocumento: $NombreDocumento
     Relacion: $Relacion
   ) {

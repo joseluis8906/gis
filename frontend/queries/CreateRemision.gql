@@ -8,6 +8,7 @@ mutation CreateRemision (
   $EnvaseRecprodcomId: Int
   $EnvaseEntraId: Int
   $Total: Float
+  $VendedorId: Int
 ) {
   CreateRemision (
     Numero: $Numero
@@ -19,6 +20,7 @@ mutation CreateRemision (
     EnvaseRecprodcomId: $EnvaseRecprodcomId
     EnvaseEntraId: $EnvaseEntraId
     Total: $Total
+    VendedorId: $VendedorId
   ){
     Id
     Numero
@@ -30,6 +32,7 @@ mutation CreateRemision (
     EnvaseSaleId
     Total
     Tipo
+    VendedorId
     Ente {
       Id
       TipoDocumento
@@ -92,6 +95,15 @@ mutation CreateRemision (
         Nombre
         UnidadDeMedida
       }
+    }
+    Vendedor {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Ciudad
+      Direccion
+      Telefono
     }
   }
 }

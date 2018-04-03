@@ -662,6 +662,12 @@ var Remision = new GraphQLObjectType({
           return Remision.Tipo;
         }
       },
+      VendedorId: {
+        type: GraphQLInt,
+        resolve(Remision) {
+          return Remision.VendedorId;
+        }
+      },
       Ente: {
         type: Ente,
         resolve(Remision) {
@@ -691,7 +697,13 @@ var Remision = new GraphQLObjectType({
         resolve(Remision) {
           return Remision.getEnvaseSale();
         }
-      }
+      },
+      Vendedor: {
+        type: Ente,
+        resolve(Remision) {
+          return Remision.getVendedor();
+        }
+      },
     }
   }
 });
@@ -912,7 +924,9 @@ var Query = new GraphQLObjectType({
         },
         resolve(root, args) {
           if(!args.NombreDocumento){
-            return Db.models.Ente.findAll();
+            return Db.models.Ente.findAll({
+              where: args
+            });
           }
 
           return Db.models.Ente.findAll({
@@ -1347,7 +1361,8 @@ var Query = new GraphQLObjectType({
           EnvaseEntraId: {type: GraphQLInt},
           EnvaseSaleId: {type: GraphQLInt},
           Total: {type: GraphQLFloat},
-          Tipo: {type: GraphQLString}
+          Tipo: {type: GraphQLString},
+          VendedorId: {type: GraphQLInt},
         },
         resolve(root, args) {
           return Db.models.Remision.findAll({ where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
@@ -1365,7 +1380,8 @@ var Query = new GraphQLObjectType({
           EnvaseEntraId: {type: GraphQLInt},
           EnvaseSaleId: {type: GraphQLInt},
           Total: {type: GraphQLFloat},
-          Tipo: {type: GraphQLFloat}
+          Tipo: {type: GraphQLFloat},
+          VendedorId: {type: GraphQLInt},
         },
         resolve(root, args) {
           return Db.models.Remision.findOne({where: args, order: [['Fecha', 'DESC'], ['Numero', 'DESC']]})
@@ -2045,7 +2061,8 @@ var Mutation = new GraphQLObjectType({
           RecprodcomId: {type: GraphQLInt},
           EnvaseRecprodcomId: {type: GraphQLInt},
           EnvaseEntraId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
+          Total: {type: GraphQLFloat},
+          VendedorId: {type: GraphQLInt}
         },
         resolve(_, args) {
 
@@ -2169,7 +2186,8 @@ var Mutation = new GraphQLObjectType({
             RecprodcomId: args.RecprodcomId,
             EnvaseEntraId: args.EnvaseEntraId,
             Total: args.Total,
-            Tipo: 'Cliente'
+            Tipo: 'Cliente',
+            VendedorId: args.VendedorId
           }).then( R => {
             return R;
           });
@@ -2271,7 +2289,8 @@ var Mutation = new GraphQLObjectType({
             EnteId: args.EnteId,
             EnvaseSaleId: args.EnvaseSaleId,
             EnvaseEntraId: args.EnvaseEntraId,
-            Tipo: 'Proveedor'
+            Tipo: 'Proveedor',
+            VendedorId: args.VendedorId
           }).then( R => {
             return R;
           });

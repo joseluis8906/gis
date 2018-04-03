@@ -1,12 +1,14 @@
 query Remisions (
-  $Numero: String,
-  $Fecha: String,
+  $Numero: String
+  $Fecha: String
   $EnteId: Int
+  $VendedorId: Int
 ) {
   Remisions (
-    Numero: $Numero,
-    Fecha: $Fecha,
+    Numero: $Numero
+    Fecha: $Fecha
     EnteId: $EnteId
+    VendedorId: $VendedorId
   ){
     Id
     Numero
@@ -18,6 +20,7 @@ query Remisions (
     EnvaseSaleId
     Total
     Tipo
+    VendedorId
     Ente {
       Id
       TipoDocumento
@@ -80,6 +83,15 @@ query Remisions (
         Nombre
         UnidadDeMedida
       }
+    }
+    Vendedor {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Ciudad
+      Direccion
+      Telefono
     }
   }
 }

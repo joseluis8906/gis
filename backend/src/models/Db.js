@@ -197,15 +197,16 @@ const Remision = Db.define('Remision', {
   EnvaseEntraId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
   EnvaseSaleId: {type: Sequelize.INTEGER, references: {model: Envase, key: "Id"}},
   Total: Sequelize.DECIMAL,
-  Tipo: Sequelize.STRING
+  Tipo: Sequelize.STRING,
+  VendedorId: {type: Sequelize.INTEGER, references: {model: Ente, key: "Id"}}
 },
 {
   timestamps: false,
   freezeTableName: true
 });
 
-Ente.hasMany(Remision)
-Remision.belongsTo(Ente)
+Ente.hasMany(Remision, {foreignKey: 'EnteId'})
+Remision.belongsTo(Ente, {foreignKey: 'EnteId'})
 
 Produccion.hasMany(Remision)
 Remision.belongsTo(Produccion)
@@ -218,6 +219,9 @@ Remision.belongsTo(Envase, {as: 'EnvaseEntra',  foreignKey: 'EnvaseEntraId'});
 
 Envase.hasOne(Remision, {foreignKey: 'EnvaseSaleId'});
 Remision.belongsTo(Envase, {as: 'EnvaseSale', foreignKey: 'EnvaseSaleId'});
+
+Ente.hasMany(Remision, {foreignKey: 'VendedorId'})
+Remision.belongsTo(Ente, {foreignKey: 'VendedorId', as: 'Vendedor'})
 
 
 //kardex
