@@ -298,7 +298,7 @@ v-layout( row wrap )
         variables () {
           return {
             Numero: this.Numero,
-            VendedorId: this.VendedorId
+            VendedorId: this.VendedorId ? this.VendedorId : 0
           }
         },
         update (data) {
