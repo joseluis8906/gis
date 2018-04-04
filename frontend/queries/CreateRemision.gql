@@ -83,6 +83,7 @@ mutation CreateRemision (
       Numero
       Capacidad
       Producto {
+        Id
         Nombre
         UnidadDeMedida
       }
@@ -92,6 +93,7 @@ mutation CreateRemision (
       Numero
       Capacidad
       Producto {
+        Id
         Nombre
         UnidadDeMedida
       }

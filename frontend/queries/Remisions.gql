@@ -71,6 +71,7 @@ query Remisions (
       Numero
       Capacidad
       Producto {
+        Id
         Nombre
         UnidadDeMedida
       }
@@ -80,6 +81,7 @@ query Remisions (
       Numero
       Capacidad
       Producto {
+        Id
         Nombre
         UnidadDeMedida
       }

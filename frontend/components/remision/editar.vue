@@ -321,6 +321,7 @@ v-layout( row wrap )
                 Total: data.Remisions[i].Total,
                 SaveUpdate: 'update',
               }
+              
               this.items.push(tmp)
             }
           } else {
