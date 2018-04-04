@@ -44,6 +44,7 @@ query Correrias (
         Id
         Numero
         Capacidad
+        Valvula
         Propietario {
           Id
           Nombre
@@ -67,6 +68,7 @@ query Correrias (
         Id
         Numero
         Capacidad
+        Valvula
         Propietario {
           Id
           Nombre

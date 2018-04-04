@@ -8,13 +8,13 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           th(rowspan="5" style="width: 7.5%; text-align: center")
             img(src="~assets/logo.gis.png" style="width: 100%")
           th(rowspan="5" style="text-align: center; width: 80%") INVENTARIO
-        //-tr
+        tr
           td(class="lado") Código
           td(class="lado") FVT-017
         tr
           td(class="lado") Página
           td(class="lado") 0{{ i+1 }}
-        //-tr
+        tr
           td(class="lado") Versión
           td(class="lado") 01
         tr

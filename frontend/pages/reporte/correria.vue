@@ -7,14 +7,14 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         tr
           th(rowspan="5" style="width: 7.5%; text-align: center")
             img(src="~assets/logo.gis.png" style="width: 100%")
-          th(rowspan="5" style="text-align: center; width: 80%") INVENTARIO
-        //-tr
+          th(rowspan="5" style="text-align: center; width: 75%") ENTREGA DE ENVASES
+        tr
           td(class="lado") Código
           td(class="lado") FEV-004
         tr
           td(class="lado") Página
           td(class="lado") 0{{ i+1 }}
-        //-tr
+        tr
           td(class="lado") Versión
           td(class="lado") 09
         tr
@@ -39,7 +39,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right; font-size: 7.5pt;") {{ ImprimirCantidad(item) }}
           td(style="text-align: right; font-size: 7.5pt;")
           td(style="text-align: right; font-size: 7.5pt;") {{ ImprimirEnvase(item) }}
-          td(style="text-align: right; font-size: 7.5pt;") {{ ImprimirCliente(item) }}
+          td(style="text-align: right; font-size: 7.5pt;") {{ MaxLength(ImprimirCliente(item)) }}
           td(style="text-align: right; font-size: 7.5pt;") {{ ImprimirLote(item) }}
           td(style="text-align: right; font-size: 7.5pt;") Lleno
           td(style="text-align: right; font-size: 7.5pt;") {{ ImprimirTapa(item) }}
@@ -96,7 +96,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
 
             if( Number.isInteger(i / 34) ){
               page = Math.trunc(i / 34);
-              this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
+              this.pages.push({Size: 'Letter', Layout: 'Portrait', Items: []});
             }
 
             this.pages[page].Items.push(tmp);
