@@ -36,8 +36,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: left") Cantidad:
           td(style="text-align: right") {{ Cantidad }}
         tr
-          td(style="text-align: left") Cantidad M³:
-          td(style="text-align: right") {{ CantidadM3 }} {{ UnidadDeMedida }}
+          td(style="text-align: left") Cantidad Vol:
+          td(style="text-align: right") {{ Redondear(CantidadM3, 1) }} {{ UnidadDeMedida }}
         tr
           td(style="text-align: left") Nº De Lote:
           td(style="text-align: right") {{ Lote }}
@@ -284,6 +284,18 @@ export default {
     MaxLength (value, len) {
       if(value){
         return value.length >= len ? value.substr(0, (len-3))+'...' : value;
+      }
+    },
+    Redondear(num, scale) {
+      if(!("" + num).includes("e")) {
+        return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+      } else {
+        var arr = ("" + num).split("e");
+        var sig = ""
+        if(+arr[1] + scale > 0) {
+          sig = "+";
+        }
+        return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
       }
     }
   }
