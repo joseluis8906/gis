@@ -1,5 +1,5 @@
 export const state = {
-  Numero: null
+  Numero: null,
   VendedorId: null
 }
 

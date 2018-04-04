@@ -54,9 +54,6 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       return {
         pages: [],
         loading: 0,
-        itemsProduccionAndRecprodcom: [],
-        produccionListo: false,
-        recprodcomListo: false,
         Fecha: '2017-11-10'
       }
     },
@@ -85,16 +82,24 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         }).then( res => {
           let data = res.data;
           var contador = 0;
+          let page = 0;
+
           for( let i=0; i < data.Correrias.length; i++ ) {
             contador += 1;
+
             var tmp = {
               Contador: contador,
               Numero: data.Correrias[i].Numero,
-              Recprodcom: data.Correrias.Recprodcom,
-              Produccion: data.Correrias.Produccion
+              Recprodcom: data.Correrias[i].Recprodcom,
+              Produccion: data.Correrias[i].Produccion
             }
 
-            this.items.push(tmp);
+            if( Number.isInteger(i / 34) ){
+              page = Math.trunc(i / 34);
+              this.pages.push({Size: 'Letter', Layout: 'Landscape', Items: []});
+            }
+
+            this.pages[page].Items.push(tmp);
           }
         });
       },
@@ -123,6 +128,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         return '';
       },
       ImprimirCliente(item){
+        console.log(item);
         let Produccion = item.Produccion;
         let Recprodcom = item.Recprodcom;
 

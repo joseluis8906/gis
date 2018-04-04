@@ -104,7 +104,7 @@ v-layout( row wrap )
     v-card-actions
       v-spacer
       v-btn( dark warning @click.native="Limpiar" ) Limpiar
-      v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
+      v-btn( dark primary @click.native="Imprimir" class="mt-0" ) Imprimir
 
 </template>
 
