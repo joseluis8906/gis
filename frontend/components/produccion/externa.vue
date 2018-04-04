@@ -197,12 +197,12 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-    v-btn(fab dark class="indigo mt-1" @click.native="Guardar" :disable="!Autorizacion || Cerrado")
+    v-btn(fab dark class="indigo mt-1" @click.native="Guardar" :disabled="!Autorizacion || Cerrado")
       v-icon(dark) add
 
     v-card-actions
       v-spacer
-      v-btn( dark warning @click.native="hardReset" ) Limpiar
+      v-btn( dark warning @click.native="Limpiar" ) Limpiar
       v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
 
 </template>
@@ -563,14 +563,16 @@ v-layout( row wrap )
         this.Lote = null
         this.FechaFabricacion = null
         this.FechaVencimiento = null
-        this.Producto = {Id: null, Nombre: null}
-        this.Proveedor = {Nombre: null, NumeroDocumento: null, Id: null}
+        this.Producto = {}
+        this.Proveedor = {}
+        this.EnvaseActual = {}
         this.PurezaFinal = null
         this.PresionFinal = null
         this.Certificado = null
         this.RegistroSanitario = null
         this.Otros = null
         this.Observacion = null
+        this.NumeroEnvase = null
 
         this.ItemsEnvase = []
         this.ItemsProveedor = []
@@ -579,9 +581,8 @@ v-layout( row wrap )
 
         this.SetToday();
       },
-      hardReset () {
-        this.Orden = null
-        this.reset ()
+      Limpiar () {
+        this.LastRecprodcom();
       },
       changeProductoCounter (){
         this.ChangeProductoCounter++

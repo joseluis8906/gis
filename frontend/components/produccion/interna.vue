@@ -285,7 +285,7 @@ v-layout( row wrap )
 
     v-card-actions
       v-spacer
-      v-btn( dark warning @click.native="hardReset" ) Limpiar
+      v-btn( dark warning @click.native="Limpiar" ) Limpiar
       v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
 
 </template>
@@ -649,7 +649,8 @@ v-layout( row wrap )
         this.HoraFinal = null
         this.FechaFabricacion = null
         this.FechaVencimiento = null
-        this.Producto = {Id: null, Nombre: null}
+        this.Producto = {}
+        this.EnvaseActual = {}
         this.PurezaFinal = null
         this.PresionFinal = null
         this.Observacion = null
@@ -660,9 +661,8 @@ v-layout( row wrap )
 
         this.SetToday();
       },
-      hardReset () {
-        this.Orden = null
-        this.reset ()
+      Limpiar () {
+        this.LastProduccion();
       },
       changeProductoCounter (){
         this.ChangeProductoCounter++

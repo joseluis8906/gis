@@ -197,7 +197,7 @@ v-layout( row wrap )
       v-btn(
         dark
         warning
-        @click.native="hardReset"
+        @click.native="Limpiar"
         class="mt-0" ) Limpiar
 
 </template>
@@ -902,7 +902,7 @@ v-layout( row wrap )
         }
 
       },
-      hardReset () {
+      Limpiar () {
         this.Numero = null
       },
       reset () {
@@ -910,10 +910,24 @@ v-layout( row wrap )
         this.Fecha = null,
 
         this.ClienteOProveedor = {};
-        this.ItemsClienteOProveedor = [];
+        this.EnvaseEntraActual = {}
+        this.EnvaseSaleActual = {}
+        this.ProduccionAndRecprodcomActual = {}
 
+        this.ItemsClienteOProveedor = [];
+        this.ItemsProduccionAndRecprodcom = [];
+        this.ItemsAllEnvase = [];
+        this.ItemsEnvaseEntra = [];
+        this.ItemsEnvaseSale = [];
         this.items = []
         this.TipoEnte = 'Cliente';
+
+        this.NumeroEnvaseEntra = null;
+        this.NumeroEnvaseSale = null;
+        this.NumeroProduccionAndRecprodcom = null;
+        this.NombreDocumento = null;
+
+
       },
       generar () {
         this.$store.commit('remision/changeNumero', this.Numero)
