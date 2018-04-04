@@ -100,6 +100,12 @@ v-layout( row wrap )
             :disabled="props.item.EliminarDisable")
 
             v-icon remove
+
+    v-card-actions
+      v-spacer
+      v-btn( dark warning @click.native="Limpiar" ) Limpiar
+      v-btn( dark primary @click.native="generar" class="mt-0" ) Imprimir
+
 </template>
 
 <style>
@@ -193,7 +199,7 @@ export default {
         }
       },
       update (data) {
-        
+
         this.ItemsVendedor = [];
         this.items = [];
 
@@ -436,6 +442,13 @@ export default {
       this.ItemsProduccionAndRecprodcom = [];
 
       this.items = [];
+    },
+    Limpiar () {
+      this.LastCorreria ();
+    },
+    Imprimir () {
+      this.$store.commit('correria/changeNumero', this.Numero)
+      this.$router.push('/reporte/correria')
     }
   }
 }
