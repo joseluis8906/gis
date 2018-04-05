@@ -190,15 +190,15 @@ v-layout( row wrap )
 
       v-btn(
         dark
-        primary
-        @click.native="generar"
-        class="mt-0" ) Imprimir
-
-      v-btn(
-        dark
         warning
         @click.native="Limpiar"
         class="mt-0" ) Limpiar
+
+      v-btn(
+        dark
+        primary
+        @click.native="generar"
+        class="mt-0" ) Imprimir
 
 </template>
 
@@ -321,7 +321,7 @@ v-layout( row wrap )
                 Total: data.Remisions[i].Total,
                 SaveUpdate: 'update',
               }
-              
+
               this.items.push(tmp)
             }
           } else {
