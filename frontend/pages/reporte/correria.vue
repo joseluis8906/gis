@@ -44,6 +44,15 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
           td(style="text-align: right; font-size: 7.5pt;") Lleno
           td(style="text-align: right; font-size: 7.5pt;") {{ ImprimirTapa(item) }}
 
+    table(style="width: 100%;")
+      tbody
+        tr
+          td(style="border-top: none") Entregó:
+          td(style="border-top: none") Recibí:
+        tr
+          td Cargo:
+          td Cargo:
+
 </template>
 
 <script>
