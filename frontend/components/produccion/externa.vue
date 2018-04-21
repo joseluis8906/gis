@@ -166,7 +166,7 @@ v-layout( row wrap )
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ props.item.Cantidad }} {{ Producto.UnidadDeMedida }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Envase.Propietario.Nombre }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Despachado }}
-        //-td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
@@ -174,7 +174,7 @@ v-layout( row wrap )
             error
             style="width: 16px; height:16px"
             @click.native="eliminar(props.item)"
-            :disabled="props.item.EliminarDisable")
+            :disabled="props.item.Despachado === 'Si' || Cerrado")
 
             v-icon remove
 
@@ -241,7 +241,6 @@ v-layout( row wrap )
         NombreDocumento: null,
         ItemsProveedor: [],
         Proveedor: {},
-        saveUpdate: 'save',
         ChangeProducto: true,
         ChangeProductoCounter: 0,
         headers: [
@@ -250,8 +249,8 @@ v-layout( row wrap )
           //{ text: 'U. de Medida', align: 'center', sortable: false,  value: 'U. de Medida' },
           { text: 'Cantidad', align: 'center', sortable: false,  value: 'Cantidad' },
           { text: 'Cliente', align: 'center', sortable: false,  value: 'Cliente' },
-          //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
-          { text: 'Despachado', align: 'center', sortable: false,  value: 'Despachado' }
+          { text: 'Despachado', align: 'center', sortable: false,  value: 'Despachado' },
+          { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
         ],
         items: [],
         pagination: {
@@ -321,11 +320,11 @@ v-layout( row wrap )
                 Id: data.Recprodcoms[i].Id,
                 Envase: data.Recprodcoms[i].Envase,
                 Cantidad: data.Recprodcoms[i].Cantidad,
-                SaveUpdate: 'update',
-                EliminarDisable: data.Recprodcoms[i].Despachado === 'Si' ? true : false,
                 Despachado: data.Recprodcoms[i].Despachado
               }
               this.items.push(tmp)
+
+              if(!this.Cerrado && tmp.Despachado === 'Si') this.Cerrado=true;
             }
 
           } else {
@@ -573,6 +572,7 @@ v-layout( row wrap )
         this.Otros = null
         this.Observacion = null
         this.NumeroEnvase = null
+        this.Cerrado = false
 
         this.ItemsEnvase = []
         this.ItemsProveedor = []

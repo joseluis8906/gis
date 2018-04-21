@@ -41,7 +41,7 @@
             sessionStorage.setItem('x-access-username', this.UserName)
             sessionStorage.setItem('x-access-token', res.data.Token)
             sessionStorage.setItem('x-access-roles', JSON.stringify(res.data.Roles))
-            this.$router.push('/inspire')
+            this.$router.push('/about')
           }
         });
       }
