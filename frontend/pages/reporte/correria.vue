@@ -75,6 +75,13 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         return this.$store.state.correria.Numero;
       }
     },
+    watch: {
+      Numero: {
+        handler(value) {
+          console.log(value)
+        }
+      }
+    },
     mounted () {
       this.$nextTick(() => {
         this.Buscar();
@@ -85,7 +92,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         this.$apollo.query({
           query: CORRERIAS,
           fetchPolicy: 'network-only',
-          variables () {
+          variables: {
             Numero: this.Numero
           }
         }).then( res => {
@@ -100,7 +107,8 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
               Contador: contador,
               Numero: data.Correrias[i].Numero,
               Recprodcom: data.Correrias[i].Recprodcom,
-              Produccion: data.Correrias[i].Produccion
+              Produccion: data.Correrias[i].Produccion,
+              Ente: data.Correrias[i].Ente,
             }
 
             if( Number.isInteger(i / 34) ){
@@ -115,7 +123,7 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
       MaxLength ( value ) {
         if( value ){
           //console.log(value.length)
-          return value.length >= 26 ? value.substr(0, 20)+'...'+value.substr(-6, 6) : value;
+          return value.length >= 26 ? value.substr(0, 26)+'...': value;
         }
       },
       ImprimirCantidad(item){
@@ -137,14 +145,14 @@ v-container(pt-0 pr-0 pb-0 pl-0 mt-0 mb-0)
         return '';
       },
       ImprimirCliente(item){
-        console.log(item);
-        let Produccion = item.Produccion;
-        let Recprodcom = item.Recprodcom;
+        //console.log(item);
+        //let Produccion = item.Produccion;
+        //let Recprodcom = item.Recprodcom;
 
-        if(null !== Produccion) return Produccion.Envase.Propietario.Nombre;
-        if(null !== Recprodcom) return Recprodcom.Envase.Propietario.Nombre;
+        //if(null !== Produccion) return Produccion.Envase.Propietario.Nombre;
+        //if(null !== Recprodcom) return Recprodcom.Envase.Propietario.Nombre;
 
-        return '';
+        return item.Ente.Nombre;
       },
       ImprimirLote(item){
         let Produccion = item.Produccion;

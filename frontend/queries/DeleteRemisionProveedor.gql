@@ -2,7 +2,7 @@ mutation DeleteRemisionProveedor (
   $Id: Int
   $Numero: String
   $EnvaseEntraId: Int
-  $EnvaseSaleId: Int
+  $EnvaseSaleId: Int  
 ) {
   DeleteRemisionProveedor (
     Id: $Id

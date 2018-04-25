@@ -4,6 +4,7 @@ mutation CreateRemisionProveedor (
   $EnteId: Int
   $EnvaseEntraId: Int
   $EnvaseSaleId: Int
+  $VendedorId: Int
 ) {
   CreateRemisionProveedor (
     Numero: $Numero
@@ -11,6 +12,7 @@ mutation CreateRemisionProveedor (
     EnteId: $EnteId
     EnvaseEntraId: $EnvaseEntraId
     EnvaseSaleId: $EnvaseSaleId
+    VendedorId: $VendedorId
   ){
     Id
     Numero
@@ -22,6 +24,7 @@ mutation CreateRemisionProveedor (
     EnvaseSaleId
     Total
     Tipo
+    VendedorId
     Ente {
       Id
       TipoDocumento
@@ -84,6 +87,15 @@ mutation CreateRemisionProveedor (
         Nombre
         UnidadDeMedida
       }
+    }
+    Vendedor {
+      Id
+      TipoDocumento
+      NumeroDocumento
+      Nombre
+      Ciudad
+      Direccion
+      Telefono
     }
   }
 }

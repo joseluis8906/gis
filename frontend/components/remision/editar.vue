@@ -111,20 +111,22 @@ v-layout( row wrap )
         td(class="text-xs-right" style="border-left: 1px solid #999999") {{ ImprimirLote(props.item) }}
         td(class="text-xs-left" style="border-left: 1px solid #999999") {{ ImprimirEntra(props.item) }}
         td(class="text-xs-right pl-2 pr-2" style="min-width: 64px; border-left: 1px solid #999999") {{ props.item.Total | currency('$', 0) }}
-        //- td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
             small
             error
             style="width: 16px; height:16px"
-            @click.native="eliminar(props.item)"
-            :disabled="EsSoloVendedor")
+            @click.native="eliminar(props.item)")
+            //-:disabled="EsSoloVendedor")
 
             v-icon(dark) remove
 
     v-layout(row wrap mt-5)
-      v-flex(xs12 md4 v-if="TipoEnte==='Cliente'")
+      v-flex(xs12)
+        v-switch(v-model="Entra" :label="EntradaSalida")
+      v-flex(xs12 md6 v-if="TipoEnte==='Cliente' && EntradaSalida==='Salida'")
         v-text-field(
           v-model="NumeroProduccionAndRecprodcom"
           label="Buscar Sale"
@@ -140,7 +142,7 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-      v-flex(xs12 md4 v-if="TipoEnte==='Proveedor'")
+      v-flex(xs12 md6 v-if="TipoEnte==='Proveedor' && EntradaSalida==='Salida'")
         v-text-field(
           v-model="NumeroEnvaseSale"
           label="Buscar Sale"
@@ -156,7 +158,7 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-      v-flex(xs12 md4)
+      v-flex(xs12 v-if="EntradaSalida==='Entrada'")
         v-text-field(
           v-model="NumeroEnvaseEntra"
           label="Buscar Entra"
@@ -172,7 +174,7 @@ v-layout( row wrap )
           autocomplete
           dark )
 
-      v-flex(xs12 md4)
+      v-flex(xs12 md6 v-if="TipoEnte==='Cliente' && EntradaSalida==='Salida'")
         v-money(
           label="Total"
           v-model="TotalActual"
@@ -230,6 +232,14 @@ v-layout( row wrap )
 
 
   export default {
+    mounted () {
+      this.$nextTick(() => {
+        if(!this.$store.state.security.Roles.includes("Gerencia")){
+          this.EsSoloVendedor = true;
+        }
+        //console.log(this.$store.state.security.UserName);
+      })
+    },
     data () {
       return {
         Numero: null,
@@ -263,7 +273,7 @@ v-layout( row wrap )
           { text: 'Lote', align: 'center', sortable: false,  value: 'Lote' },
           { text: 'Entra', align: 'center', sortable: false,  value: 'Entra' },
           { text: 'Total', align: 'center', sortable: false,  value: 'Total' },
-          //{ text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
+          { text: 'Eliminar', align: 'center', sortable: false,  value: 'Eliminar' }
         ],
         items: [],
 
@@ -289,6 +299,8 @@ v-layout( row wrap )
         Autorizacion: false,
         VendedorId: null,
         EsSoloVendedor: false,
+        EntradaSalida: 'Salida',
+        Entra: false,
       }
     },
     apollo: {
@@ -363,13 +375,6 @@ v-layout( row wrap )
         }
       },*/
     },
-    mounted() {
-      this.$nextTick(() => {
-        if(!this.$store.state.security.Roles.includes("Gerencia")){
-          this.EsSoloVendedor = true;
-        }
-      })
-    },
     watch: {
       Fecha (value) {
         let hoy = new Date(Date.now()-(1000*60*60*5));
@@ -401,6 +406,26 @@ v-layout( row wrap )
           this.AutorizacionGuardar ();
         },
         deep: true
+      },
+      VendedorId: {
+          handler(value) {
+            console.log(value);
+          }
+      },
+      Entra: {
+        handler (value) {
+          if(value){
+            this.EntradaSalida = 'Entrada';
+          }else{
+            this.EntradaSalida = 'Salida';
+          }
+          this.ItemsProduccionAndRecprodcom = [];
+          this.ItemsEnvaseEntra = [];
+          this.ItemsEnvaseSale = [];
+          this.ProduccionAndRecprodcomActual = {};
+          this.EnvaseEntraActual = {};
+          this.EnvaseSaleActual = {};
+        }
       }
     },
     methods: {
@@ -652,6 +677,7 @@ v-layout( row wrap )
         let requisito2 = this.ProduccionAndRecprodcomActual;
         let requisito3 = this.EnvaseSaleActual;
         let requisito4 = this.EnvaseEntraActual;
+        let requisito5 = this.VendedorId;
 
         if(
           requisito1.hasOwnProperty("Id") &&
@@ -659,7 +685,8 @@ v-layout( row wrap )
             requisito2.hasOwnProperty("Id") ||
             requisito3.hasOwnProperty("Id") ||
             requisito4.hasOwnProperty("Id")
-          )
+          ) &&
+          requisito5 !== null
         ){
           this.Autorizacion = true;
           return true;
@@ -725,7 +752,8 @@ v-layout( row wrap )
           RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
           EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
           EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
-          Total: item.Total
+          Total: item.Total,
+          VendedorId: item.VendedorId
         }
 
         this.$apollo.mutate ({
@@ -739,7 +767,8 @@ v-layout( row wrap )
             RecprodcomId: Remision.RecprodcomId,
             EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
             EnvaseEntraId: Remision.EnvaseEntraId,
-            Total: Remision.Total
+            Total: Remision.Total,
+            VendedorId: Remision.VendedorId
           },
           loadingKey: 'loading',
           update: (store, { data: res }) => {
@@ -765,6 +794,7 @@ v-layout( row wrap )
           EnteId: this.ClienteOProveedor.Id,
           EnvaseSaleId: item.EnvaseSale ? item.EnvaseSale.Id : null,
           EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
+          VendedorId: item.VendedorId
         }
 
         this.$apollo.mutate ({
@@ -774,7 +804,8 @@ v-layout( row wrap )
             Fecha: Remision.Fecha,
             EnteId: Remision.EnteId,
             EnvaseEntraId: Remision.EnvaseEntraId,
-            EnvaseSaleId: Remision.EnvaseSaleId
+            EnvaseSaleId: Remision.EnvaseSaleId,
+            VendedorId: Remision.VendedorId
           },
           update: (store, { data: res }) => {
             var tmp = {
@@ -790,7 +821,7 @@ v-layout( row wrap )
       },
       eliminar (item) {
 
-        if ( item.Id === null ) {
+        /*if ( item.Id === null ) {
           for (let i=0; i<this.items.length; i++) {
             if ( item.Produccion !== null ) {
               if( this.items[i].Produccion !== null ){
@@ -826,14 +857,14 @@ v-layout( row wrap )
             }
           }
         }
-        else {
+        else {*/
           for (let i=0; i<this.items.length; i++) {
             if ( item.Id === this.items[i].Id ) {
               this.items.splice(i, 1);
               break;
             }
           }
-        }
+        //}
 
         if(this.TipoEnte === 'Cliente'){
           const Remision = {

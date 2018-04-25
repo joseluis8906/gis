@@ -2214,7 +2214,8 @@ var Mutation = new GraphQLObjectType({
           EnteId: {type: GraphQLInt},
           EnvaseEntraId: {type: GraphQLInt},
           EnvaseSaleId: {type: GraphQLInt},
-          Total: {type: GraphQLFloat}
+          Total: {type: GraphQLFloat},
+          VendedorId: {type: GraphQLInt}
         },
         resolve(_, args) {
 
