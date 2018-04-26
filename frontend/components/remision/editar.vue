@@ -331,7 +331,7 @@ v-layout( row wrap )
                 EnvaseEntra: data.Remisions[i].EnvaseEntra,
                 EnvaseSale: data.Remisions[i].EnvaseSale,
                 Total: data.Remisions[i].Total,
-                SaveUpdate: 'update',
+                //SaveUpdate: 'update',
               }
 
               this.items.push(tmp)
@@ -434,12 +434,12 @@ v-layout( row wrap )
         let Recprodcom = item.Recprodcom;
         let EnvaseSale = item.EnvaseSale;
         let EnvaseEntra = item.EnvaseEntra;
-
-        if(null !== Produccion) return `${Produccion.Cantidad} ${Produccion.Producto.UnidadDeMedida}`;
-        if(null !== Recprodcom) return `${Recprodcom.Cantidad} ${Recprodcom.Producto.UnidadDeMedida}`;
-        if(null !== EnvaseSale) return `${EnvaseSale.Capacidad} ${EnvaseSale.Producto.UnidadDeMedida}`;
-        if(null !== EnvaseEntra) return `${EnvaseEntra.Capacidad} ${EnvaseEntra.Producto.UnidadDeMedida}`;
-
+        
+        if(null !== Produccion && undefined !== Produccion) return `${Produccion.Cantidad} ${Produccion.Producto.UnidadDeMedida}`;
+        if(null !== Recprodcom && undefined !== Recprodcom) return `${Recprodcom.Cantidad} ${Recprodcom.Producto.UnidadDeMedida}`;
+        if(null !== EnvaseEntra && undefined !== EnvaseEntra) return `${EnvaseEntra.Capacidad} ${EnvaseEntra.Producto.UnidadDeMedida}`;
+        if(null !== EnvaseSale && undefined !== EnvaseSale) return `${EnvaseSale.Capacidad} ${EnvaseSale.Producto.UnidadDeMedida}`;
+      
         return '';
       },
       ImprimirProducto(item) {
@@ -448,19 +448,19 @@ v-layout( row wrap )
         let EnvaseEntra = item.EnvaseEntra;
         let EnvaseSale = item.EnvaseSale;
 
-        if(null !== Produccion) return Produccion.Producto.Nombre;
-        if(null !== Recprodcom) return Recprodcom.Producto.Nombre;
-        if(null !== EnvaseEntra) return EnvaseEntra.Producto.Nombre;
-        if(null !== EnvaseSale) return EnvaseSale.Producto.Nombre;
+        if(null !== Produccion && undefined !== Produccion) return Produccion.Producto.Nombre;
+        if(null !== Recprodcom && undefined !== Recprodcom) return Recprodcom.Producto.Nombre;
+        if(null !== EnvaseEntra && undefined !== EnvaseEntra) return EnvaseEntra.Producto.Nombre;
+        if(null !== EnvaseSale && undefined !== EnvaseSale) return EnvaseSale.Producto.Nombre;
       },
       ImprimirSale(item) {
         let Produccion = item.Produccion;
         let Recprodcom = item.Recprodcom;
         let EnvaseSale = item.EnvaseSale;
 
-        if(null !== Produccion) return Produccion.Envase.Numero;
-        if(null !== Recprodcom) return Recprodcom.Envase.Numero;
-        if(null !== EnvaseSale) return EnvaseSale.Numero;
+        if(null !== Produccion && undefined !== Produccion) return Produccion.Envase.Numero;
+        if(null !== Recprodcom && undefined !== Recprodcom) return Recprodcom.Envase.Numero;
+        if(null !== EnvaseSale && undefined !== EnvaseSale) return EnvaseSale.Numero;
 
         return '';
       },
@@ -468,8 +468,8 @@ v-layout( row wrap )
         let Produccion = item.Produccion;
         let Recprodcom = item.Recprodcom;
 
-        if(null !== Produccion) return Produccion.FechaFabricacion;
-        if(null !== Recprodcom) return Recprodcom.FechaFabricacion;
+        if(null !== Produccion && undefined !== Produccion) return Produccion.FechaFabricacion;
+        if(null !== Recprodcom && undefined !== Recprodcom) return Recprodcom.FechaFabricacion;
 
         return '';
       },
@@ -477,8 +477,8 @@ v-layout( row wrap )
         let Produccion = item.Produccion;
         let Recprodcom = item.Recprodcom;
 
-        if(null !== Produccion) return Produccion.FechaVencimiento;
-        if(null !== Recprodcom) return Recprodcom.FechaVencimiento;
+        if(null !== Produccion && undefined !== Produccion) return Produccion.FechaVencimiento;
+        if(null !== Recprodcom && undefined !== Recprodcom) return Recprodcom.FechaVencimiento;
 
         return '';
       },
@@ -486,15 +486,15 @@ v-layout( row wrap )
         let Produccion = item.Produccion;
         let Recprodcom = item.Recprodcom;
 
-        if(null !== Produccion) return Produccion.Lote;
-        if(null !== Recprodcom) return Recprodcom.Lote;
+        if(null !== Produccion && undefined !== Produccion) return Produccion.Lote;
+        if(null !== Recprodcom && undefined !== Recprodcom) return Recprodcom.Lote;
 
         return '';
       },
       ImprimirEntra(item) {
         let EnvaseEntra = item.EnvaseEntra;
 
-        if(null !== EnvaseEntra) return EnvaseEntra.Numero;
+        if(null !== EnvaseEntra && undefined !== EnvaseEntra) return EnvaseEntra.Numero;
 
         return '';
       },
@@ -558,7 +558,6 @@ v-layout( row wrap )
               Numero: this.NumeroEnvaseEntra
             },
           }).then (res => {
-            console.log(res.data.Envases.length);
             for (let i=0; i<res.data.Envases.length; i++) {
               var tmp = {
                 Id: res.data.Envases[i].Id,
@@ -566,7 +565,10 @@ v-layout( row wrap )
                 Disponible: res.data.Envases[i].Disponible,
                 Producto: res.data.Envases[i].Producto
               }
-              this.ItemsEnvaseEntra.push(tmp)
+              let esta = false;
+              if(undefined === this.items.find(x => x.EnvaseEntra.Id === tmp.Id)){
+                 this.ItemsEnvaseEntra.push(tmp);
+              };
             }
           });
         }
@@ -705,8 +707,7 @@ v-layout( row wrap )
             Recprodcom: this.ProduccionAndRecprodcomActual.Type === "Recprodcom" ? this.ProduccionAndRecprodcomActual : null,
             EnvaseEntra: this.EnvaseEntraActual,
             Total: this.TotalActual,
-            VendedorId: this.VendedorId,
-            SaveUpdate: 'save'
+            VendedorId: this.VendedorId
           }
 
           this.guardarTipoCliente(tmp)
@@ -716,13 +717,13 @@ v-layout( row wrap )
             Id: null,
             EnvaseEntra: this.EnvaseEntraActual ? { Id: this.EnvaseEntraActual.Id,  Numero: this.EnvaseEntraActual.Numero } : null,
             EnvaseSale: this.EnvaseSaleActual ? { Id: this.EnvaseSaleActual.Id,  Numero: this.EnvaseSaleActual.Numero } : null,
-            VendedorId: this.VendedorId,
-            SaveUpdate: 'save'
+            VendedorId: this.VendedorId
           }
 
           this.guardarTipoProveedor(tmp)
         }
 
+        
         this.ItemsProduccionAndRecprodcom = this.ItemsProduccionAndRecprodcom.filter( Item => {
           return ( (tmp.Produccion !== null && tmp.Produccion.Id !== Item.Id) || (tmp.Recprodcom !== null && tmp.Recprodcom.Id !== Item.Id) )
         });
@@ -736,86 +737,59 @@ v-layout( row wrap )
         });
 
         this.ProduccionAndRecprodcomActual = {},
-        this.EnvaseEntraActual = {},
-        this.EnvaseSaleActual = {},
+        this.NumeroEnvaseEntraActual = {},
+        this.NumeroEnvaseSaleActual = {},
         this.TotalActual = null;
 
       },
       guardarTipoCliente (item) {
 
-        const Remision = {
-          Numero: this.Numero,
-          Fecha: this.Fecha,
-          EnteId: this.ClienteOProveedor.Id,
-          ProduccionId: item.Produccion ? item.Produccion.Id : null,
-          EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
-          RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
-          EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
-          EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
-          Total: item.Total,
-          VendedorId: item.VendedorId
-        }
-
         this.$apollo.mutate ({
           mutation: CREATE_REMISION,
           variables: {
-            Numero: Remision.Numero,
-            Fecha: Remision.Fecha,
-            EnteId: Remision.EnteId,
-            ProduccionId: Remision.ProduccionId,
-            EnvaseProduccionId: Remision.EnvaseProduccionId,
-            RecprodcomId: Remision.RecprodcomId,
-            EnvaseRecprodcomId: Remision.EnvaseRecprodcomId,
-            EnvaseEntraId: Remision.EnvaseEntraId,
-            Total: Remision.Total,
-            VendedorId: Remision.VendedorId
+            Numero: this.Numero,
+            Fecha: this.Fecha,
+            EnteId: this.ClienteOProveedor.Id,
+            ProduccionId: item.Produccion ? item.Produccion.Id : null,
+            EnvaseProduccionId: item.Produccion ? item.Produccion.Envase.Id : null,
+            RecprodcomId: item.Recprodcom ? item.Recprodcom.Id : null,
+            EnvaseRecprodcomId: item.Recprodcom ? item.Recprodcom.Envase.Id : null,
+            EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
+            Total: item.Total,
+            VendedorId: item.VendedorId
           },
-          loadingKey: 'loading',
           update: (store, { data: res }) => {
             var tmp = {
               Id: res.CreateRemision.Id,
               Produccion: res.CreateRemision.Produccion,
               Recprodcom: res.CreateRemision.Recprodcom,
               EnvaseEntra: res.CreateRemision.EnvaseEntra,
-              Total: res.CreateRemision.Total,
-              SaveUpdate: 'update'
+              Total: res.CreateRemision.Total
             }
-
-            this.items.push(tmp)
+            this.items.push(tmp);
           }
         });
 
       },
       guardarTipoProveedor (item) {
 
-        const Remision = {
-          Numero: this.Numero,
-          Fecha: this.Fecha,
-          EnteId: this.ClienteOProveedor.Id,
-          EnvaseSaleId: item.EnvaseSale ? item.EnvaseSale.Id : null,
-          EnvaseEntraId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
-          VendedorId: item.VendedorId
-        }
-
         this.$apollo.mutate ({
           mutation: CREATE_REMISION_PROVEEDOR,
           variables: {
-            Numero: Remision.Numero,
-            Fecha: Remision.Fecha,
-            EnteId: Remision.EnteId,
-            EnvaseEntraId: Remision.EnvaseEntraId,
-            EnvaseSaleId: Remision.EnvaseSaleId,
-            VendedorId: Remision.VendedorId
+            Numero: this.Numero,
+            Fecha: this.Fecha,
+            EnteId: this.ClienteOProveedor.Id,
+            EnvaseEntraId: item.EnvaseSale ? item.EnvaseSale.Id : null,
+            EnvaseSaleId: item.EnvaseEntra ? item.EnvaseEntra.Id : null,
+            VendedorId: item.VendedorId
           },
           update: (store, { data: res }) => {
             var tmp = {
               Id: res.CreateRemisionProveedor.Id,
               EnvaseEntra: res.CreateRemisionProveedor.EnvaseEntra,
-              EnvaseSale: res.CreateRemisionProveedor.EnvaseSale,
-              SaveUpdate: 'update'
+              EnvaseSale: res.CreateRemisionProveedor.EnvaseSale
             }
-
-            this.items.push(tmp)
+            this.items.push(tmp);
           }
         });
       },
