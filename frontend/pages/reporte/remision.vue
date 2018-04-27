@@ -119,9 +119,7 @@ export default {
           Numero: this.Numero
         }
       },
-      loadingKey: "loading",
       update (data) {
-        //console.log(data)
 
         if (data.Remisions.length > 0) {
 
