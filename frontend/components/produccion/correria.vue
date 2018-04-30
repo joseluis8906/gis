@@ -89,7 +89,7 @@ v-layout( row wrap )
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ ImprimirCantidad(props.item) }}
         td( style="border-left: 1px solid #999999" class="text-xs-center" ) {{ ImprimirProducto(props.item) }}
         td( style="border-left: 1px solid #999999" class="pt-0 pb-0") {{ props.item.Produccion ? props.item.Produccion.Despachado : '' }} {{ props.item.Recprodcom ? props.item.Recprodcom.Despachado : '' }}
-        //- td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
+        td(style="border-left: 1px solid #999999" class="text-xs-center pl-1 pr-1")
           v-btn(
             fab
             dark
@@ -97,7 +97,7 @@ v-layout( row wrap )
             error
             style="width: 16px; height:16px"
             @click.native="Eliminar(props.item)"
-            :disabled="props.item.EliminarDisable")
+            :disabled="EsDespachado(props.item)")
 
             v-icon remove
 
@@ -229,6 +229,20 @@ export default {
     },
   },
   methods: {
+    EsDespachado (item) {
+      let Produccion = item.Produccion;
+      let Recprodcom = item.Recprodcom;
+
+      if(null !== Produccion && Produccion.Despachado === 'Si'){
+        return true;
+      }
+
+      if(null !== Recprodcom && Recprodcom.Despachado === 'Si'){
+        return true;
+      }
+
+      return false;
+    },
     FiltrarSeleccionados () {
       for(let i=0; i<this.items.length; i++){
         for(let j=0; j<this.ItemsProduccionAndRecprodcom.length; j++){
@@ -424,7 +438,7 @@ export default {
           Id: item.Id,
         },
         update: (store, { data: res }) => {
-          console.log(res.DeleteCorreria);
+          //console.log(res.DeleteCorreria);
           this.items = this.items.filter(c => c.Id !== item.Id);
         }
       });
